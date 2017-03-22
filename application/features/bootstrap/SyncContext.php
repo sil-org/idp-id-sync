@@ -29,17 +29,57 @@ class SyncContext implements Context
     }
 
     /**
-     * @When I request the user info from the ID Store
+     * @Given the user exists in the ID Broker
      */
-    public function iRequestTheUserInfoFromTheIdStore()
+    public function theUserExistsInTheIdBroker()
     {
         throw new PendingException();
     }
 
     /**
-     * @Then the response should provide user info
+     * @When I get the user's info from the ID Store and send it to the ID Broker
      */
-    public function theResponseShouldProvideUserInfo()
+    public function iGetTheUserSInfoFromTheIdStoreAndSendItToTheIdBroker()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then the ID Broker response should indicate success
+     */
+    public function theIdBrokerResponseShouldIndicateSuccess()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given the user does not exist in the ID Broker
+     */
+    public function theUserDoesNotExistInTheIdBroker()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given the user does not exist in the ID Store
+     */
+    public function theUserDoesNotExistInTheIdStore()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When I learn the user does not exist in the ID Store and I tell the ID Broker
+     */
+    public function iLearnTheUserDoesNotExistInTheIdStoreAndITellTheIdBroker()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then the ID Broker response should return an error
+     */
+    public function theIdBrokerResponseShouldReturnAnError()
     {
         throw new PendingException();
     }
