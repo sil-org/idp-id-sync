@@ -1,0 +1,24 @@
+version: '2'
+services:
+    data:
+        image: silintl/data-volume:latest
+        volumes:
+            - ./application:/data
+        user: "${DOCKER_UIDGID}"
+
+    cli:
+        image: silintl/php7:latest
+        volumes_from:
+            - data
+        working_dir: /data
+        command: ["true"]
+
+networks:
+    default:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+            - subnet: 10.20.39.0/24
+              gateway: 10.20.39.1
+
