@@ -20,6 +20,7 @@ class SyncContext implements Context
     {
     }
 
+
     /**
      * @Given the user exists in the ID Store
      */
@@ -37,9 +38,9 @@ class SyncContext implements Context
     }
 
     /**
-     * @When I get the user's info from the ID Store and send it to the ID Broker
+     * @When I get the user info from the ID Store and send it to the ID Broker
      */
-    public function iGetTheUserSInfoFromTheIdStoreAndSendItToTheIdBroker()
+    public function iGetTheUserInfoFromTheIdStoreAndSendItToTheIdBroker()
     {
         throw new PendingException();
     }
@@ -85,41 +86,17 @@ class SyncContext implements Context
     }
 
     /**
-     * @Given user exists in ID Store
+     * @Given the user info in the ID Broker does not equal the user info in the ID Store
      */
-    public function userExistsInIdStore()
+    public function theUserInfoInTheIdBrokerDoesNotEqualTheUserInfoInTheIdStore()
     {
         throw new PendingException();
     }
 
     /**
-     * @Given user exists in ID Broker
+     * @When I send the user info in the ID Store to the ID Broker
      */
-    public function userExistsInIdBroker()
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @Given user info in ID Broker does not equal user info in ID Store
-     */
-    public function userInfoInIdBrokerDoesNotEqualUserInfoInIdStore()
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @When I send user info in ID Store to ID Broker
-     */
-    public function iSendUserInfoInIdStoreToIdBroker()
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then ID Broker response should indicate success
-     */
-    public function idBrokerResponseShouldIndicateSuccess()
+    public function iSendTheUserInfoInTheIdStoreToTheIdBroker()
     {
         throw new PendingException();
     }
