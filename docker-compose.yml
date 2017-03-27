@@ -6,21 +6,12 @@ services:
             - ./application:/data
         user: "${DOCKER_UIDGID}"
 
-    db:
-        image: silintl/mariadb:latest
-        ports:
-            - "3306"
-        env_file:
-            - ./local.env
-
     app:
         build: ./
         volumes_from:
             - data
         ports:
             - "8080:80"
-        depends_on:
-            - db
         env_file:
             - ./local.env
 
