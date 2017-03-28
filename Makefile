@@ -1,18 +1,22 @@
+start: app
+
+app: deps
+	docker-compose up -d app
+
+behat:
+	docker-compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --stop-on-failure"
+
+behatappend:
+	docker-compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --append-snippets"
 
 clean:
 	docker-compose kill
 	docker system prune -f
 
-behat:
-	docker-compose run --rm cli bash -c "vendor/bin/behat"
-
-behatappend:
-	docker-compose run --rm cli bash -c "vendor/bin/behat --append-snippets"
-
 deps:
-	docker-compose run --rm cli composer install
+	docker-compose run --rm cli composer install --no-scripts
 
 depsupdate:
-	docker-compose run --rm cli composer update
+	docker-compose run --rm cli composer update --no-scripts
 
 test: deps behat

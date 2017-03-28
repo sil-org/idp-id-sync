@@ -3,7 +3,10 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=7.0",
-    "roave/security-advisories": "dev-master"
+    "fillup/fake-bower-assets": "^2.0",
+    "roave/security-advisories": "dev-master",
+    "silinternational/php-env": "^0.1.1",
+    "yiisoft/yii2": "^2.0.11"
   },
   "require-dev": {
     "behat/behat": "^3.3"
