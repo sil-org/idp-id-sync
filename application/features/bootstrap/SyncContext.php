@@ -92,12 +92,4 @@ class SyncContext implements Context
     {
         throw new PendingException();
     }
-
-    /**
-     * @When I send the user info in the ID Store to the ID Broker
-     */
-    public function iSendTheUserInfoInTheIdStoreToTheIdBroker()
-    {
-        throw new PendingException();
-    }
 }
