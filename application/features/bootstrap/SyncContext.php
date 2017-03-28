@@ -20,6 +20,7 @@ class SyncContext implements Context
     {
     }
 
+
     /**
      * @Given the user exists in the ID Store
      */
@@ -37,9 +38,9 @@ class SyncContext implements Context
     }
 
     /**
-     * @When I get the user's info from the ID Store and send it to the ID Broker
+     * @When I get the user info from the ID Store and send it to the ID Broker
      */
-    public function iGetTheUserSInfoFromTheIdStoreAndSendItToTheIdBroker()
+    public function iGetTheUserInfoFromTheIdStoreAndSendItToTheIdBroker()
     {
         throw new PendingException();
     }
@@ -80,6 +81,14 @@ class SyncContext implements Context
      * @Then the ID Broker response should return an error
      */
     public function theIdBrokerResponseShouldReturnAnError()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given the user info in the ID Broker does not equal the user info in the ID Store
+     */
+    public function theUserInfoInTheIdBrokerDoesNotEqualTheUserInfoInTheIdStore()
     {
         throw new PendingException();
     }
