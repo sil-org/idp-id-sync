@@ -1,5 +1,5 @@
 default:
     suites:
         sync_features:
-            paths:    [ %paths.base%/features ]
+            paths:    [ %paths.base%/../features ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\SyncContext ]
