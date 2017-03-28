@@ -12,6 +12,8 @@ services:
             - data
         working_dir: /data
         command: ["true"]
+        ports: 
+            - "22:22"
 
 networks:
     default:
@@ -19,6 +21,6 @@ networks:
         ipam:
             driver: default
             config:
-            - subnet: 10.20.39.0/24
-              gateway: 10.20.39.1
+            - subnet: 10.20.40.0/24
+              gateway: 10.20.40.1
 
