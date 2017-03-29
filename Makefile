@@ -7,10 +7,10 @@ bash:
 	docker-compose run --rm cli bash
 
 behat:
-	docker-compose run --rm cli bash -c "cd ../features && ../data/vendor/bin/behat --stop-on-failure"
+	docker-compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --stop-on-failure"
 
 behatappend:
-	docker-compose run --rm cli bash -c "cd ../features && ../data/vendor/bin/behat --append-snippets"
+	docker-compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --append-snippets"
 
 clean:
 	docker-compose kill
