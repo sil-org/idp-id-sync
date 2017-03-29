@@ -1,6 +1,6 @@
 <?php
 
-use Sil\Idp\IdSync\common\models\ApiConsumer;
+use Sil\Idp\IdSync\common\components\ApiConsumer;
 use yii\web\JsonParser;
 
 return [
