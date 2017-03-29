@@ -1,5 +1,5 @@
 <?php
-namespace common\models;
+namespace Sil\Idp\IdSync\common\models;
 
 use yii\base\Component;
 use yii\web\IdentityInterface;

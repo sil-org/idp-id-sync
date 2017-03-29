@@ -1,5 +1,5 @@
 <?php
-namespace frontend\components;
+namespace Sil\Idp\IdSync\frontend\components;
 
 use yii\db\ActiveRecord;
 use yii\filters\auth\HttpBearerAuth;

@@ -13,6 +13,7 @@
   },
   "autoload": {
     "psr-4": {
+      "Sil\\Idp\\IdSync\\": "./",
       "Sil\\Idp\\IdSync\\Behat\\Context\\": "../features/bootstrap"
     }
   }
