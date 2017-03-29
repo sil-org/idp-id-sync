@@ -3,6 +3,9 @@ start: app
 app: deps
 	docker-compose up -d app
 
+bash:
+	docker-compose run --rm cli bash
+
 behat:
 	docker-compose run --rm cli bash -c "cd ../features && ../data/vendor/bin/behat --stop-on-failure"
 
