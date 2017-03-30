@@ -41,12 +41,12 @@ Feature: Synchronizing a record
         | employeeNumber | displayName  | username   |
         | 10001          | Nickname     | first_last |
       And ONLY the following users exist in the ID Broker:
-        | employee_id    | display_name | username   |
-        | 10001          | First Last   | first_last |
-    When I sync the ID Store to the ID Broker
+        | employee_id    | display_name | username   | active |
+        | 10001          | First Last   | first_last | yes    |
+    When I sync all the users from the ID Store to the ID Broker
     Then ONLY the following users should exist in the ID Broker:
-        | employee_id    | display_name | username   |
-        | 10001          | Nickname     | first_last |
+        | employee_id    | display_name | username   | active |
+        | 10001          | Nickname     | first_last | yes    |
 
   Scenario: Add a user to the ID Broker
     Given ONLY the following users exist in the ID Store:
@@ -54,13 +54,13 @@ Feature: Synchronizing a record
         | 10001          | Person One   | person_one |
         | 10002          | Person Two   | person_two |
       And ONLY the following users exist in the ID Broker:
-        | employee_id    | display_name | username   |
-        | 10001          | Person One   | person_one |
-    When I sync the ID Store to the ID Broker
+        | employee_id    | display_name | username   | active |
+        | 10001          | Person One   | person_one | yes    |
+    When I sync all the users from the ID Store to the ID Broker
     Then ONLY the following users should exist in the ID Broker:
-        | employee_id    | display_name | username   |
-        | 10001          | Person One   | person_one |
-        | 10002          | Person Two   | person_two |
+        | employee_id    | display_name | username   | active |
+        | 10001          | Person One   | person_one | yes    |
+        | 10002          | Person Two   | person_two | yes    |
 
   Scenario: Activate a user in ID Broker
     Given ONLY the following users exist in the ID Store:
@@ -71,7 +71,7 @@ Feature: Synchronizing a record
         | employee_id    | display_name | username   | active |
         | 10001          | Person One   | person_one | yes    |
         | 10002          | Person Two   | person_two | no     |
-    When I sync the ID Store to the ID Broker
+    When I sync all the users from the ID Store to the ID Broker
     Then ONLY the following users should exist in the ID Broker:
         | employee_id    | display_name | username   | active |
         | 10001          | Person One   | person_one | yes    |
@@ -85,7 +85,7 @@ Feature: Synchronizing a record
         | employee_id    | display_name | username   | active |
         | 10001          | Person One   | person_one | yes    |
         | 10002          | Person Two   | person_two | yes    |
-    When I sync the ID Store to the ID Broker
+    When I sync all the users from the ID Store to the ID Broker
     Then ONLY the following users should exist in the ID Broker:
         | employee_id    | display_name | username   | active |
         | 10001          | Person One   | person_one | no     |
