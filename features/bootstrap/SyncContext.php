@@ -15,17 +15,6 @@ use yii\helpers\Json;
  */
 class SyncContext implements Context
 {
-    /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
-     */
-    public function __construct()
-    {
-    }
-
     /** @var \Sil\Idp\IdSync\common\interfaces\IdBrokerInterface */
     private $idBroker;
     
@@ -57,9 +46,17 @@ class SyncContext implements Context
     }
 
     /**
-     * @Then the ID Broker response should indicate success
+     * @Then the user should exist in the ID Broker
      */
-    public function theIdBrokerResponseShouldIndicateSuccess()
+    public function theUserShouldExistInTheIdBroker()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then the user info in the ID Broker should match what we sent
+     */
+    public function theUserInfoInTheIdBrokerShouldMatchWhatWeSent()
     {
         throw new PendingException();
     }
@@ -89,9 +86,9 @@ class SyncContext implements Context
     }
 
     /**
-     * @Then the ID Broker response should return an error
+     * @Then the user should not exist in the ID Broker
      */
-    public function theIdBrokerResponseShouldReturnAnError()
+    public function theUserShouldNotExistInTheIdBroker()
     {
         throw new PendingException();
     }
