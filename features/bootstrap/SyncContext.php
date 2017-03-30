@@ -1,8 +1,14 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
+use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
+use PHPUnit\Framework\Assert;
+use Sil\Idp\IdSync\common\sync\FullSynchronization;
+use Sil\Idp\IdSync\tests\fakes\FakeIdBroker;
+use Sil\Idp\IdSync\tests\fakes\FakeIdStore;
+use yii\helpers\Json;
 
 /**
  * Defines application features from the specific context.
@@ -20,7 +26,12 @@ class SyncContext implements Context
     {
     }
 
-
+    /** @var \Sil\Idp\IdSync\common\interfaces\IdBrokerInterface */
+    private $idBroker;
+    
+    /** @var \Sil\Idp\IdSync\common\interfaces\IdStoreInterface */
+    private $idStore;
+    
     /**
      * @Given the user exists in the ID Store
      */
@@ -91,5 +102,61 @@ class SyncContext implements Context
     public function theUserInfoInTheIdBrokerDoesNotEqualTheUserInfoInTheIdStore()
     {
         throw new PendingException();
+    }
+
+    /**
+     * @Given ONLY the following users exist in the ID Store:
+     */
+    public function onlyTheFollowingUsersExistInTheIdStore(TableNode $table)
+    {
+        $idStoreUsers = [];
+        foreach ($table as $row) {
+            $idStoreUsers[$row['employeeNumber']] = $row;
+        }
+        $this->idStore = new FakeIdStore($idStoreUsers);
+    }
+
+    /**
+     * @Given ONLY the following users exist in the ID Broker:
+     */
+    public function onlyTheFollowingUsersExistInTheIdBroker(TableNode $table)
+    {
+        $idBrokerUsers = [];
+        foreach ($table as $row) {
+            $idBrokerUsers[$row['employee_id']] = $row;
+        }
+        $this->idBroker = new FakeIdBroker($idBrokerUsers);
+    }
+
+    /**
+     * @When I sync all the users from the ID Store to the ID Broker
+     */
+    public function iSyncAllTheUsersFromTheIdStoreToTheIdBroker()
+    {
+        $fullSync = new FullSynchronization($this->idStore, $this->idBroker);
+        $fullSync->run();
+    }
+
+    /**
+     * @Then ONLY the following users should exist in the ID Broker:
+     */
+    public function onlyTheFollowingUsersShouldExistInTheIdBroker(TableNode $table)
+    {
+        Assert::assertJsonStringEqualsJsonString(
+            Json::encode($table), // Expected (according to feature file)
+            Json::encode($this->getIdBrokerUsers()) // Actual
+        );
+    }
+    
+    protected function getIdBrokerUsers()
+    {
+        $userList = $this->idBroker->listUsers();
+        $usersInfo = [];
+        foreach ($userList as $userPartialInfo) {
+            $usersInfo[] = $this->idBroker->getUser([
+                'employee_id' => $userPartialInfo['employee_id'],
+            ]);
+        }
+        return $usersInfo;
     }
 }
