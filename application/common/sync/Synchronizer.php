@@ -6,7 +6,7 @@ use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use yii\helpers\ArrayHelper;
 
-class FullSynchronization
+class Synchronizer
 {
     private $idBroker;
     private $idStore;
@@ -19,7 +19,13 @@ class FullSynchronization
         $this->idBroker = $idBroker;
     }
     
-    protected function getIdBrokerUsersByEmployeeId()
+    /**
+     * Get a list of all users in the ID Broker, indexed by `employee_id`.
+     *
+     * @return array<string,array>
+     * @throws Exception
+     */
+    protected function getAllIdBrokerUsersByEmployeeId()
     {
         $rawList = $this->idBroker->listUsers();
         $usersByEmployeeId = [];
@@ -42,10 +48,14 @@ class FullSynchronization
         return $usersByEmployeeId;
     }
     
-    public function run()
+    /**
+     * Do a full synchronization, requesting all users from the ID Store and
+     * updating all records in the ID Broker.
+     */
+    public function syncAll()
     {
         $idStoreUsers = $this->idStore->getAllActiveUsers();
-        $idBrokerUsers = $this->getIdBrokerUsersByEmployeeId();
+        $idBrokerUsers = $this->getAllIdBrokerUsersByEmployeeId();
         
         foreach ($idStoreUsers as $idStoreUser) {
             $employeeId = $idStoreUser['employee_id'];
