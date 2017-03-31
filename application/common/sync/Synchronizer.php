@@ -20,6 +20,19 @@ class Synchronizer
     }
     
     /**
+     * Update the given user in the ID Broker, setting it to be active (unless
+     * the given user already provides some other value for 'active').
+     *
+     * @param array $user The user's information (as key/value pairs).
+     */
+    protected function activateAndUpdateUser($user)
+    {
+        $this->idBroker->updateUser(
+            ArrayHelper::merge(['active' => 'yes'], $user)
+        );
+    }
+    
+    /**
      * Get a list of all users in the ID Broker, indexed by `employee_id`.
      *
      * @return array<string,array>
@@ -62,9 +75,7 @@ class Synchronizer
             
             if (array_key_exists($employeeId, $idBrokerUsers)) {
                 // User exists in both places. Update and set as active:
-                $this->idBroker->updateUser(
-                    ArrayHelper::merge(['active' => 'yes'], $idStoreUser)
-                );
+                $this->activateAndUpdateUser($idStoreUser);
             } else {
                 // User is only in the ID Store. Add to ID Broker:
                 $this->idBroker->createUser($idStoreUser);
