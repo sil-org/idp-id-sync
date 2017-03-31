@@ -3,6 +3,7 @@ namespace Sil\Idp\IdSync\tests\fakes;
 
 use yii\base\NotSupportedException;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
+use Sil\Idp\IdSync\common\components\InsiteIdStore;
 
 class FakeIdStore extends IdStoreBase
 {
@@ -33,5 +34,11 @@ class FakeIdStore extends IdStoreBase
         return array_map(function($entry) {
             return $this->translateToIdBrokerFieldNames($entry);
         }, $this->activeUsers);
+    }
+
+    public static function getIdBrokerFieldNames()
+    {
+        // For simplicity's sake, just use the field names from Insite.
+        return InsiteIdStore::getIdBrokerFieldNames();
     }
 }
