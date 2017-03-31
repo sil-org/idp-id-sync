@@ -104,4 +104,25 @@ class Synchronizer
             $this->deactivateUser($employeeId);
         }
     }
+    
+    public function syncUser($employeeId)
+    {
+        $idStoreUser = $this->idStore->getActiveUser($employeeId);
+        $idBrokerUser = $this->idBroker->getUser(['employee_id' => $employeeId]);
+        
+        $isInIdStore = ($idStoreUser !== null);
+        $isInIdBroker = ($idBrokerUser !== null);
+        
+        if ($isInIdStore) {
+            if ($isInIdBroker) {
+                $this->activateAndUpdateUser($idStoreUser);
+            } else {
+                $this->idBroker->createUser($idStoreUser);
+            }
+        } else {
+            if ($isInIdBroker) {
+                $this->deactivateUser($idBrokerUser['employee_id']);
+            } // else: Nothing to do, since the user doesn't exist anywhere.
+        }
+    }
 }

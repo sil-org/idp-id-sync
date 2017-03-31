@@ -21,12 +21,22 @@ class SyncContext implements Context
     /** @var \Sil\Idp\IdSync\common\interfaces\IdStoreInterface */
     private $idStore;
     
+    private $tempEmployeeId;
+    
     /**
-     * @Given the user exists in the ID Store
+     * @Given a specific user exists in the ID Store
      */
-    public function theUserExistsInTheIdStore()
+    public function aSpecificUserExistsInTheIdStore()
     {
-        throw new PendingException();
+        $tempIdStoreUser = [
+            'employeeNumber' => '10001',
+            'displayName' => 'Person One',
+            'username' => 'person_one',
+        ];
+        $this->tempEmployeeId = $tempIdStoreUser['employeeNumber'];
+        $this->idStore = new FakeIdStore([
+            $this->tempEmployeeId => $tempIdStoreUser,
+        ]);
     }
 
     /**
@@ -34,7 +44,13 @@ class SyncContext implements Context
      */
     public function theUserExistsInTheIdBroker()
     {
-        throw new PendingException();
+        $tempUserForIdBroker = $this->idStore->getActiveUser(
+            $this->tempEmployeeId
+        );
+        
+        $this->idBroker = new FakeIdBroker([
+            $tempUserForIdBroker['employee_id'] => $tempUserForIdBroker,
+        ]);
     }
 
     /**
@@ -42,7 +58,8 @@ class SyncContext implements Context
      */
     public function iGetTheUserInfoFromTheIdStoreAndSendItToTheIdBroker()
     {
-        throw new PendingException();
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer->syncUser($this->tempEmployeeId);
     }
 
     /**
@@ -50,15 +67,24 @@ class SyncContext implements Context
      */
     public function theUserShouldExistInTheIdBroker()
     {
-        throw new PendingException();
+        Assert::assertNotNull($this->idBroker->getUser([
+            'employee_id' => $this->tempEmployeeId
+        ]));
     }
 
     /**
-     * @Then the user info in the ID Broker should match what we sent
+     * @Then the user info in the ID Broker and the ID Store should match
      */
-    public function theUserInfoInTheIdBrokerShouldMatchWhatWeSent()
+    public function theUserInfoInTheIdBrokerAndTheIdStoreShouldMatch()
     {
-        throw new PendingException();
+        $userInfoFromIdBroker = $this->idBroker->getUser([
+            'employee_id' => $this->tempEmployeeId,
+        ]);
+        $userInfoFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        
+        foreach ($userInfoFromIdStore as $attribute => $value) {
+            Assert::assertSame($value, $userInfoFromIdBroker[$attribute]);
+        }
     }
 
     /**
@@ -66,7 +92,7 @@ class SyncContext implements Context
      */
     public function theUserDoesNotExistInTheIdBroker()
     {
-        throw new PendingException();
+        $this->idBroker = new FakeIdBroker();
     }
 
     /**
@@ -74,7 +100,7 @@ class SyncContext implements Context
      */
     public function theUserDoesNotExistInTheIdStore()
     {
-        throw new PendingException();
+        $this->idStore = new FakeIdStore();
     }
 
     /**
@@ -82,7 +108,19 @@ class SyncContext implements Context
      */
     public function iLearnTheUserDoesNotExistInTheIdStoreAndITellTheIdBroker()
     {
-        throw new PendingException();
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer->syncUser($this->tempEmployeeId);
+    }
+
+    /**
+     * @Then the user should be inactive in the ID Broker
+     */
+    public function theUserShouldBeInactiveInTheIdBroker()
+    {
+        $idBrokerUser = $this->idBroker->getUser([
+            'employee_id' => $this->tempEmployeeId,
+        ]);
+        Assert::assertSame('no', $idBrokerUser['active']);
     }
 
     /**
@@ -90,15 +128,21 @@ class SyncContext implements Context
      */
     public function theUserShouldNotExistInTheIdBroker()
     {
-        throw new PendingException();
+        Assert::assertNull($this->idBroker->getUser([
+            'employee_id' => $this->tempEmployeeId,
+        ]));
     }
 
     /**
-     * @Given the user info in the ID Broker does not equal the user info in the ID Store
+     * @Given the user info in the ID Broker does not match the user info in the ID Store
      */
-    public function theUserInfoInTheIdBrokerDoesNotEqualTheUserInfoInTheIdStore()
+    public function theUserInfoInTheIdBrokerDoesNotMatchTheUserInfoInTheIdStore()
     {
-        throw new PendingException();
+        $userInfoFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        $this->idBroker->updateUser([
+            'employee_id' => $userInfoFromIdStore['employee_id'],
+            'display_name' => $userInfoFromIdStore['display_name'] . ' Jr.',
+        ]);
     }
 
     /**
@@ -155,5 +199,30 @@ class SyncContext implements Context
             ]);
         }
         return $usersInfo;
+    }
+
+    /**
+     * @Given a specific user exists in the ID Broker
+     */
+    public function aSpecificUserExistsInTheIdBroker()
+    {
+        $tempIdBrokerUser = [
+            'employee_id' => '10001',
+            'display_name' => 'Person One',
+            'username' => 'person_one',
+        ];
+        $this->tempEmployeeId = $tempIdBrokerUser['employee_id'];
+        $this->idBroker = new FakeIdBroker([
+            $this->tempEmployeeId => $tempIdBrokerUser,
+        ]);
+    }
+
+    /**
+     * @Given a specific user does not exist in the ID Store
+     */
+    public function aSpecificUserDoesNotExistInTheIdStore()
+    {
+        $this->tempEmployeeId = '10005';
+        $this->idStore = new FakeIdStore();
     }
 }
