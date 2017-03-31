@@ -33,6 +33,19 @@ class Synchronizer
     }
     
     /**
+     * Deactivate the specified user in the ID Broker.
+     *
+     * @param string $employeeId The Employee ID of the user to deactivate.
+     */
+    protected function deactivateUser($employeeId)
+    {
+        $this->idBroker->deactivateUser([
+            'employee_id' => $employeeId,
+            'active' => 'no',
+        ]);
+    }
+    
+    /**
      * Get a list of all users in the ID Broker, indexed by `employee_id`.
      *
      * @return array<string,array>
@@ -88,10 +101,7 @@ class Synchronizer
         
         // Deactivate the remaining (unprocessed) users in the ID Broker list.
         foreach (array_keys($idBrokerUsers) as $employeeId) {
-            $this->idBroker->deactivateUser([
-                'employee_id' => $employeeId,
-                'active' => 'no',
-            ]);
+            $this->deactivateUser($employeeId);
         }
     }
 }
