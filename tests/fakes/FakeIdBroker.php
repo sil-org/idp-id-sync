@@ -36,7 +36,7 @@ class FakeIdBroker extends IdBrokerBase
 
     public function getUser(array $config = [])
     {
-        return $this->usersByEmployeeId[$config['employee_id']];
+        return $this->usersByEmployeeId[$config['employee_id']] ?? null;
     }
 
     public function listUsers(array $config = [])
