@@ -7,13 +7,17 @@ interface IdStoreInterface
      * Get the specified user's information (using ID Broker field names). Note
      * that inactive users will be treated as non-existent users.
      *
-     * @param string $employeeNumber The employee number/ID.
+     * @param string $employeeId The Employee ID.
+     * @return array|null Information about the specified user, or null if no
+     *     such active user was found.
      */
-    public function getActiveUser(string $employeeNumber);
+    public function getActiveUser(string $employeeId);
     
     /**
      * Get information about each of the (active) users (using ID Broker field
      * names).
+     *
+     * @return array A list of user-information arrays.
      */
     public function getAllActiveUsers();
     
@@ -24,6 +28,7 @@ interface IdStoreInterface
      * names (not ID Store field names).
      * 
      * @param int $unixTimestamp The date/time, as a Unix timestamp.
+     * @return array A list of user-information arrays.
      */
     public function getActiveUsersChangedSince(int $unixTimestamp);
 }
