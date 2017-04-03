@@ -23,6 +23,8 @@ class SyncContext implements Context
     
     private $tempEmployeeId;
     
+    private $tempRecentlyChangedUsers;
+    
     /**
      * @Given a specific user exists in the ID Store
      */
@@ -146,15 +148,15 @@ class SyncContext implements Context
     }
 
     /**
-     * @Given ONLY the following users exist in the ID Store:
+     * @Given ONLY the following users are active in the ID Store:
      */
-    public function onlyTheFollowingUsersExistInTheIdStore(TableNode $table)
+    public function onlyTheFollowingUsersAreActiveInTheIdStore(TableNode $table)
     {
-        $idStoreUsers = [];
+        $idStoreActiveUsers = [];
         foreach ($table as $row) {
-            $idStoreUsers[$row['employeeNumber']] = $row;
+            $idStoreActiveUsers[$row['employeeNumber']] = $row;
         }
-        $this->idStore = new FakeIdStore($idStoreUsers);
+        $this->idStore = new FakeIdStore($idStoreActiveUsers);
     }
 
     /**
@@ -224,5 +226,24 @@ class SyncContext implements Context
     {
         $this->tempEmployeeId = '10005';
         $this->idStore = new FakeIdStore();
+    }
+
+    /**
+     * @Given the ID Store reported that the following users have changed recently:
+     */
+    public function theIdStoreReportedThatTheFollowingUsersHaveChangedRecently(TableNode $table)
+    {
+        foreach ($table as $row) {
+            $this->tempRecentlyChangedUsers[] = $row['employeeNumber'];
+        }
+    }
+
+    /**
+     * @When I sync that list of users
+     */
+    public function iSyncThatListOfUsers()
+    {
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer->syncUsers($this->tempRecentlyChangedUsers);
     }
 }

@@ -105,6 +105,12 @@ class Synchronizer
         }
     }
     
+    /**
+     * Synchronize a specific user, requesting their information from the
+     * ID Store and updating it accordingly in the ID Broker.
+     *
+     * @param string $employeeId The EmployeeID of the user to sync.
+     */
     public function syncUser($employeeId)
     {
         $idStoreUser = $this->idStore->getActiveUser($employeeId);
@@ -123,6 +129,19 @@ class Synchronizer
             if ($isInIdBroker) {
                 $this->deactivateUser($idBrokerUser['employee_id']);
             } // else: Nothing to do, since the user doesn't exist anywhere.
+        }
+    }
+    
+    /**
+     * Synchronize a specific set of users.
+     *
+     * @param string[] $employeeIds A list of Employee IDs indicating which
+     *     users to sync.
+     */
+    public function syncUsers(array $employeeIds)
+    {
+        foreach ($employeeIds as $employeeId) {
+            $this->syncUser($employeeId);
         }
     }
 }
