@@ -105,6 +105,12 @@ class Synchronizer
         }
     }
     
+    /**
+     * Synchronize a specific user, requesting their information from the
+     * ID Store and updating it accordingly in the ID Broker.
+     *
+     * @param string $employeeId The EmployeeID of the user to sync.
+     */
     public function syncUser($employeeId)
     {
         $idStoreUser = $this->idStore->getActiveUser($employeeId);
