@@ -23,6 +23,8 @@ class SyncContext implements Context
     
     private $tempEmployeeId;
     
+    private $tempRecentlyChangedUsers;
+    
     /**
      * @Given a specific user exists in the ID Store
      */
@@ -224,5 +226,24 @@ class SyncContext implements Context
     {
         $this->tempEmployeeId = '10005';
         $this->idStore = new FakeIdStore();
+    }
+
+    /**
+     * @Given the ID Store reported that the following users have changed recently:
+     */
+    public function theIdStoreReportedThatTheFollowingUsersHaveChangedRecently(TableNode $table)
+    {
+        foreach ($table as $row) {
+            $this->tempRecentlyChangedUsers[] = $row['employeeNumber'];
+        }
+    }
+
+    /**
+     * @When I sync that list of users
+     */
+    public function iSyncThatListOfUsers()
+    {
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer->syncUsers($this->tempRecentlyChangedUsers);
     }
 }

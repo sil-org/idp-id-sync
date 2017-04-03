@@ -131,4 +131,17 @@ class Synchronizer
             } // else: Nothing to do, since the user doesn't exist anywhere.
         }
     }
+    
+    /**
+     * Synchronize a specific set of users.
+     *
+     * @param string[] $employeeIds A list of Employee IDs indicating which
+     *     users to sync.
+     */
+    public function syncUsers(array $employeeIds)
+    {
+        foreach ($employeeIds as $employeeId) {
+            $this->syncUser($employeeId);
+        }
+    }
 }

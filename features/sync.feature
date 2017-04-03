@@ -92,3 +92,27 @@ Feature: Synchronizing a record
         | employee_id    | display_name | username   | active |
         | 10001          | Person One   | person_one | no     |
         | 10002          | Person Two   | person_two | yes    |
+
+  Scenario: Syncing users changed since a specific point in time
+    Given ONLY the following users are active in the ID Store:
+        | employeeNumber | displayName    | username     |
+        | 10001          | Unchanged User | person_one   |
+        | 10002          | Changed User   | person_two   |
+        | 10004          | Added User     | person_four  |
+      And ONLY the following users exist in the ID Broker:
+        | employee_id    | display_name   | username     | active |
+        | 10001          | Unchanged User | person_one   | yes    |
+        | 10002          | User To Change | person_two   | yes    |
+        | 10003          | Removed User   | person_three | yes    |
+      And the ID Store reported that the following users have changed recently:
+        | employeeNumber |
+        | 10002          |
+        | 10003          |
+        | 10004          |
+    When I sync that list of users
+    Then ONLY the following users should exist in the ID Broker:
+        | employee_id    | display_name | username   | active |
+        | 10001          | Unchanged User | person_one   | yes    |
+        | 10002          | Changed User   | person_two   | yes    |
+        | 10003          | Removed User   | person_three | no     |
+        | 10004          | Added User     | person_four  | yes    |
