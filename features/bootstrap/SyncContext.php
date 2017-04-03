@@ -1,32 +1,42 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
+use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
+use PHPUnit\Framework\Assert;
+use Sil\Idp\IdSync\common\sync\Synchronizer;
+use Sil\Idp\IdSync\tests\fakes\FakeIdBroker;
+use Sil\Idp\IdSync\tests\fakes\FakeIdStore;
+use yii\helpers\Json;
 
 /**
  * Defines application features from the specific context.
  */
 class SyncContext implements Context
 {
+    /** @var \Sil\Idp\IdSync\common\interfaces\IdBrokerInterface */
+    private $idBroker;
+    
+    /** @var \Sil\Idp\IdSync\common\interfaces\IdStoreInterface */
+    private $idStore;
+    
+    private $tempEmployeeId;
+    
     /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
+     * @Given a specific user exists in the ID Store
      */
-    public function __construct()
+    public function aSpecificUserExistsInTheIdStore()
     {
-    }
-
-
-    /**
-     * @Given the user exists in the ID Store
-     */
-    public function theUserExistsInTheIdStore()
-    {
-        throw new PendingException();
+        $tempIdStoreUser = [
+            'employeeNumber' => '10001',
+            'displayName' => 'Person One',
+            'username' => 'person_one',
+        ];
+        $this->tempEmployeeId = $tempIdStoreUser['employeeNumber'];
+        $this->idStore = new FakeIdStore([
+            $this->tempEmployeeId => $tempIdStoreUser,
+        ]);
     }
 
     /**
@@ -34,7 +44,13 @@ class SyncContext implements Context
      */
     public function theUserExistsInTheIdBroker()
     {
-        throw new PendingException();
+        $tempUserForIdBroker = $this->idStore->getActiveUser(
+            $this->tempEmployeeId
+        );
+        
+        $this->idBroker = new FakeIdBroker([
+            $tempUserForIdBroker['employee_id'] => $tempUserForIdBroker,
+        ]);
     }
 
     /**
@@ -42,15 +58,33 @@ class SyncContext implements Context
      */
     public function iGetTheUserInfoFromTheIdStoreAndSendItToTheIdBroker()
     {
-        throw new PendingException();
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer->syncUser($this->tempEmployeeId);
     }
 
     /**
-     * @Then the ID Broker response should indicate success
+     * @Then the user should exist in the ID Broker
      */
-    public function theIdBrokerResponseShouldIndicateSuccess()
+    public function theUserShouldExistInTheIdBroker()
     {
-        throw new PendingException();
+        Assert::assertNotNull($this->idBroker->getUser([
+            'employee_id' => $this->tempEmployeeId
+        ]));
+    }
+
+    /**
+     * @Then the user info in the ID Broker and the ID Store should match
+     */
+    public function theUserInfoInTheIdBrokerAndTheIdStoreShouldMatch()
+    {
+        $userInfoFromIdBroker = $this->idBroker->getUser([
+            'employee_id' => $this->tempEmployeeId,
+        ]);
+        $userInfoFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        
+        foreach ($userInfoFromIdStore as $attribute => $value) {
+            Assert::assertSame($value, $userInfoFromIdBroker[$attribute]);
+        }
     }
 
     /**
@@ -58,7 +92,7 @@ class SyncContext implements Context
      */
     public function theUserDoesNotExistInTheIdBroker()
     {
-        throw new PendingException();
+        $this->idBroker = new FakeIdBroker();
     }
 
     /**
@@ -66,7 +100,7 @@ class SyncContext implements Context
      */
     public function theUserDoesNotExistInTheIdStore()
     {
-        throw new PendingException();
+        $this->idStore = new FakeIdStore();
     }
 
     /**
@@ -74,22 +108,121 @@ class SyncContext implements Context
      */
     public function iLearnTheUserDoesNotExistInTheIdStoreAndITellTheIdBroker()
     {
-        throw new PendingException();
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer->syncUser($this->tempEmployeeId);
     }
 
     /**
-     * @Then the ID Broker response should return an error
+     * @Then the user should be inactive in the ID Broker
      */
-    public function theIdBrokerResponseShouldReturnAnError()
+    public function theUserShouldBeInactiveInTheIdBroker()
     {
-        throw new PendingException();
+        $idBrokerUser = $this->idBroker->getUser([
+            'employee_id' => $this->tempEmployeeId,
+        ]);
+        Assert::assertSame('no', $idBrokerUser['active']);
     }
 
     /**
-     * @Given the user info in the ID Broker does not equal the user info in the ID Store
+     * @Then the user should not exist in the ID Broker
      */
-    public function theUserInfoInTheIdBrokerDoesNotEqualTheUserInfoInTheIdStore()
+    public function theUserShouldNotExistInTheIdBroker()
     {
-        throw new PendingException();
+        Assert::assertNull($this->idBroker->getUser([
+            'employee_id' => $this->tempEmployeeId,
+        ]));
+    }
+
+    /**
+     * @Given the user info in the ID Broker does not match the user info in the ID Store
+     */
+    public function theUserInfoInTheIdBrokerDoesNotMatchTheUserInfoInTheIdStore()
+    {
+        $userInfoFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        $this->idBroker->updateUser([
+            'employee_id' => $userInfoFromIdStore['employee_id'],
+            'display_name' => $userInfoFromIdStore['display_name'] . ' Jr.',
+        ]);
+    }
+
+    /**
+     * @Given ONLY the following users exist in the ID Store:
+     */
+    public function onlyTheFollowingUsersExistInTheIdStore(TableNode $table)
+    {
+        $idStoreUsers = [];
+        foreach ($table as $row) {
+            $idStoreUsers[$row['employeeNumber']] = $row;
+        }
+        $this->idStore = new FakeIdStore($idStoreUsers);
+    }
+
+    /**
+     * @Given ONLY the following users exist in the ID Broker:
+     */
+    public function onlyTheFollowingUsersExistInTheIdBroker(TableNode $table)
+    {
+        $idBrokerUsers = [];
+        foreach ($table as $row) {
+            $idBrokerUsers[$row['employee_id']] = $row;
+        }
+        $this->idBroker = new FakeIdBroker($idBrokerUsers);
+    }
+
+    /**
+     * @When I sync all the users from the ID Store to the ID Broker
+     */
+    public function iSyncAllTheUsersFromTheIdStoreToTheIdBroker()
+    {
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer->syncAll();
+    }
+
+    /**
+     * @Then ONLY the following users should exist in the ID Broker:
+     */
+    public function onlyTheFollowingUsersShouldExistInTheIdBroker(TableNode $table)
+    {
+        Assert::assertJsonStringEqualsJsonString(
+            Json::encode($table), // Expected (according to feature file)
+            Json::encode($this->getIdBrokerUsers()) // Actual
+        );
+    }
+    
+    protected function getIdBrokerUsers()
+    {
+        $userList = $this->idBroker->listUsers();
+        $usersInfo = [];
+        foreach ($userList as $userPartialInfo) {
+            $usersInfo[] = $this->idBroker->getUser([
+                'employee_id' => $userPartialInfo['employee_id'],
+            ]);
+        }
+        return $usersInfo;
+    }
+
+    /**
+     * @Given a specific user exists in the ID Broker
+     */
+    public function aSpecificUserExistsInTheIdBroker()
+    {
+        $tempIdBrokerUser = [
+            'employee_id' => '10001',
+            'display_name' => 'Person One',
+            'username' => 'person_one',
+        ];
+        $this->tempEmployeeId = $tempIdBrokerUser['employee_id'];
+        $this->idBroker = new FakeIdBroker([
+            $this->tempEmployeeId => $tempIdBrokerUser,
+        ]);
+    }
+
+    /**
+     * @Given a specific user does not exist in the ID Store
+     */
+    public function aSpecificUserDoesNotExistInTheIdStore()
+    {
+        $this->tempEmployeeId = '10005';
+        $this->idStore = new FakeIdStore();
     }
 }

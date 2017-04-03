@@ -1,7 +1,7 @@
 <?php
-namespace frontend\controllers;
+namespace Sil\Idp\IdSync\frontend\controllers;
 
-use frontend\components\BaseRestController;
+use Sil\Idp\IdSync\frontend\components\BaseRestController;
 use yii\web\NotFoundHttpException;
 
 class SiteController extends BaseRestController
