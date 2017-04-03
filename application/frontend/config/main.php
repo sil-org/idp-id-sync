@@ -46,7 +46,7 @@ return [
                     'pluralize' => false,
                 ],
                 
-                /** @todo Add path for webhook (re: user update notification) */
+                'POST /user/change' => 'user/change',
                 
                 'GET /site/system-status' => 'site/system-status',
                 
