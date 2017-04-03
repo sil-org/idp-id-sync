@@ -146,15 +146,15 @@ class SyncContext implements Context
     }
 
     /**
-     * @Given ONLY the following users exist in the ID Store:
+     * @Given ONLY the following users are active in the ID Store:
      */
-    public function onlyTheFollowingUsersExistInTheIdStore(TableNode $table)
+    public function onlyTheFollowingUsersAreActiveInTheIdStore(TableNode $table)
     {
-        $idStoreUsers = [];
+        $idStoreActiveUsers = [];
         foreach ($table as $row) {
-            $idStoreUsers[$row['employeeNumber']] = $row;
+            $idStoreActiveUsers[$row['employeeNumber']] = $row;
         }
-        $this->idStore = new FakeIdStore($idStoreUsers);
+        $this->idStore = new FakeIdStore($idStoreActiveUsers);
     }
 
     /**
