@@ -1,11 +1,17 @@
 <?php
 namespace Sil\Idp\IdSync\common\components;
 
-use yii\base\Component;
+use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
+use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use yii\base\Component;
 
 abstract class IdStoreBase extends Component implements IdStoreInterface
 {
+    const ADAPTER_FAKE = 'fake';
+    const ADAPTER_INSITE = 'insite';
+    
+    const ID_BROKER_ACTIVE = 'active';
     const ID_BROKER_DISPLAY_NAME = 'display_name';
     const ID_BROKER_EMAIL = 'email';
     const ID_BROKER_EMPLOYEE_ID = 'employee_id';
@@ -13,6 +19,24 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
     const ID_BROKER_LAST_NAME = 'last_name';
     const ID_BROKER_LOCKED = 'locked';
     const ID_BROKER_USERNAME = 'username';
+    
+    protected static $adapters = [
+        self::ADAPTER_FAKE => FakeIdStore::class,
+        self::ADAPTER_INSITE => InsiteIdStore::class,
+    ];
+    
+    public static function getAdapterClassFor($adapterName)
+    {
+        if (array_key_exists($adapterName, self::$adapters)) {
+            return self::$adapters[$adapterName];
+        }
+        
+        throw new \InvalidArgumentException(sprintf(
+            "Unknown ID Store adapter (%s). Must be one of the following: \n%s\n",
+            $adapterName,
+            join("\n", array_keys(self::$adapters))
+        ), 1491316896);
+    }
     
     /**
      * Get the list of ID Broker field names, indexed by the equivalent ID Store
