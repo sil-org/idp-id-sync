@@ -47,7 +47,7 @@ return [
                     'pluralize' => false,
                 ],
                 
-                'POST /user/change' => 'user/change',
+                'GET /user/change/<employeeId:\w+>' => 'user/change',
                 
                 'GET /site/system-status' => 'site/system-status',
                 

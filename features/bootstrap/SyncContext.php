@@ -2,7 +2,6 @@
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Behat\Gherkin\Node\TableNode;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
 use Sil\Idp\IdSync\common\sync\Synchronizer;

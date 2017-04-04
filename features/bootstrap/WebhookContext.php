@@ -11,19 +11,17 @@ use Psr\Http\Message\ResponseInterface;
  */
 class WebhookContext implements Context
 {
-    private $endpoint;
-    private $requestBody;
+    private $urlPath;
     
     /** @var ResponseInterface */
     private $response;
     
     /**
-     * @Given a notification to :endpoint contains :requestBody
+     * @Given the notification URL path will be :urlPath
      */
-    public function aNotificationToContains($endpoint, $requestBody)
+    public function aNotificationToContains($urlPath)
     {
-        $this->endpoint = $endpoint;
-        $this->requestBody = $requestBody;
+        $this->urlPath = $urlPath;
     }
 
     /**
@@ -37,9 +35,8 @@ class WebhookContext implements Context
             'headers' => [
                 'Authorization' => 'Bearer abc123',
             ],
-            'json' => $this->requestBody,
         ]);
-        $this->response = $client->post($this->endpoint);
+        $this->response = $client->get($this->urlPath);
     }
 
     /**
