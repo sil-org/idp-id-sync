@@ -5,6 +5,7 @@
     "php": ">=7.0",
     "fillup/fake-bower-assets": "^2.0",
     "roave/security-advisories": "dev-master",
+    "silinternational/idp-id-broker-php-client": "^0.2",
     "silinternational/php-env": "^0.1.1",
     "yiisoft/yii2": "^2.0.11",
     "guzzlehttp/guzzle": "^6.2"
