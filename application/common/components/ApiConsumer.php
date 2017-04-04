@@ -3,7 +3,7 @@ namespace Sil\Idp\IdSync\common\components;
 
 use yii\base\Component;
 use yii\web\IdentityInterface;
-use Sil\PhpEnv\Env;
+use Yii;
 
 class ApiConsumer extends Component implements IdentityInterface
 {
@@ -36,7 +36,7 @@ class ApiConsumer extends Component implements IdentityInterface
     
     protected static function isValidToken($token)
     {
-        $validTokensString = Env::get('API_ACCESS_KEY', null);
+        $validTokensString = Yii::$app->params['idSyncAccessTokens'];
         if ($validTokensString !== null) {
             $validTokens = explode(',', $validTokensString);
             return in_array($token, $validTokens, true);

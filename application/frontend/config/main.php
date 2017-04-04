@@ -1,6 +1,7 @@
 <?php
 
 use Sil\Idp\IdSync\common\components\ApiConsumer;
+use Sil\PhpEnv\Env;
 use yii\web\JsonParser;
 
 return [
@@ -53,5 +54,8 @@ return [
                 '<undefinedRequest>' => 'site/undefined-request',
             ]
         ],
+    ],
+    'params' => [
+        'idSyncAccessTokens' => Env::get('ID_SYNC_ACCESS_TOKENS'),
     ],
 ];
