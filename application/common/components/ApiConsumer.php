@@ -3,13 +3,13 @@ namespace Sil\Idp\IdSync\common\components;
 
 use yii\base\Component;
 use yii\web\IdentityInterface;
+use Sil\PhpEnv\Env;
 
 class ApiConsumer extends Component implements IdentityInterface
 {
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        /** @todo Handle missing env. var better */
-        if ($token === getenv('API_ACCESS_KEY')) {
+        if (self::isValidToken($token)) {
             return new ApiConsumer();
         }
 
@@ -32,6 +32,16 @@ class ApiConsumer extends Component implements IdentityInterface
     {
         // since this app is a stateless RESTful app, this is not applicable (no cookies)
         return null;
+    }
+    
+    protected static function isValidToken($token)
+    {
+        $validTokensString = Env::get('API_ACCESS_KEY', null);
+        if ($validTokensString !== null) {
+            $validTokens = explode(',', $validTokensString);
+            return in_array($token, $validTokens, true);
+        }
+        return false;
     }
 
     public function validateAuthKey($authKey)
