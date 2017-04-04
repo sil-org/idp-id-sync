@@ -1,9 +1,9 @@
 <?php
-namespace Sil\Idp\IdSync\tests\fakes;
+namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
 use yii\base\NotSupportedException;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
-use Sil\Idp\IdSync\common\components\InsiteIdStore;
+use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
 
 class FakeIdStore extends IdStoreBase
 {
