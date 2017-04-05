@@ -5,6 +5,8 @@ use Behat\Behat\Context\Context;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
+use Sil\PhpEnv\Env;
+
 
 /**
  * Defines application features from the specific context.
@@ -30,7 +32,7 @@ class WebhookContext implements Context
     public function idSyncReceivesTheNotification()
     {
         $client = new Client([
-            'base_uri' => 'http://app',
+            'base_uri' => Env::get('ID_BROKER_BASE_URL'),
             'http_errors' => false, // Don't throw exceptions on 4xx/5xx.
             'headers' => [
                 'Authorization' => 'Bearer abc123',
