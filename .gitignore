@@ -10,3 +10,5 @@ local.env
 
 # Composer dependencies.
 application/vendor/
+
+*.aes

@@ -20,7 +20,6 @@ services:
         volumes_from:
             - data
         volumes:
-            - ./features:/data/features
             - ./tests:/data/tests
         working_dir: /data
         env_file:
