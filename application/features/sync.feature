@@ -105,6 +105,7 @@ Feature: Synchronizing records
         | 10001          | Unchanged User | person_one   |
         | 10002          | Changed User   | person_two   |
         | 10004          | Added User     | person_four  |
+        | 10005          | Missed User    | person_five  |
       And ONLY the following users exist in the ID Broker:
         | employee_id    | display_name   | username     | active |
         | 10001          | Unchanged User | person_one   | yes    |
