@@ -1,5 +1,5 @@
 <?php
-namespace Sil\Idp\IdSync\tests\fakes;
+namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use yii\base\NotSupportedException;

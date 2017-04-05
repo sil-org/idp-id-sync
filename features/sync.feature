@@ -1,5 +1,5 @@
 
-Feature: Synchronizing a record
+Feature: Synchronizing records
 
   # Ad-hoc synchronization scenarios:
 

@@ -22,4 +22,4 @@ deps:
 depsupdate:
 	docker-compose run --rm cli composer update --no-scripts
 
-test: deps behat
+test: deps app behat

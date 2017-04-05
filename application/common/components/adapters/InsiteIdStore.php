@@ -1,5 +1,5 @@
 <?php
-namespace Sil\Idp\IdSync\common\components;
+namespace Sil\Idp\IdSync\common\components\adapters;
 
 use Exception;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
@@ -16,6 +16,7 @@ class InsiteIdStore extends IdStoreBase
             'email' => self::ID_BROKER_EMAIL,
             'username' => self::ID_BROKER_USERNAME,
             'locked' => self::ID_BROKER_LOCKED,
+            // No 'active' needed, since all ID Store records returned are active.
         ];
     }
     

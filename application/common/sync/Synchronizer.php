@@ -4,6 +4,7 @@ namespace Sil\Idp\IdSync\common\sync;
 use Exception;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Yii;
 use yii\helpers\ArrayHelper;
 
 class Synchronizer
@@ -86,6 +87,15 @@ class Synchronizer
         foreach ($idStoreUsers as $idStoreUser) {
             $employeeId = $idStoreUser['employee_id'];
             
+            if (empty($employeeId)) {
+                Yii::warning(sprintf(
+                    'Received an empty Employee ID (%s) in the list of users '
+                    . 'from the ID Store. Skipping it.',
+                    var_export($employeeId, true)
+                ));
+                continue;
+            }
+            
             if (array_key_exists($employeeId, $idBrokerUsers)) {
                 // User exists in both places. Update and set as active:
                 $this->activateAndUpdateUser($idStoreUser);
@@ -113,6 +123,13 @@ class Synchronizer
      */
     public function syncUser($employeeId)
     {
+        if (empty($employeeId)) {
+            throw new \InvalidArgumentException(
+                'Employee ID cannot be empty',
+                1491336331
+            );
+        }
+        
         $idStoreUser = $this->idStore->getActiveUser($employeeId);
         $idBrokerUser = $this->idBroker->getUser(['employee_id' => $employeeId]);
         
@@ -141,6 +158,15 @@ class Synchronizer
     public function syncUsers(array $employeeIds)
     {
         foreach ($employeeIds as $employeeId) {
+            if (empty($employeeId)) {
+                Yii::warning(sprintf(
+                    'The list of users to sync included an empty Employee ID '
+                    . '(%s). Skipping it.',
+                    var_export($employeeId, true)
+                ));
+                continue;
+            }
+            
             $this->syncUser($employeeId);
         }
     }

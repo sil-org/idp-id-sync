@@ -1,6 +1,7 @@
 <?php
 
 use Sil\Idp\IdSync\common\components\ApiConsumer;
+use Sil\PhpEnv\Env;
 use yii\web\JsonParser;
 
 return [
@@ -46,12 +47,15 @@ return [
                     'pluralize' => false,
                 ],
                 
-                /** @todo Add path for webhook (re: user update notification) */
+                'GET /user/change/<employeeId:\w+>' => 'user/change',
                 
                 'GET /site/system-status' => 'site/system-status',
                 
                 '<undefinedRequest>' => 'site/undefined-request',
             ]
         ],
+    ],
+    'params' => [
+        'idSyncAccessTokens' => Env::get('ID_SYNC_ACCESS_TOKENS'),
     ],
 ];

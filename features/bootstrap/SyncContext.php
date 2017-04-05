@@ -2,12 +2,11 @@
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Behat\Gherkin\Node\TableNode;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
-use Sil\Idp\IdSync\tests\fakes\FakeIdBroker;
-use Sil\Idp\IdSync\tests\fakes\FakeIdStore;
+use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
+use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use yii\helpers\Json;
 
 /**
