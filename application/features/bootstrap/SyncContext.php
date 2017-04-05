@@ -228,21 +228,31 @@ class SyncContext implements Context
     }
 
     /**
-     * @Given the ID Store reported that the following users have changed recently:
+     * @Given the ID Store has the following log of when users were changed:
      */
-    public function theIdStoreReportedThatTheFollowingUsersHaveChangedRecently(TableNode $table)
+    public function theIdStoreHasTheFollowingLogOfWhenUsersWereChanged(TableNode $table)
     {
+        $userChanges = [];
         foreach ($table as $row) {
-            $this->tempRecentlyChangedUsers[] = $row['employeeNumber'];
+            $userChanges[] = [
+                'changedAt' => $row['changedAt'],
+                'employeeNumber' => $row['employeeNumber'],
+            ];
         }
+        $this->idStore->setUserChanges($userChanges);
     }
 
     /**
-     * @When I sync that list of users
+     * @When I ask the ID Store for the list of users changed since :timestamp and sync them
      */
-    public function iSyncThatListOfUsers()
+    public function iAskTheIdStoreForTheListOfUsersChangedSinceAndSyncThem($timestamp)
     {
+        $changedUsers = $this->idStore->getActiveUsersChangedSince($timestamp);
+        $employeeIds = [];
+        foreach ($changedUsers as $changedUser) {
+            $employeeIds[] = $changedUser['employeeNumber'];
+        }
         $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
-        $synchronizer->syncUsers($this->tempRecentlyChangedUsers);
+        $synchronizer->syncUsers($employeeIds);
     }
 }

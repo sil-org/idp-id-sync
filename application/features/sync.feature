@@ -104,12 +104,13 @@ Feature: Synchronizing records
         | 10001          | Unchanged User | person_one   | yes    |
         | 10002          | User To Change | person_two   | yes    |
         | 10003          | Removed User   | person_three | yes    |
-      And the ID Store reported that the following users have changed recently:
-        | employeeNumber |
-        | 10002          |
-        | 10003          |
-        | 10004          |
-    When I sync that list of users
+      And the ID Store has the following log of when users were changed:
+        | changedAt   | employeeNumber |
+        | 1491400000  | 10001          |
+        | 1491400700  | 10003          |
+        | 1491400800  | 10002          |
+        | 1491400900  | 10004          |
+    When I ask the ID Store for the list of users changed since 1491400600 and sync them
     Then ONLY the following users should exist in the ID Broker:
         | employee_id    | display_name | username   | active |
         | 10001          | Unchanged User | person_one   | yes    |
