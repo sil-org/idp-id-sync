@@ -1,0 +1,14 @@
+# Vagrant folder
+.vagrant/
+
+# ID project files
+.idea/
+nbproject/
+
+# Local configuration files
+local.env
+
+# Composer dependencies.
+application/vendor/
+
+*.aes

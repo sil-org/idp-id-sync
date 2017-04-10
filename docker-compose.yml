@@ -1,0 +1,37 @@
+version: '2'
+services:
+    data:
+        image: silintl/data-volume:latest
+        volumes:
+            - ./application:/data
+        user: "${DOCKER_UIDGID}"
+
+    app:
+        build: ./
+        volumes_from:
+            - data
+        ports:
+            - "8080:80"
+        env_file:
+            - ./local.env
+
+    cli:
+        image: silintl/php7:latest
+        volumes_from:
+            - data
+        working_dir: /data
+        env_file:
+            - ./local.env
+        command: ["true"]
+        ports: 
+            - "22:22"
+
+networks:
+    default:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+            - subnet: 10.20.40.0/24
+              gateway: 10.20.40.1
+
