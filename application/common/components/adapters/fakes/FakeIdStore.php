@@ -8,10 +8,15 @@ use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
 class FakeIdStore extends IdStoreBase
 {
     private $activeUsers;
+    private $userChanges = [];
     
-    public function __construct(array $activeUsers = [], array $config = [])
-    {
+    public function __construct(
+        array $activeUsers = [],
+        array $userChanges = [],
+        array $config = []
+    ) {
         $this->activeUsers = $activeUsers;
+        $this->userChanges = $userChanges;
         parent::__construct($config);
     }
     
@@ -26,7 +31,15 @@ class FakeIdStore extends IdStoreBase
 
     public function getActiveUsersChangedSince(int $unixTimestamp)
     {
-        throw new NotSupportedException();
+        $changesToReport = [];
+        foreach ($this->userChanges as $userChange) {
+            if ($userChange['changedAt'] >= $unixTimestamp) {
+                $changesToReport[] = [
+                    'employeeNumber' => $userChange['employeeNumber'],
+                ];
+            }
+        }
+        return $changesToReport;
     }
 
     public function getAllActiveUsers()

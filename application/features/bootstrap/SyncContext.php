@@ -22,7 +22,16 @@ class SyncContext implements Context
     
     private $tempEmployeeId;
     
-    private $tempRecentlyChangedUsers;
+    private $tempUserChanges = [];
+    
+    /**
+     * @param array $activeUsers
+     * @return FakeIdStore
+     */
+    protected function getFakeIdStore(array $activeUsers = [])
+    {
+        return new FakeIdStore($activeUsers, $this->tempUserChanges);
+    }
     
     /**
      * @Given a specific user exists in the ID Store
@@ -34,8 +43,10 @@ class SyncContext implements Context
             'displayName' => 'Person One',
             'username' => 'person_one',
         ];
+        
         $this->tempEmployeeId = $tempIdStoreUser['employeeNumber'];
-        $this->idStore = new FakeIdStore([
+        
+        $this->idStore = $this->getFakeIdStore([
             $this->tempEmployeeId => $tempIdStoreUser,
         ]);
     }
@@ -101,7 +112,7 @@ class SyncContext implements Context
      */
     public function theUserDoesNotExistInTheIdStore()
     {
-        $this->idStore = new FakeIdStore();
+        $this->idStore = $this->getFakeIdStore([]);
     }
 
     /**
@@ -155,7 +166,7 @@ class SyncContext implements Context
         foreach ($table as $row) {
             $idStoreActiveUsers[$row['employeeNumber']] = $row;
         }
-        $this->idStore = new FakeIdStore($idStoreActiveUsers);
+        $this->idStore = $this->getFakeIdStore($idStoreActiveUsers);
     }
 
     /**
@@ -224,25 +235,33 @@ class SyncContext implements Context
     public function aSpecificUserDoesNotExistInTheIdStore()
     {
         $this->tempEmployeeId = '10005';
-        $this->idStore = new FakeIdStore();
+        $this->idStore = $this->getFakeIdStore([]);
     }
 
     /**
-     * @Given the ID Store reported that the following users have changed recently:
+     * @Given the ID Store has the following log of when users were changed:
      */
-    public function theIdStoreReportedThatTheFollowingUsersHaveChangedRecently(TableNode $table)
+    public function theIdStoreHasTheFollowingLogOfWhenUsersWereChanged(TableNode $table)
     {
         foreach ($table as $row) {
-            $this->tempRecentlyChangedUsers[] = $row['employeeNumber'];
+            $this->tempUserChanges[] = [
+                'changedAt' => $row['changedAt'],
+                'employeeNumber' => $row['employeeNumber'],
+            ];
         }
     }
 
     /**
-     * @When I sync that list of users
+     * @When I ask the ID Store for the list of users changed since :timestamp and sync them
      */
-    public function iSyncThatListOfUsers()
+    public function iAskTheIdStoreForTheListOfUsersChangedSinceAndSyncThem($timestamp)
     {
+        $changedUsers = $this->idStore->getActiveUsersChangedSince($timestamp);
+        $employeeIds = [];
+        foreach ($changedUsers as $changedUser) {
+            $employeeIds[] = $changedUser['employeeNumber'];
+        }
         $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
-        $synchronizer->syncUsers($this->tempRecentlyChangedUsers);
+        $synchronizer->syncUsers($employeeIds);
     }
 }

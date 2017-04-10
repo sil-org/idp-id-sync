@@ -19,8 +19,6 @@ services:
         image: silintl/php7:latest
         volumes_from:
             - data
-        volumes:
-            - ./tests:/data/tests
         working_dir: /data
         env_file:
             - ./local.env
