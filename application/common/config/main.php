@@ -18,6 +18,11 @@ return [
             'class' => IdStoreBase::getAdapterClassFor(
                 Env::get('ID_STORE_ADAPTER')
             ),
+            'apiKey' => Env::get('ID_STORE_API_KEY'),
+            'apiSecret' => Env::get('ID_STORE_API_SECRET'),
+            'baseUrl' => Env::get('ID_STORE_BASE_URL'),
+        ],
+        'log' => [
         ],
     ],
 ];
