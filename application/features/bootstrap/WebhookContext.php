@@ -32,7 +32,7 @@ class WebhookContext implements Context
     public function idSyncReceivesTheNotification()
     {
         $client = new Client([
-            'base_uri' => Env::get('ID_BROKER_BASE_URL'),
+            'base_uri' => 'http://app',
             'http_errors' => false, // Don't throw exceptions on 4xx/5xx.
             'headers' => [
                 'Authorization' => 'Bearer abc123',
