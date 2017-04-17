@@ -93,6 +93,8 @@ Feature: Synchronizing records
         | 10001          | Person One   | person_one | no     |
         | 10002          | Person Two   | person_two | yes    |
 
+  # Incremental batch synchronization scenarios:
+
   Scenario: Syncing users changed since a specific point in time
     Given the ID Store has the following log of when users were changed:
         | changedAt   | employeeNumber |
