@@ -76,7 +76,7 @@ class InsiteIdStore extends IdStoreBase
      *     pairs that should be included as query string parameters. The
      *     `api_key` and `api_sig` will be added automatically.
      * @return array|null The resulting data, or null if unavailable (such as
-     *     with a 404 response, or if the returned JSON had no "results" key).
+     *     with a 404 response, or if no items were returned).
      * @throws Exception
      */
     protected function getFromIdStore(
@@ -110,7 +110,7 @@ class InsiteIdStore extends IdStoreBase
              * @todo Detect paged results, and if present get the rest.
              */
             
-            return $data['results'] ?? null;
+            return $data['items'] ?? null;
         } else {
             throw new Exception(sprintf(
                 'Unexpected response (%s %s): %s',
