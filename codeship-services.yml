@@ -13,4 +13,5 @@ app:
         ID_BROKER_ACCESS_TOKEN: anything
         ID_STORE_ADAPTER: fake
         ID_SYNC_ACCESS_TOKENS: abc123
+        TEST_ID_SYNC_BASE_URL: http://localhost
 

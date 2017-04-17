@@ -32,7 +32,7 @@ class WebhookContext implements Context
     {
         $idSyncAccessTokens = Env::requireArray('ID_SYNC_ACCESS_TOKENS');
         $client = new Client([
-            'base_uri' => 'http://app',
+            'base_uri' => Env::requireEnv('TEST_ID_SYNC_BASE_URL'),
             'http_errors' => false, // Don't throw exceptions on 4xx/5xx.
             'headers' => [
                 'Authorization' => 'Bearer ' . $idSyncAccessTokens[0],
