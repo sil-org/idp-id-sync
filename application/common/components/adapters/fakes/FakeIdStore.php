@@ -20,9 +20,9 @@ class FakeIdStore extends IdStoreBase
         parent::__construct($config);
     }
     
-    public function getActiveUser(string $employeeNumber)
+    public function getActiveUser(string $employeeId)
     {
-        $idStoreUser = $this->activeUsers[$employeeNumber] ?? null;
+        $idStoreUser = $this->activeUsers[$employeeId] ?? null;
         if ($idStoreUser !== null) {
             return $this->translateToIdBrokerFieldNames($idStoreUser);
         }
