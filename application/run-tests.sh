@@ -13,8 +13,8 @@ apachectl start
 # If that failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
-# Run the feature tests
-./vendor/bin/behat --config=features/behat.yml
+# Run the feature tests (skipping integration tests)
+./vendor/bin/behat --config=features/behat.yml --tags '~@integration'
 
 # If they failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
