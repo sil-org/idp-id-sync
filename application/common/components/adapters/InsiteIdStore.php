@@ -51,21 +51,61 @@ class InsiteIdStore extends IdStoreBase
         ];
     }
     
+    /**
+     * Get the specified user's info, or null if no such active user was found.
+     *
+     * @param string $employeeId The Employee ID of the desired user.
+     * @return array|null The user's information (or null if not found/active).
+     * @throws Exception
+     */
     public function getActiveUser(string $employeeId)
     {
-        return $this->getFromIdStore('/individual/' . $employeeId);
+        $items = $this->getFromIdStore('/individual/' . $employeeId);
+        $numItems = count($items);
+        if ($numItems < 1) {
+            return null;
+        } elseif ($numItems === 1) {
+            return $items[0];
+        } else {
+            throw Exception(sprintf(
+                'Too many results (%s) for Employee ID %s.',
+                $numItems,
+                var_export($employeeId, true)
+            ), 1492443050);
+        }
     }
     
+    /**
+     * Get a list of users' information (containing at least an Employee ID) for
+     * all users changed since the specified time.
+     *
+     * @param int $unixTimestamp The time (as a UNIX timestamp).
+     * @return array
+     */
     public function getUsersChangedSince(int $unixTimestamp): array
     {
-        return $this->getFromIdStore('/user/changes', [
-            'since' => $unixTimestamp,
-        ]);
+        $result = $this->getFromIdStore('/change/' . $unixTimestamp);
+        if ( ! is_array($result)) {
+            throw new Exception(sprintf(
+                'Unexpected result when getting users changed since %s (%s): %s',
+                var_export($unixTimestamp, true),
+                date('r', $unixTimestamp),
+                var_export($result, true)
+            ), 1492443064);
+        }
+        return $result;
     }
-
+    
     public function getAllActiveUsers(): array
     {
-        return $this->getFromIdStore('/all/');
+        $result = $this->getFromIdStore('/all/');
+        if ( ! is_array($result)) {
+            throw new Exception(sprintf(
+                'Unexpected result when getting all active users: %s',
+                var_export($result, true)
+            ), 1492444030);
+        }
+        return $result;
     }
     
     /**
