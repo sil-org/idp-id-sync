@@ -119,7 +119,7 @@ class InsiteIntegrationContext implements Context
     {
         Assert::assertNotNull($this->result);
         foreach ($this->result as $userInfo) {
-            Assert::assertArrayHasKey('employeeNumber', $userInfo);
+            Assert::assertArrayHasKey('employeenumber', $userInfo);
         }
     }
 }

@@ -33,9 +33,9 @@ class FakeIdStore extends IdStoreBase
     {
         $changesToReport = [];
         foreach ($this->userChanges as $userChange) {
-            if ($userChange['changedAt'] >= $unixTimestamp) {
+            if ($userChange['changedat'] >= $unixTimestamp) {
                 $changesToReport[] = [
-                    'employeeNumber' => $userChange['employeeNumber'],
+                    'employeenumber' => $userChange['employeenumber'],
                 ];
             }
         }

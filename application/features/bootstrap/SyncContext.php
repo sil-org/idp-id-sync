@@ -39,12 +39,12 @@ class SyncContext implements Context
     public function aSpecificUserExistsInTheIdStore()
     {
         $tempIdStoreUser = [
-            'employeeNumber' => '10001',
-            'displayName' => 'Person One',
+            'employeenumber' => '10001',
+            'displayname' => 'Person One',
             'username' => 'person_one',
         ];
         
-        $this->tempEmployeeId = $tempIdStoreUser['employeeNumber'];
+        $this->tempEmployeeId = $tempIdStoreUser['employeenumber'];
         
         $this->idStore = $this->getFakeIdStore([
             $this->tempEmployeeId => $tempIdStoreUser,
@@ -164,7 +164,7 @@ class SyncContext implements Context
     {
         $idStoreActiveUsers = [];
         foreach ($table as $row) {
-            $idStoreActiveUsers[$row['employeeNumber']] = $row;
+            $idStoreActiveUsers[$row['employeenumber']] = $row;
         }
         $this->idStore = $this->getFakeIdStore($idStoreActiveUsers);
     }
@@ -245,8 +245,8 @@ class SyncContext implements Context
     {
         foreach ($table as $row) {
             $this->tempUserChanges[] = [
-                'changedAt' => $row['changedAt'],
-                'employeeNumber' => $row['employeeNumber'],
+                'changedat' => $row['changedat'],
+                'employeenumber' => $row['employeenumber'],
             ];
         }
     }
@@ -259,7 +259,7 @@ class SyncContext implements Context
         $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
         $employeeIds = [];
         foreach ($changedUsers as $changedUser) {
-            $employeeIds[] = $changedUser['employeeNumber'];
+            $employeeIds[] = $changedUser['employeenumber'];
         }
         $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
         $synchronizer->syncUsers($employeeIds);
