@@ -256,7 +256,7 @@ class SyncContext implements Context
      */
     public function iAskTheIdStoreForTheListOfUsersChangedSinceAndSyncThem($timestamp)
     {
-        $changedUsers = $this->idStore->getActiveUsersChangedSince($timestamp);
+        $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
         $employeeIds = [];
         foreach ($changedUsers as $changedUser) {
             $employeeIds[] = $changedUser['employeeNumber'];

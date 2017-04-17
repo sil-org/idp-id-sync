@@ -30,5 +30,5 @@ interface IdStoreInterface
      * @param int $unixTimestamp The date/time, as a Unix timestamp.
      * @return array A list of user-information arrays.
      */
-    public function getActiveUsersChangedSince(int $unixTimestamp);
+    public function getUsersChangedSince(int $unixTimestamp);
 }

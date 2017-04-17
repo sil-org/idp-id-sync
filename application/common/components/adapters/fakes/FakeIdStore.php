@@ -29,7 +29,7 @@ class FakeIdStore extends IdStoreBase
         return null;
     }
 
-    public function getActiveUsersChangedSince(int $unixTimestamp)
+    public function getUsersChangedSince(int $unixTimestamp)
     {
         $changesToReport = [];
         foreach ($this->userChanges as $userChange) {
