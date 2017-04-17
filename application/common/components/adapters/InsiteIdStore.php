@@ -53,9 +53,7 @@ class InsiteIdStore extends IdStoreBase
     
     public function getActiveUser(string $employeeId)
     {
-        return $this->getFromIdStore('/user', [
-            'employeeNumber' => $employeeId,
-        ]);
+        return $this->getFromIdStore('/individual/' . $employeeId);
     }
 
     public function getActiveUsersChangedSince(int $unixTimestamp): array
@@ -67,7 +65,7 @@ class InsiteIdStore extends IdStoreBase
 
     public function getAllActiveUsers(): array
     {
-        return $this->getFromIdStore('/user');
+        return $this->getFromIdStore('/all/');
     }
     
     /**
