@@ -1,5 +1,8 @@
 default:
     suites:
+        insite_integration_features:
+            paths:    [ %paths.base%/../features/insite-integration.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\InsiteIntegrationContext ]
         sync_features:
             paths:    [ %paths.base%/../features/sync.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\SyncContext ]
