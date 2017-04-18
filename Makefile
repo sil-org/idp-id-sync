@@ -22,4 +22,6 @@ deps:
 depsupdate:
 	docker-compose run --rm cli composer update --no-scripts
 
+# NOTE: When running tests locally, make sure you don't exclude the integration
+#       tests (which we do when testing on Codeship).
 test: deps app behat

@@ -20,22 +20,22 @@ class FakeIdStore extends IdStoreBase
         parent::__construct($config);
     }
     
-    public function getActiveUser(string $employeeNumber)
+    public function getActiveUser(string $employeeId)
     {
-        $idStoreUser = $this->activeUsers[$employeeNumber] ?? null;
+        $idStoreUser = $this->activeUsers[$employeeId] ?? null;
         if ($idStoreUser !== null) {
             return $this->translateToIdBrokerFieldNames($idStoreUser);
         }
         return null;
     }
 
-    public function getActiveUsersChangedSince(int $unixTimestamp)
+    public function getUsersChangedSince(int $unixTimestamp)
     {
         $changesToReport = [];
         foreach ($this->userChanges as $userChange) {
-            if ($userChange['changedAt'] >= $unixTimestamp) {
+            if ($userChange['changedat'] >= $unixTimestamp) {
                 $changesToReport[] = [
-                    'employeeNumber' => $userChange['employeeNumber'],
+                    'employeenumber' => $userChange['employeenumber'],
                 ];
             }
         }

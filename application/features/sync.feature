@@ -40,7 +40,7 @@ Feature: Synchronizing records
 
   Scenario: Update a user in the ID Broker
     Given ONLY the following users are active in the ID Store:
-        | employeeNumber | displayName  | username   |
+        | employeenumber | displayname  | username   |
         | 10001          | Nickname     | first_last |
       And ONLY the following users exist in the ID Broker:
         | employee_id    | display_name | username   | active |
@@ -52,7 +52,7 @@ Feature: Synchronizing records
 
   Scenario: Add a user to the ID Broker
     Given ONLY the following users are active in the ID Store:
-        | employeeNumber | displayName  | username   |
+        | employeenumber | displayname  | username   |
         | 10001          | Person One   | person_one |
         | 10002          | Person Two   | person_two |
       And ONLY the following users exist in the ID Broker:
@@ -66,7 +66,7 @@ Feature: Synchronizing records
 
   Scenario: Activate a user in ID Broker
     Given ONLY the following users are active in the ID Store:
-        | employeeNumber | displayName  | username   |
+        | employeenumber | displayname  | username   |
         | 10001          | Person One   | person_one |
         | 10002          | Person Two   | person_two |
       And ONLY the following users exist in the ID Broker:
@@ -81,7 +81,7 @@ Feature: Synchronizing records
 
   Scenario: Deactivate a user in ID Broker
     Given ONLY the following users are active in the ID Store:
-        | employeeNumber | displayName  | username   |
+        | employeenumber | displayname  | username   |
         | 10002          | Person Two   | person_two |
       And ONLY the following users exist in the ID Broker:
         | employee_id    | display_name | username   | active |
@@ -93,15 +93,17 @@ Feature: Synchronizing records
         | 10001          | Person One   | person_one | no     |
         | 10002          | Person Two   | person_two | yes    |
 
+  # Incremental batch synchronization scenarios:
+
   Scenario: Syncing users changed since a specific point in time
     Given the ID Store has the following log of when users were changed:
-        | changedAt   | employeeNumber |
+        | changedat   | employeenumber |
         | 1491400000  | 10001          |
         | 1491400700  | 10003          |
         | 1491400800  | 10002          |
         | 1491400900  | 10004          |
       And ONLY the following users are active in the ID Store:
-        | employeeNumber | displayName    | username     |
+        | employeenumber | displayname    | username     |
         | 10001          | Unchanged User | person_one   |
         | 10002          | Changed User   | person_two   |
         | 10004          | Added User     | person_four  |

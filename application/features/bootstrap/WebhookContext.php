@@ -7,7 +7,6 @@ use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 use Sil\PhpEnv\Env;
 
-
 /**
  * Defines application features from the specific context.
  */
@@ -21,7 +20,7 @@ class WebhookContext implements Context
     /**
      * @Given the notification URL path will be :urlPath
      */
-    public function aNotificationToContains($urlPath)
+    public function theNotificationUrlPathWillBe($urlPath)
     {
         $this->urlPath = $urlPath;
     }
@@ -31,11 +30,12 @@ class WebhookContext implements Context
      */
     public function idSyncReceivesTheNotification()
     {
+        $idSyncAccessTokens = Env::requireArray('ID_SYNC_ACCESS_TOKENS');
         $client = new Client([
-            'base_uri' => Env::get('ID_BROKER_BASE_URL'),
+            'base_uri' => Env::requireEnv('TEST_ID_SYNC_BASE_URL'),
             'http_errors' => false, // Don't throw exceptions on 4xx/5xx.
             'headers' => [
-                'Authorization' => 'Bearer abc123',
+                'Authorization' => 'Bearer ' . $idSyncAccessTokens[0],
             ],
         ]);
         $this->response = $client->get($this->urlPath);
@@ -46,6 +46,13 @@ class WebhookContext implements Context
      */
     public function itShouldReturnAStatusCodeOf($responseCode)
     {
-        Assert::assertSame((int)$responseCode, $this->response->getStatusCode());
+        Assert::assertSame(
+            (int)$responseCode,
+            $this->response->getStatusCode(),
+            'Unexpected response: ' . var_export(
+                json_decode($this->response->getBody()->getContents()),
+                true
+            )
+        );
     }
 }

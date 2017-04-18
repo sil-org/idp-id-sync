@@ -11,7 +11,7 @@ app:
         APP_ENV: test
         ID_BROKER_ADAPTER: fake
         ID_BROKER_ACCESS_TOKEN: anything
-        ID_BROKER_BASE_URL: http://localhost
         ID_STORE_ADAPTER: fake
         ID_SYNC_ACCESS_TOKENS: abc123
+        TEST_ID_SYNC_BASE_URL: http://localhost
 
