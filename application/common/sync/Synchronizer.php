@@ -40,10 +40,7 @@ class Synchronizer
      */
     protected function deactivateUser($employeeId)
     {
-        $this->idBroker->deactivateUser([
-            'employee_id' => $employeeId,
-            'active' => 'no',
-        ]);
+        $this->idBroker->deactivateUser($employeeId);
     }
     
     /**
@@ -131,7 +128,7 @@ class Synchronizer
         }
         
         $idStoreUser = $this->idStore->getActiveUser($employeeId);
-        $idBrokerUser = $this->idBroker->getUser(['employee_id' => $employeeId]);
+        $idBrokerUser = $this->idBroker->getUser($employeeId);
         
         $isInIdStore = ($idStoreUser !== null);
         $isInIdBroker = ($idBrokerUser !== null);

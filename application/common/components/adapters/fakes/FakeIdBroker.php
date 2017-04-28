@@ -14,8 +14,13 @@ class FakeIdBroker extends IdBrokerBase
         $this->usersByEmployeeId = $usersByEmployeeId;
         parent::__construct($config);
     }
+    
+    public function activateUser(string $employeeId)
+    {
+        $this->usersByEmployeeId[$employeeId]['active'] = 'yes';
+    }
 
-    public function authenticate(array $config = [])
+    public function authenticate(string $username, string $password)
     {
         throw new NotSupportedException();
     }
@@ -29,29 +34,34 @@ class FakeIdBroker extends IdBrokerBase
         return $this->usersByEmployeeId[$config['employee_id']];
     }
 
-    public function deactivateUser(array $config = [])
+    public function deactivateUser(string $employeeId)
     {
-        $this->usersByEmployeeId[$config['employee_id']]['active'] = $config['active'];
+        $this->usersByEmployeeId[$employeeId]['active'] = 'no';
     }
 
-    public function getUser(array $config = [])
+    public function getUser(string $employeeId)
     {
-        return $this->usersByEmployeeId[$config['employee_id']] ?? null;
+        return $this->usersByEmployeeId[$employeeId] ?? null;
     }
 
-    public function listUsers(array $config = [])
+    public function listUsers($fields = null)
     {
         $results = [];
         foreach ($this->usersByEmployeeId as $user) {
-            $results[] = [
-                'employee_id' => $user['employee_id'],
-                'active' => $user['active'] ?? 'yes',
-            ];
+            if ($fields === null) {
+                $tempUser = $user;
+            } else {
+                $tempUser = [];
+                foreach ($fields as $field) {
+                    $tempUser[$field] = $user[$field] ?? null;
+                }
+            }
+            $results[] = $tempUser;
         }
         return $results;
     }
 
-    public function setPassword(array $config = [])
+    public function setPassword(string $employeeId, string $password)
     {
         throw new NotSupportedException();
     }
@@ -64,5 +74,6 @@ class FakeIdBroker extends IdBrokerBase
             $user[$attribute] = $newValue;
         }
         $this->usersByEmployeeId[$employeeId] = $user;
+        return $user;
     }
 }

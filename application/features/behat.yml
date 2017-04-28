@@ -1,5 +1,8 @@
 default:
     suites:
+        idp_id_broker_integration_features:
+            paths:    [ %paths.base%/../features/idp-id-broker-integration.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\IdpIdBrokerIntegrationContext ]
         insite_integration_features:
             paths:    [ %paths.base%/../features/insite-integration.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\InsiteIntegrationContext ]
