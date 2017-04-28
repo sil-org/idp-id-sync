@@ -84,7 +84,7 @@ class InsiteIdStore extends IdStoreBase
      */
     public function getUsersChangedSince(int $unixTimestamp): array
     {
-        $result = $this->getFromIdStore('/change/' . $unixTimestamp);
+        $result = $this->getFromIdStore('/changes/' . $unixTimestamp);
         if ( ! is_array($result)) {
             throw new Exception(sprintf(
                 'Unexpected result when getting users changed since %s (%s): %s',
