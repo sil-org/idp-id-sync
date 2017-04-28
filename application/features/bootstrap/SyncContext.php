@@ -7,6 +7,8 @@ use PHPUnit\Framework\Assert;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
+use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
+use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use yii\helpers\Json;
 
 /**
@@ -14,10 +16,10 @@ use yii\helpers\Json;
  */
 class SyncContext implements Context
 {
-    /** @var \Sil\Idp\IdSync\common\interfaces\IdBrokerInterface */
+    /** @var IdBrokerInterface */
     private $idBroker;
     
-    /** @var \Sil\Idp\IdSync\common\interfaces\IdStoreInterface */
+    /** @var IdStoreInterface */
     private $idStore;
     
     private $tempEmployeeId;
@@ -42,6 +44,9 @@ class SyncContext implements Context
             'employeenumber' => '10001',
             'displayname' => 'Person One',
             'username' => 'person_one',
+            'firstname' => 'Person',
+            'lastname' => 'One',
+            'email' => 'person_one@example.com',
         ];
         
         $this->tempEmployeeId = $tempIdStoreUser['employeenumber'];
@@ -79,9 +84,7 @@ class SyncContext implements Context
      */
     public function theUserShouldExistInTheIdBroker()
     {
-        Assert::assertNotNull($this->idBroker->getUser([
-            'employee_id' => $this->tempEmployeeId
-        ]));
+        Assert::assertNotNull($this->idBroker->getUser($this->tempEmployeeId));
     }
 
     /**
@@ -89,13 +92,15 @@ class SyncContext implements Context
      */
     public function theUserInfoInTheIdBrokerAndTheIdStoreShouldMatch()
     {
-        $userInfoFromIdBroker = $this->idBroker->getUser([
-            'employee_id' => $this->tempEmployeeId,
-        ]);
+        $userInfoFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
         $userInfoFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
         
         foreach ($userInfoFromIdStore as $attribute => $value) {
-            Assert::assertSame($value, $userInfoFromIdBroker[$attribute]);
+            Assert::assertSame($value, $userInfoFromIdBroker[$attribute], sprintf(
+                "Expected the ID Broker data...\n%s\n... to match the ID Store data...\n%s",
+                var_export($userInfoFromIdBroker, true),
+                var_export($userInfoFromIdStore, true)
+            ));
         }
     }
 
@@ -129,9 +134,7 @@ class SyncContext implements Context
      */
     public function theUserShouldBeInactiveInTheIdBroker()
     {
-        $idBrokerUser = $this->idBroker->getUser([
-            'employee_id' => $this->tempEmployeeId,
-        ]);
+        $idBrokerUser = $this->idBroker->getUser($this->tempEmployeeId);
         Assert::assertSame('no', $idBrokerUser['active']);
     }
 
@@ -140,9 +143,7 @@ class SyncContext implements Context
      */
     public function theUserShouldNotExistInTheIdBroker()
     {
-        Assert::assertNull($this->idBroker->getUser([
-            'employee_id' => $this->tempEmployeeId,
-        ]));
+        Assert::assertNull($this->idBroker->getUser($this->tempEmployeeId));
     }
 
     /**
@@ -195,22 +196,21 @@ class SyncContext implements Context
      */
     public function onlyTheFollowingUsersShouldExistInTheIdBroker(TableNode $table)
     {
+        foreach ($table as $row) {
+            $desiredFields = array_keys($row);
+            break;
+        }
+        
+        $actualUsersInfo = $this->getIdBrokerUsers($desiredFields);
         Assert::assertJsonStringEqualsJsonString(
-            Json::encode($table), // Expected (according to feature file)
-            Json::encode($this->getIdBrokerUsers()) // Actual
+            Json::encode($table),
+            Json::encode($actualUsersInfo)
         );
     }
     
-    protected function getIdBrokerUsers()
+    protected function getIdBrokerUsers($desiredFields = null)
     {
-        $userList = $this->idBroker->listUsers();
-        $usersInfo = [];
-        foreach ($userList as $userPartialInfo) {
-            $usersInfo[] = $this->idBroker->getUser([
-                'employee_id' => $userPartialInfo['employee_id'],
-            ]);
-        }
-        return $usersInfo;
+        return $this->idBroker->listUsers($desiredFields);
     }
 
     /**
