@@ -9,6 +9,7 @@
     "silinternational/idp-id-broker-php-client": "^0.4.2",
     "silinternational/php-env": "^1.0",
     "yiisoft/yii2": "^2.0.11",
+    "yiisoft/yii2-gii": "^2.0",
     "guzzlehttp/guzzle": "^6.2"
   },
   "require-dev": {
