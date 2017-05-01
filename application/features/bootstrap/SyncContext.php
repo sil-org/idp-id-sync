@@ -196,6 +196,7 @@ class SyncContext implements Context
      */
     public function onlyTheFollowingUsersShouldExistInTheIdBroker(TableNode $table)
     {
+        $desiredFields = null;
         foreach ($table as $row) {
             $desiredFields = array_keys($row);
             break;
