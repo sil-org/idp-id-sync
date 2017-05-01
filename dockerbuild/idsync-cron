@@ -1,0 +1,6 @@
+
+# See https://crontab.guru/ for help with cron pattern.
+
+# m h dom mon dow user command
+5 0 * * * root (/data/run-full-batch.sh 2>&1) | logger -p 1 -t cron.out
+*/10 1-23 * * * root (/data/run-incremental-batch.sh 2>&1) | logger -p 1 -t cron.out

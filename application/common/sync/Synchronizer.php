@@ -167,4 +167,22 @@ class Synchronizer
             $this->syncUser($employeeId);
         }
     }
+    
+    /**
+     * Get the list of users that the ID Store believes have been changed
+     * (added, altered, or removed/deactivated) since the given timestamp, then
+     * synchronize those specific users with the ID Broker.
+     *
+     * @param int $timestamp The date/time, as a Unix timestamp.
+     */
+    public function syncUsersChangedSince($timestamp)
+    {
+        $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
+        $employeeIds = [];
+        foreach ($changedUsers as $changedUser) {
+            $employeeIds[] = $changedUser['employeenumber'];
+        }
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer->syncUsers($employeeIds);
+    }
 }

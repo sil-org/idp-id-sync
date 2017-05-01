@@ -9,5 +9,8 @@ else
     rsyslogd
 fi
 
+# Configure (and start) cron.
+./start-cron.sh
+
 # Run apache in foreground
 apache2ctl -D FOREGROUND
