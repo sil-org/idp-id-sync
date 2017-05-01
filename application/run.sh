@@ -12,5 +12,8 @@ fi
 # Configure (and start) cron.
 ./start-cron.sh
 
+# If the cron stuff failed, exit.
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 # Run apache in foreground
 apache2ctl -D FOREGROUND
