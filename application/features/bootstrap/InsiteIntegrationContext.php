@@ -8,6 +8,7 @@ use PHPUnit\Framework\Assert;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
+use Sil\Idp\IdSync\common\models\User;
 use Sil\PhpEnv\Env;
 use yii\helpers\Json;
 
@@ -24,21 +25,6 @@ class InsiteIntegrationContext implements Context
     public function __construct()
     {
         require_once __DIR__ . '/../../vendor/yiisoft/yii2/Yii.php';
-    }
-    
-    protected function assertArrayHasFields($array, $fields)
-    {
-        foreach ($fields as $field) {
-            Assert::assertArrayHasKey($field, $array, sprintf(
-                'Array: %s',
-                var_export($array, true)
-            ));
-        }
-    }
-    
-    protected function getExpectedFields()
-    {
-        return array_keys(InsiteIdStore::getIdBrokerFieldNames());
     }
     
     /**
@@ -72,7 +58,7 @@ class InsiteIntegrationContext implements Context
     public function iShouldGetBackInformationAboutThatUser()
     {
         Assert::assertNotNull($this->result);
-        $this->assertArrayHasFields($this->result, $this->getExpectedFields());
+        Assert::assertInstanceOf(User::class, $this->result);
     }
     
     /**
@@ -89,18 +75,9 @@ class InsiteIntegrationContext implements Context
     public function iShouldGetBackAListOfInformationAboutActiveUsers()
     {
         Assert::assertNotNull($this->result);
-        $expectedFields = $this->getExpectedFields();
-        foreach ($this->result as $userInfo) {
-            $numFieldsFound = 0;
-            foreach ($expectedFields as $field) {
-                if (array_key_exists($field, $userInfo)) {
-                    $numFieldsFound += 1;
-                }
-            }
-            
-            /* As long as we find some fields about each user, consider this
-             * successful.  */
-            Assert::assertGreaterThan(3, $numFieldsFound);
+        Assert::assertNotEmpty($this->result);
+        foreach ($this->result as $user) {
+            Assert::assertInstanceOf(User::class, $user);
         }
     }
     
@@ -118,8 +95,9 @@ class InsiteIntegrationContext implements Context
     public function iShouldGetBackAListOfInformationAboutChangedUsers()
     {
         Assert::assertNotNull($this->result);
-        foreach ($this->result as $userInfo) {
-            Assert::assertArrayHasKey('employeenumber', $userInfo);
+        Assert::assertNotEmpty($this->result);
+        foreach ($this->result as $user) {
+            Assert::assertInstanceOf(User::class, $user);
         }
     }
 }

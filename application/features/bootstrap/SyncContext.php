@@ -40,7 +40,7 @@ class SyncContext implements Context
      */
     public function aSpecificUserExistsInTheIdStore()
     {
-        $tempIdStoreUser = [
+        $tempIdStoreUserInfo = [
             'employeenumber' => '10001',
             'displayname' => 'Person One',
             'username' => 'person_one',
@@ -49,10 +49,10 @@ class SyncContext implements Context
             'email' => 'person_one@example.com',
         ];
         
-        $this->tempEmployeeId = $tempIdStoreUser['employeenumber'];
+        $this->tempEmployeeId = $tempIdStoreUserInfo['employeenumber'];
         
         $this->idStore = $this->getFakeIdStore([
-            $this->tempEmployeeId => $tempIdStoreUser,
+            $this->tempEmployeeId => $tempIdStoreUserInfo,
         ]);
     }
 
@@ -61,12 +61,10 @@ class SyncContext implements Context
      */
     public function theUserExistsInTheIdBroker()
     {
-        $tempUserForIdBroker = $this->idStore->getActiveUser(
-            $this->tempEmployeeId
-        );
+        $user = $this->idStore->getActiveUser($this->tempEmployeeId);
         
         $this->idBroker = new FakeIdBroker([
-            $tempUserForIdBroker['employee_id'] => $tempUserForIdBroker,
+            $user->employeeId => $user->toArray(),
         ]);
     }
 
@@ -92,8 +90,10 @@ class SyncContext implements Context
      */
     public function theUserInfoInTheIdBrokerAndTheIdStoreShouldMatch()
     {
-        $userInfoFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
-        $userInfoFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
+        $userInfoFromIdBroker = $userFromIdBroker->toArray();
+        $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        $userInfoFromIdStore = $userFromIdStore->toArray();
         
         foreach ($userInfoFromIdStore as $attribute => $value) {
             Assert::assertSame($value, $userInfoFromIdBroker[$attribute], sprintf(
@@ -135,7 +135,7 @@ class SyncContext implements Context
     public function theUserShouldBeInactiveInTheIdBroker()
     {
         $idBrokerUser = $this->idBroker->getUser($this->tempEmployeeId);
-        Assert::assertSame('no', $idBrokerUser['active']);
+        Assert::assertSame('no', $idBrokerUser->active);
     }
 
     /**
@@ -151,10 +151,10 @@ class SyncContext implements Context
      */
     public function theUserInfoInTheIdBrokerDoesNotMatchTheUserInfoInTheIdStore()
     {
-        $userInfoFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
         $this->idBroker->updateUser([
-            'employee_id' => $userInfoFromIdStore['employee_id'],
-            'display_name' => $userInfoFromIdStore['display_name'] . ' Jr.',
+            'employee_id' => $userFromIdStore->employeeId,
+            'display_name' => $userFromIdStore->displayName . ' Jr.',
         ]);
     }
 
@@ -165,6 +165,7 @@ class SyncContext implements Context
     {
         $idStoreActiveUsers = [];
         foreach ($table as $row) {
+            // Note: This should use the ID Store field name.
             $idStoreActiveUsers[$row['employeenumber']] = $row;
         }
         $this->idStore = $this->getFakeIdStore($idStoreActiveUsers);
@@ -202,13 +203,19 @@ class SyncContext implements Context
             break;
         }
         
-        $actualUsersInfo = $this->getIdBrokerUsers($desiredFields);
+        $actualUsers = $this->getIdBrokerUsers($desiredFields);
         Assert::assertJsonStringEqualsJsonString(
             Json::encode($table),
-            Json::encode($actualUsersInfo)
+            Json::encode(array_map(function($user) {
+                return $user->toArray();
+            }, $actualUsers))
         );
     }
     
+    /**
+     * @param array $desiredFields
+     * @return User[]
+     */
     protected function getIdBrokerUsers($desiredFields = null)
     {
         return $this->idBroker->listUsers($desiredFields);
@@ -219,14 +226,14 @@ class SyncContext implements Context
      */
     public function aSpecificUserExistsInTheIdBroker()
     {
-        $tempIdBrokerUser = [
+        $userInfo = [
             'employee_id' => '10001',
             'display_name' => 'Person One',
             'username' => 'person_one',
         ];
-        $this->tempEmployeeId = $tempIdBrokerUser['employee_id'];
+        $this->tempEmployeeId = $userInfo['employee_id'];
         $this->idBroker = new FakeIdBroker([
-            $this->tempEmployeeId => $tempIdBrokerUser,
+            $this->tempEmployeeId => $userInfo,
         ]);
     }
 
@@ -247,6 +254,7 @@ class SyncContext implements Context
         foreach ($table as $row) {
             $this->tempUserChanges[] = [
                 'changedat' => $row['changedat'],
+                // Note: This should use the ID Store field name.
                 'employeenumber' => $row['employeenumber'],
             ];
         }
