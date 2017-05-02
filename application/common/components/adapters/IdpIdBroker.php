@@ -4,6 +4,7 @@ namespace Sil\Idp\IdSync\common\components\adapters;
 use InvalidArgumentException;
 use Sil\Idp\IdBroker\Client\IdBrokerClient;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
+use Sil\Idp\IdSync\common\models\User;
 
 class IdpIdBroker extends IdBrokerBase
 {
@@ -41,12 +42,19 @@ class IdpIdBroker extends IdBrokerBase
      *
      * @param string $username The username.
      * @param string $password The password (in plaintext).
-     * @return array|null An array of user information (if valid), or null.
+     * @return User|null User information (if valid), or null.
      * @throws Exception
      */
     public function authenticate(string $username, string $password)
     {
-        return $this->getClient()->authenticate($username, $password);
+        $authenticatedUserInfo = $this->getClient()->authenticate(
+            $username,
+            $password
+        );
+        if ($authenticatedUserInfo === null) {
+            return null;
+        }
+        return new User($authenticatedUserInfo);
     }
     
     /**
@@ -54,12 +62,12 @@ class IdpIdBroker extends IdBrokerBase
      *
      * @param array $config An array key/value pairs of attributes for the new
      *     user.
-     * @return array An array of information about the new user.
+     * @return User User information.
      * @throws Exception
      */
     public function createUser(array $config = [])
     {
-        return $this->getClient()->createUser($config);
+        return new User($this->getClient()->createUser($config));
     }
     
     /**
@@ -88,13 +96,17 @@ class IdpIdBroker extends IdBrokerBase
      * Get information about the specified user.
      *
      * @param string $employeeId The Employee ID of the desired user.
-     * @return array|null An array of information about the specified user, or
+     * @return User|null An array of information about the specified user, or
      *     null if no such user was found.
      * @throws Exception
      */
     public function getUser(string $employeeId)
     {
-        return $this->getClient()->getUser($employeeId);
+        $userInfo = $this->getClient()->getUser($employeeId);
+        if ($userInfo === null) {
+            return null;
+        }
+        return new User($userInfo);
     }
     
     /**
@@ -102,11 +114,11 @@ class IdpIdBroker extends IdBrokerBase
      *
      * @param array|null $fields (Optional:) The list of fields desired about
      *     each user in the result.
-     * @return array An array with a sub-array about each user.
+     * @return User[] A list of Users.
      */
     public function listUsers($fields = null)
     {
-        return $this->getClient()->listUsers($fields);
+        return self::getAsUsers($this->getClient()->listUsers($fields));
     }
     
     /**
@@ -127,11 +139,11 @@ class IdpIdBroker extends IdBrokerBase
      *
      * @param array $config An array key/value pairs of attributes for the user.
      *     Must include at least an 'employee_id' entry.
-     * @return array Information about the updated user.
+     * @return User Information about the updated user.
      * @throws Exception
      */
     public function updateUser(array $config = [])
     {
-        return $this->getClient()->updateUser($config);
+        return new User($this->getClient()->updateUser($config));
     }
 }
