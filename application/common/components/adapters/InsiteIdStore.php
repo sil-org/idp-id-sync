@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\Client;
 use InvalidArgumentException;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
+use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
@@ -40,22 +41,24 @@ class InsiteIdStore extends IdStoreBase
     public static function getIdBrokerFieldNames()
     {
         return [
-            'employeenumber' => self::ID_BROKER_EMPLOYEE_ID,
-            'firstname' => self::ID_BROKER_FIRST_NAME,
-            'lastname' => self::ID_BROKER_LAST_NAME,
-            'displayname' => self::ID_BROKER_DISPLAY_NAME,
-            'email' => self::ID_BROKER_EMAIL,
-            'username' => self::ID_BROKER_USERNAME,
-            'locked' => self::ID_BROKER_LOCKED,
+            'employeenumber' => User::EMPLOYEE_ID,
+            'firstname' => User::FIRST_NAME,
+            'lastname' => User::LAST_NAME,
+            'displayname' => User::DISPLAY_NAME,
+            'email' => User::EMAIL,
+            'username' => User::USERNAME,
+            'locked' => User::LOCKED,
             // No 'active' needed, since all ID Store records returned are active.
         ];
     }
     
     /**
-     * Get the specified user's info, or null if no such active user was found.
+     * Get the specified user's information. Note that inactive users will be
+     * treated as non-existent users.
      *
-     * @param string $employeeId The Employee ID of the desired user.
-     * @return array|null The user's information (or null if not found/active).
+     * @param string $employeeId The Employee ID.
+     * @return User|null Information about the specified user, or null if no
+     *     such active user was found.
      * @throws Exception
      */
     public function getActiveUser(string $employeeId)
@@ -65,7 +68,7 @@ class InsiteIdStore extends IdStoreBase
         if ($numItems < 1) {
             return null;
         } elseif ($numItems === 1) {
-            return $items[0];
+            return self::getAsUser($items[0]);
         } else {
             throw Exception(sprintf(
                 'Too many results (%s) for Employee ID %s.',
@@ -80,7 +83,7 @@ class InsiteIdStore extends IdStoreBase
      * all users changed since the specified time.
      *
      * @param int $unixTimestamp The time (as a UNIX timestamp).
-     * @return array
+     * @return User[]
      */
     public function getUsersChangedSince(int $unixTimestamp): array
     {
@@ -93,7 +96,7 @@ class InsiteIdStore extends IdStoreBase
                 var_export($result, true)
             ), 1492443064);
         }
-        return $result;
+        return self::getAsUsers($result);
     }
     
     public function getAllActiveUsers(): array
@@ -105,7 +108,7 @@ class InsiteIdStore extends IdStoreBase
                 var_export($result, true)
             ), 1492444030);
         }
-        return $result;
+        return self::getAsUsers($result);
     }
     
     /**
