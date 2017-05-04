@@ -69,7 +69,31 @@ Feature: Synchronizing records
       And NO users exist in the ID Broker
       And user 3 in the list from ID Store will be rejected by the ID Broker
     When I sync all the users from the ID Store to the ID Broker
-    Then the other 4 users should have been successfully synced to ID Broker
+    Then the ID Broker should now have 4 active users.
+
+  Scenario: Handling a sync update error gracefully
+    Given 5 users are active in the ID Store and are inactive in the ID Broker
+      And user 3 in the list from ID Store will be rejected by the ID Broker
+    When I sync all the users from the ID Store to the ID Broker
+    Then the ID Broker should now have 4 active users.
+
+  Scenario: Handling sync errors gracefully (in more detail)
+    Given ONLY the following users are active in the ID Store:
+        | employeenumber | displayname     | username     | email          |
+        | 10001          | Good Update     | person_one   | p1@example.com |
+        | 10002          | Bad Create      | person_two   |                |
+        | 10003          | Bad Update      | person_three |                |
+        | 10004          | Good After Bad  | person_four  | p4@example.com |
+      And ONLY the following users exist in the ID Broker:
+        | employee_id    | display_name    | username     | email          | active |
+        | 10001          | One to Update   | person_one   | p1@example.com | yes    |
+        | 10003          | Three to Update | person_three | p3@example.com | yes    |
+    When I sync all the users from the ID Store to the ID Broker
+    Then ONLY the following users should exist in the ID Broker:
+        | employee_id    | display_name    | username     | email          | active |
+        | 10001          | Good Update     | person_one   | p1@example.com | yes    |
+        | 10003          | Three to Update | person_three | p3@example.com | yes    |
+        | 10004          | Good After Bad  | person_four  | p4@example.com | yes    |
 
   Scenario: Activate a user in ID Broker
     Given ONLY the following users are active in the ID Store:

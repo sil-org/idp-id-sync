@@ -298,26 +298,20 @@ class SyncContext implements Context
     }
 
     /**
-     * @Then the other :number users should have been successfully synced to ID Broker
+     * @Then the ID Broker should now have :number active users.
      */
-    public function theOtherUsersShouldHaveBeenSuccessfullySyncedToIdBroker($number)
+    public function theIdBrokerShouldNowHaveActiveUsers($number)
     {
         if ( ! is_numeric($number)) {
             Assert::fail('Not given a number.');
         }
-        $idBrokerUsers = $this->getIdBrokerUsers();
-        
-        Assert::assertCount((int)$number, $idBrokerUsers);
-        foreach ($idBrokerUsers as $idBrokerUser) {
-            $idStoreActiveUser = $this->idStore->getActiveUser(
-                $idBrokerUser['employee_id']
-            );
-            $idStoreActiveUser['active'] = 'yes';
-            Assert::assertJsonStringEqualsJsonString(
-                Json::encode($idStoreActiveUser, JSON_PRETTY_PRINT),
-                Json::encode($idBrokerUser, JSON_PRETTY_PRINT)
-            );
+        $numActiveUsers = 0;
+        foreach ($this->idBroker->listUsers() as $user) {
+            if ($user['active'] === 'yes') {
+                $numActiveUsers += 1;
+            }
         }
+        Assert::assertSame((int)$number,  $numActiveUsers);
     }
 
     /**
@@ -326,5 +320,20 @@ class SyncContext implements Context
     public function noUsersExistInTheIdBroker()
     {
         $this->idBroker = new FakeIdBroker();
+    }
+
+    /**
+     * @Given :number users are active in the ID Store and are inactive in the ID Broker
+     */
+    public function usersAreActiveInTheIdStoreAndAreInactiveInTheIdBroker($number)
+    {
+        $this->usersAreActiveInTheIdStore($number);
+        
+        $idBrokerUsers = [];
+        foreach ($this->idStore->getAllActiveUsers() as $user) {
+            $user['active'] = 'no';
+            $idBrokerUsers[$user['employee_id']] = $user;
+        }
+        $this->idBroker = new FakeIdBroker($idBrokerUsers);
     }
 }
