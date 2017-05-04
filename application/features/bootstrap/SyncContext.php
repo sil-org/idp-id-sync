@@ -304,7 +304,7 @@ class SyncContext implements Context
         }
         $employeeId = 10000 + $number;
         $idStore->changeFakeRecord($employeeId, [
-            'email' => null,
+            'email' => '',
         ]);
     }
 
