@@ -61,31 +61,34 @@ class User
         }
     }
     
+    /**
+     * Get this User object's data as an associative array.
+     *
+     * NOTE: Only fields with non-null values will be included in the array.
+     *
+     * @return array
+     */
     public function toArray()
     {
         $userInfo = [];
         $userInfo[self::EMPLOYEE_ID] = $this->employeeId;
-        if ($this->firstName !== null) {
-            $userInfo[self::FIRST_NAME] = $this->firstName;
+        
+        $possibleFields = [
+            self::FIRST_NAME => $this->firstName,
+            self::LAST_NAME => $this->lastName,
+            self::DISPLAY_NAME => $this->displayName,
+            self::USERNAME => $this->username,
+            self::EMAIL => $this->email,
+            self::ACTIVE => $this->active,
+            self::LOCKED => $this->locked,
+        ];
+
+        foreach ($possibleFields as $fieldName => $value) {
+            if ($value !== null) {
+                $userInfo[$fieldName] = $value;
+            }
         }
-        if ($this->lastName !== null) {
-            $userInfo[self::LAST_NAME] = $this->lastName;
-        }
-        if ($this->displayName !== null) {
-            $userInfo[self::DISPLAY_NAME] = $this->displayName;
-        }
-        if ($this->username !== null) {
-            $userInfo[self::USERNAME] = $this->username;
-        }
-        if ($this->email !== null) {
-            $userInfo[self::EMAIL] = $this->email;
-        }
-        if ($this->active !== null) {
-            $userInfo[self::ACTIVE] = $this->active;
-        }
-        if ($this->locked !== null) {
-            $userInfo[self::LOCKED] = $this->locked;
-        }
+        
         return $userInfo;
     }
 }
