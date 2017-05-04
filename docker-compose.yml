@@ -27,7 +27,7 @@ services:
             MYSQL_PASSWORD: broker
         ports:
             - "8081:80"
-        command: whenavail brokerdb 3306 20 ./run.sh
+        command: whenavail brokerdb 3306 60 ./run.sh
 
     brokerdb:
         image: silintl/mariadb:latest

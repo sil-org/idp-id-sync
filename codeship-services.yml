@@ -28,7 +28,7 @@ broker:
         MYSQL_PASSWORD: broker
     links:
         - brokerdb
-    command: whenavail brokerdb 3306 20 ./run.sh
+    command: whenavail brokerdb 3306 60 ./run.sh
 
 brokerdb:
     image: silintl/mariadb:latest
