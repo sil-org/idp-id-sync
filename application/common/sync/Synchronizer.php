@@ -4,12 +4,16 @@ namespace Sil\Idp\IdSync\common\sync;
 use Exception;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Sil\Idp\IdSync\common\models\User;
 use Yii;
 use yii\helpers\ArrayHelper;
 
 class Synchronizer
 {
+    /** @var IdBrokerInterface */
     private $idBroker;
+    
+    /** @var IdStoreInterface */
     private $idStore;
     
     public function __construct(
@@ -24,12 +28,12 @@ class Synchronizer
      * Update the given user in the ID Broker, setting it to be active (unless
      * the given user already provides some other value for 'active').
      *
-     * @param array $user The user's information (as key/value pairs).
+     * @param User $user The user's information (as key/value pairs).
      */
-    protected function activateAndUpdateUser($user)
+    protected function activateAndUpdateUser(User $user)
     {
         $this->idBroker->updateUser(
-            ArrayHelper::merge(['active' => 'yes'], $user)
+            ArrayHelper::merge(['active' => 'yes'], $user->toArray())
         );
     }
     
@@ -57,7 +61,8 @@ class Synchronizer
         $usersByEmployeeId = [];
         
         foreach ($rawList as $user) {
-            $employeeId = $user['employee_id'];
+            /* @var $user User */
+            $employeeId = $user->employeeId;
             
             // Prevent duplicates.
             if (array_key_exists($employeeId, $usersByEmployeeId)) {
@@ -67,8 +72,8 @@ class Synchronizer
                 ), 1490801282);
             }
             
-            unset($user['employee_id']);
-            $usersByEmployeeId[$employeeId] = $user;
+            $user->employeeId = null;
+            $usersByEmployeeId[$employeeId] = $user->toArray();
         }
         
         return $usersByEmployeeId;
@@ -81,7 +86,7 @@ class Synchronizer
     public function syncAll()
     {
         $idStoreUsers = $this->idStore->getAllActiveUsers();
-        $idBrokerUsers = $this->getAllIdBrokerUsersByEmployeeId([
+        $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
             'employee_id',
             'active',
         ]);
@@ -91,7 +96,7 @@ class Synchronizer
         $employeeIdsToDeactivate = [];
         
         foreach ($idStoreUsers as $idStoreUser) {
-            $employeeId = $idStoreUser['employee_id'];
+            $employeeId = $idStoreUser->employeeId;
             
             if (empty($employeeId)) {
                 Yii::warning(sprintf(
@@ -102,7 +107,7 @@ class Synchronizer
                 continue;
             }
             
-            if (array_key_exists($employeeId, $idBrokerUsers)) {
+            if (array_key_exists($employeeId, $idBrokerUserInfoByEmployeeId)) {
                 // User exists in both places. Update and set as active:
                 $usersToUpdateAndActivate[] = $idStoreUser;
             } else {
@@ -112,11 +117,11 @@ class Synchronizer
             
             // Remove that user from the list of ID Broker users who have not
             // yet been processed.
-            unset($idBrokerUsers[$employeeId]);
+            unset($idBrokerUserInfoByEmployeeId[$employeeId]);
         }
         
         // Deactivate the remaining (unprocessed) users in the ID Broker list.
-        foreach ($idBrokerUsers as $employeeId => $userInfo) {
+        foreach ($idBrokerUserInfoByEmployeeId as $employeeId => $userInfo) {
             // If this user not currently inactive, deactivate them.
             if ($userInfo['active'] !== 'no') {
                 $employeeIdsToDeactivate[] = $employeeId;
@@ -127,12 +132,12 @@ class Synchronizer
         
         foreach ($usersToAdd as $userToAdd) {
             try {
-                $this->idBroker->createUser($userToAdd);
+                $this->idBroker->createUser($userToAdd->toArray());
             } catch (Exception $e) {
                 Yii::error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
                     . 'Error %s: %s',
-                    var_export($userToAdd['employee_id'] ?? null, true),
+                    var_export($userToAdd->employeeId, true),
                     $e->getCode(),
                     $e->getMessage()
                 ));
@@ -146,7 +151,7 @@ class Synchronizer
                 Yii::error(sprintf(
                     'Failed to update/activate user in the ID Broker (Employee ID: %s). '
                     . 'Error %s: %s',
-                    var_export($userToUpdateAndActivate['employee_id'] ?? null, true),
+                    var_export($userToUpdateAndActivate->employeeId, true),
                     $e->getCode(),
                     $e->getMessage()
                 ));
@@ -193,11 +198,11 @@ class Synchronizer
             if ($isInIdBroker) {
                 $this->activateAndUpdateUser($idStoreUser);
             } else {
-                $this->idBroker->createUser($idStoreUser);
+                $this->idBroker->createUser($idStoreUser->toArray());
             }
         } else {
             if ($isInIdBroker) {
-                $this->deactivateUser($idBrokerUser['employee_id']);
+                $this->deactivateUser($idBrokerUser->employeeId);
             } // else: Nothing to do, since the user doesn't exist anywhere.
         }
     }
@@ -246,9 +251,8 @@ class Synchronizer
         $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
         $employeeIds = [];
         foreach ($changedUsers as $changedUser) {
-            $employeeIds[] = $changedUser['employeenumber'];
+            $employeeIds[] = $changedUser->employeeId;
         }
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
-        $synchronizer->syncUsers($employeeIds);
+        $this->syncUsers($employeeIds);
     }
 }

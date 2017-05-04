@@ -2,6 +2,7 @@
 namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
+use Sil\Idp\IdSync\common\models\User;
 use yii\base\NotSupportedException;
 use yii\helpers\ArrayHelper;
 
@@ -34,7 +35,7 @@ class FakeIdBroker extends IdBrokerBase
             ['active' => 'yes'], // 'active' should default to 'yes'
             $config
         );
-        return $this->usersByEmployeeId[$config['employee_id']];
+        return new User($this->usersByEmployeeId[$config['employee_id']]);
     }
 
     public function deactivateUser(string $employeeId)
@@ -44,22 +45,26 @@ class FakeIdBroker extends IdBrokerBase
 
     public function getUser(string $employeeId)
     {
-        return $this->usersByEmployeeId[$employeeId] ?? null;
+        $userInfo = $this->usersByEmployeeId[$employeeId] ?? null;
+        if ($userInfo === null) {
+            return null;
+        }
+        return new User($userInfo);
     }
 
     public function listUsers($fields = null)
     {
         $results = [];
-        foreach ($this->usersByEmployeeId as $user) {
+        foreach ($this->usersByEmployeeId as $userInfo) {
             if ($fields === null) {
-                $tempUser = $user;
+                $tempUserInfo = $userInfo;
             } else {
-                $tempUser = [];
+                $tempUserInfo = [];
                 foreach ($fields as $field) {
-                    $tempUser[$field] = $user[$field] ?? null;
+                    $tempUserInfo[$field] = $userInfo[$field] ?? null;
                 }
             }
-            $results[] = $tempUser;
+            $results[] = new User($tempUserInfo);
         }
         return $results;
     }
@@ -80,6 +85,6 @@ class FakeIdBroker extends IdBrokerBase
             $user[$attribute] = $newValue;
         }
         $this->usersByEmployeeId[$employeeId] = $user;
-        return $user;
+        return new User($user);
     }
 }

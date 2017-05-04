@@ -1,7 +1,6 @@
 <?php
 namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
-use yii\base\NotSupportedException;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
 use yii\helpers\ArrayHelper;
@@ -38,7 +37,7 @@ class FakeIdStore extends IdStoreBase
     {
         $idStoreUser = $this->activeUsers[$employeeId] ?? null;
         if ($idStoreUser !== null) {
-            return $this->translateToIdBrokerFieldNames($idStoreUser);
+            return self::getAsUser($idStoreUser);
         }
         return null;
     }
@@ -53,14 +52,12 @@ class FakeIdStore extends IdStoreBase
                 ];
             }
         }
-        return $changesToReport;
+        return self::getAsUsers($changesToReport);
     }
 
     public function getAllActiveUsers()
     {
-        return array_map(function($entry) {
-            return $this->translateToIdBrokerFieldNames($entry);
-        }, $this->activeUsers);
+        return self::getAsUsers($this->activeUsers);
     }
 
     public static function getIdBrokerFieldNames()

@@ -7,6 +7,7 @@ use Exception;
 use PHPUnit\Framework\Assert;
 use Sil\Idp\IdBroker\Client\IdBrokerClient;
 use Sil\Idp\IdSync\common\components\adapters\IdpIdBroker;
+use Sil\Idp\IdSync\common\models\User;
 use Sil\PhpEnv\Env;
 
 /**
@@ -23,7 +24,7 @@ class IdpIdBrokerIntegrationContext implements Context
     protected $newPassword;
     
     protected $testUserData;
-    protected $testUpdatedUserData;
+    protected $testUpdatedUser;
     
     protected $result;
     
@@ -80,7 +81,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
         );
-        Assert::assertEquals('no', $user['active']);
+        Assert::assertEquals('no', $user->active);
     }
 
     /**
@@ -97,7 +98,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
         );
-        Assert::assertEquals('yes', $user['active']);
+        Assert::assertEquals('yes', $user->active);
     }
 
     /**
@@ -108,7 +109,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
         );
-        Assert::assertEquals('yes', $user['active']);
+        Assert::assertEquals('yes', $user->active);
     }
 
     /**
@@ -141,7 +142,8 @@ class IdpIdBrokerIntegrationContext implements Context
     public function iShouldReceiveBackInformationAboutThatUser()
     {
         $numFieldsFound = 0;
-        foreach ($this->result as $key => $value) {
+        Assert::assertInstanceOf(User::class, $this->result);
+        foreach ($this->result->toArray() as $key => $value) {
             if (array_key_exists($key, $this->testUserData)) {
                 $numFieldsFound += 1;
                 Assert::assertEquals($this->testUserData[$key], $value);
@@ -174,7 +176,7 @@ class IdpIdBrokerIntegrationContext implements Context
     {
         $user = $this->idBroker->getUser($this->testUserData['employee_id']);
         Assert::assertNotNull($user);
-        Assert::assertSame($this->testUserData['email'], $user['email']);
+        Assert::assertSame($this->testUserData['email'], $user->email);
     }
 
     /**
@@ -205,7 +207,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
         );
-        Assert::assertEquals('no', $user['active']);
+        Assert::assertEquals('no', $user->active);
     }
 
     /**
@@ -258,8 +260,9 @@ class IdpIdBrokerIntegrationContext implements Context
      */
     public function eachEntryInTheResultingListShouldHaveUserInformation()
     {
-        foreach ($this->result as $userInfo) {
-            Assert::assertArrayHasKey('employee_id', $userInfo);
+        foreach ($this->result as $user) {
+            Assert::assertInstanceOf(User::class, $user);
+            Assert::assertNotEmpty($user->employeeId);
         }
     }
 
@@ -284,11 +287,11 @@ class IdpIdBrokerIntegrationContext implements Context
      */
     public function iShouldNotBeAbleToAuthenticateWithTheOldPassword()
     {
-        $result = $this->idBroker->authenticate(
+        $authenticatedUser = $this->idBroker->authenticate(
             $this->testUserData['username'],
             $this->oldPassword
         );
-        Assert::assertNull($result);
+        Assert::assertNull($authenticatedUser);
     }
 
     /**
@@ -296,11 +299,11 @@ class IdpIdBrokerIntegrationContext implements Context
      */
     public function iShouldBeAbleToAuthenticateWithTheNewPassword()
     {
-        $result = $this->idBroker->authenticate(
+        $authenticatedUser = $this->idBroker->authenticate(
             $this->testUserData['username'],
             $this->newPassword
         );
-        Assert::assertNotNull($result);
+        Assert::assertNotNull($authenticatedUser);
     }
 
     /**
@@ -308,13 +311,13 @@ class IdpIdBrokerIntegrationContext implements Context
      */
     public function iUpdateThatUser()
     {
-        $this->testUpdatedUserData = $this->idBroker->updateUser([
+        $this->testUpdatedUser = $this->idBroker->updateUser([
             'employee_id' => $this->testUserData['employee_id'],
             'display_name' => $this->testUserData['display_name'] . ', Jr.',
         ]);
         Assert::assertNotEquals(
             $this->testUserData['display_name'],
-            $this->testUpdatedUserData['display_name']
+            $this->testUpdatedUser->displayName
         );
     }
 
@@ -323,10 +326,10 @@ class IdpIdBrokerIntegrationContext implements Context
      */
     public function whenIGetThatUserIShouldReceiveTheUpdatedInformation()
     {
-        $updatedUser = $this->idBroker->getUser($this->testUserData['employee_id']);
+        $user = $this->idBroker->getUser($this->testUserData['employee_id']);
         Assert::assertSame(
-            $this->testUpdatedUserData['display_name'],
-            $updatedUser['display_name']
+            $this->testUpdatedUser->displayName,
+            $user->displayName
         );
     }
 }
