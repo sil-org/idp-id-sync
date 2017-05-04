@@ -46,12 +46,14 @@ class Synchronizer
     /**
      * Get a list of all users in the ID Broker, indexed by `employee_id`.
      *
+     * @param array|null $fields (Optional:) The list of fields desired about
+     *     each user in the result.
      * @return array<string,array>
      * @throws Exception
      */
-    protected function getAllIdBrokerUsersByEmployeeId()
+    protected function getAllIdBrokerUsersByEmployeeId($fields = null)
     {
-        $rawList = $this->idBroker->listUsers();
+        $rawList = $this->idBroker->listUsers($fields);
         $usersByEmployeeId = [];
         
         foreach ($rawList as $user) {
@@ -79,7 +81,10 @@ class Synchronizer
     public function syncAll()
     {
         $idStoreUsers = $this->idStore->getAllActiveUsers();
-        $idBrokerUsers = $this->getAllIdBrokerUsersByEmployeeId();
+        $idBrokerUsers = $this->getAllIdBrokerUsersByEmployeeId([
+            'employee_id',
+            'active',
+        ]);
         
         $usersToAdd = [];
         $usersToUpdateAndActivate = [];
