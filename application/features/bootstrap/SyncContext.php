@@ -302,14 +302,22 @@ class SyncContext implements Context
      */
     public function theOtherUsersShouldHaveBeenSuccessfullySyncedToIdBroker($number)
     {
-        $idStoreActiveUsers = $this->idStore->getAllActiveUsers();
+        if ( ! is_numeric($number)) {
+            Assert::fail('Not given a number.');
+        }
         $idBrokerUsers = $this->getIdBrokerUsers();
         
-        Assert::assertCount($number, $idBrokerUsers);
-        Assert::assertJsonStringEqualsJsonString(
-            Json::encode($idStoreActiveUsers, JSON_PRETTY_PRINT),
-            Json::encode($idBrokerUsers, JSON_PRETTY_PRINT)
-        );
+        Assert::assertCount((int)$number, $idBrokerUsers);
+        foreach ($idBrokerUsers as $idBrokerUser) {
+            $idStoreActiveUser = $this->idStore->getActiveUser(
+                $idBrokerUser['employee_id']
+            );
+            $idStoreActiveUser['active'] = 'yes';
+            Assert::assertJsonStringEqualsJsonString(
+                Json::encode($idStoreActiveUser, JSON_PRETTY_PRINT),
+                Json::encode($idBrokerUser, JSON_PRETTY_PRINT)
+            );
+        }
     }
 
     /**

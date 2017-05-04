@@ -64,7 +64,7 @@ Feature: Synchronizing records
         | 10001          | Person One   | person_one | yes    |
         | 10002          | Person Two   | person_two | yes    |
 
-  Scenario: Handling a sync error gracefully
+  Scenario: Handling a sync creation error gracefully
     Given 5 users are active in the ID Store
       And NO users exist in the ID Broker
       And user 3 in the list from ID Store will be rejected by the ID Broker
