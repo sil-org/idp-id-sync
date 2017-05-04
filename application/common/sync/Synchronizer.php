@@ -4,12 +4,16 @@ namespace Sil\Idp\IdSync\common\sync;
 use Exception;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Sil\Idp\IdSync\common\models\User;
 use Yii;
 use yii\helpers\ArrayHelper;
 
 class Synchronizer
 {
+    /** @var IdBrokerInterface */
     private $idBroker;
+    
+    /** @var IdStoreInterface */
     private $idStore;
     
     public function __construct(
@@ -24,12 +28,12 @@ class Synchronizer
      * Update the given user in the ID Broker, setting it to be active (unless
      * the given user already provides some other value for 'active').
      *
-     * @param array $user The user's information (as key/value pairs).
+     * @param User $user The user's information (as key/value pairs).
      */
-    protected function activateAndUpdateUser($user)
+    protected function activateAndUpdateUser(User $user)
     {
         $this->idBroker->updateUser(
-            ArrayHelper::merge(['active' => 'yes'], $user)
+            ArrayHelper::merge(['active' => 'yes'], $user->toArray())
         );
     }
     
@@ -55,7 +59,8 @@ class Synchronizer
         $usersByEmployeeId = [];
         
         foreach ($rawList as $user) {
-            $employeeId = $user['employee_id'];
+            /* @var $user User */
+            $employeeId = $user->employeeId;
             
             // Prevent duplicates.
             if (array_key_exists($employeeId, $usersByEmployeeId)) {
@@ -65,8 +70,8 @@ class Synchronizer
                 ), 1490801282);
             }
             
-            unset($user['employee_id']);
-            $usersByEmployeeId[$employeeId] = $user;
+            $user->employeeId = null;
+            $usersByEmployeeId[$employeeId] = $user->toArray();
         }
         
         return $usersByEmployeeId;
@@ -79,10 +84,10 @@ class Synchronizer
     public function syncAll()
     {
         $idStoreUsers = $this->idStore->getAllActiveUsers();
-        $idBrokerUsers = $this->getAllIdBrokerUsersByEmployeeId();
+        $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId();
         
         foreach ($idStoreUsers as $idStoreUser) {
-            $employeeId = $idStoreUser['employee_id'];
+            $employeeId = $idStoreUser->employeeId;
             
             if (empty($employeeId)) {
                 Yii::warning(sprintf(
@@ -93,21 +98,21 @@ class Synchronizer
                 continue;
             }
             
-            if (array_key_exists($employeeId, $idBrokerUsers)) {
+            if (array_key_exists($employeeId, $idBrokerUserInfoByEmployeeId)) {
                 // User exists in both places. Update and set as active:
                 $this->activateAndUpdateUser($idStoreUser);
             } else {
                 // User is only in the ID Store. Add to ID Broker:
-                $this->idBroker->createUser($idStoreUser);
+                $this->idBroker->createUser($idStoreUser->toArray());
             }
             
             // Remove that user from the list of ID Broker users who have not
             // yet been processed.
-            unset($idBrokerUsers[$employeeId]);
+            unset($idBrokerUserInfoByEmployeeId[$employeeId]);
         }
         
         // Deactivate the remaining (unprocessed) users in the ID Broker list.
-        foreach (array_keys($idBrokerUsers) as $employeeId) {
+        foreach (array_keys($idBrokerUserInfoByEmployeeId) as $employeeId) {
             $this->deactivateUser($employeeId);
         }
     }
@@ -137,11 +142,11 @@ class Synchronizer
             if ($isInIdBroker) {
                 $this->activateAndUpdateUser($idStoreUser);
             } else {
-                $this->idBroker->createUser($idStoreUser);
+                $this->idBroker->createUser($idStoreUser->toArray());
             }
         } else {
             if ($isInIdBroker) {
-                $this->deactivateUser($idBrokerUser['employee_id']);
+                $this->deactivateUser($idBrokerUser->employeeId);
             } // else: Nothing to do, since the user doesn't exist anywhere.
         }
     }
@@ -180,9 +185,8 @@ class Synchronizer
         $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
         $employeeIds = [];
         foreach ($changedUsers as $changedUser) {
-            $employeeIds[] = $changedUser['employeenumber'];
+            $employeeIds[] = $changedUser->employeeId;
         }
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
-        $synchronizer->syncUsers($employeeIds);
+        $this->syncUsers($employeeIds);
     }
 }
