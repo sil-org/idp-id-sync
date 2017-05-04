@@ -64,6 +64,37 @@ Feature: Synchronizing records
         | 10001          | Person One   | person_one | yes    |
         | 10002          | Person Two   | person_two | yes    |
 
+  Scenario: Handling a sync creation error gracefully
+    Given 5 users are active in the ID Store
+      And NO users exist in the ID Broker
+      And user 3 in the list from ID Store will be rejected by the ID Broker
+    When I sync all the users from the ID Store to the ID Broker
+    Then the ID Broker should now have 4 active users.
+
+  Scenario: Handling a sync update error gracefully
+    Given 5 users are active in the ID Store and are inactive in the ID Broker
+      And user 3 in the list from ID Store will be rejected by the ID Broker
+    When I sync all the users from the ID Store to the ID Broker
+    Then the ID Broker should now have 4 active users.
+
+  Scenario: Handling sync errors gracefully (in more detail)
+    Given ONLY the following users are active in the ID Store:
+        | employeenumber | displayname     | username     | email          |
+        | 10001          | Good Update     | person_one   | p1@example.com |
+        | 10002          | Bad Create      | person_two   |                |
+        | 10003          | Bad Update      | person_three |                |
+        | 10004          | Good After Bad  | person_four  | p4@example.com |
+      And ONLY the following users exist in the ID Broker:
+        | employee_id    | display_name    | username     | email          | active |
+        | 10001          | One to Update   | person_one   | p1@example.com | yes    |
+        | 10003          | Three to Update | person_three | p3@example.com | yes    |
+    When I sync all the users from the ID Store to the ID Broker
+    Then ONLY the following users should exist in the ID Broker:
+        | employee_id    | display_name    | username     | email          | active |
+        | 10001          | Good Update     | person_one   | p1@example.com | yes    |
+        | 10003          | Three to Update | person_three | p3@example.com | yes    |
+        | 10004          | Good After Bad  | person_four  | p4@example.com | yes    |
+
   Scenario: Activate a user in ID Broker
     Given ONLY the following users are active in the ID Store:
         | employeenumber | displayname  | username   |
@@ -120,3 +151,26 @@ Feature: Synchronizing records
         | 10002          | Changed User   | person_two   | yes    |
         | 10003          | Removed User   | person_three | no     |
         | 10004          | Added User     | person_four  | yes    |
+
+  Scenario: Syncing users changed since a specific point in time despite a sync error
+    Given the ID Store has the following log of when users were changed:
+        | changedat   | employeenumber |
+        | 1491401000  | 10001          |
+        | 1491402000  | 10002          |
+        | 1491403000  | 10003          |
+      And ONLY the following users are active in the ID Store:
+        | employeenumber | displayname    | username     | email          |
+        | 10001          | Unchanged 1    | person_one   | p1@example.com |
+        | 10002          | Changed 2      | person_two   |                |
+        | 10003          | Changed 3      | person_three | p3@example.com |
+      And ONLY the following users exist in the ID Broker:
+        | employee_id    | display_name   | username     | email          | active |
+        | 10001          | Unchanged 1    | person_one   | p1@example.com | yes    |
+        | 10002          | Original 2     | person_two   | p2@example.com | yes    |
+        | 10003          | Original 3     | person_three | p3@example.com | yes    |
+    When I ask the ID Store for the list of users changed since 1491401999 and sync them
+    Then ONLY the following users should exist in the ID Broker:
+        | employee_id    | display_name   | username     | email          | active |
+        | 10001          | Unchanged 1    | person_one   | p1@example.com | yes    |
+        | 10002          | Original 2     | person_two   | p2@example.com | yes    |
+        | 10003          | Changed 3      | person_three | p3@example.com | yes    |

@@ -3,6 +3,7 @@ namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
+use yii\helpers\ArrayHelper;
 
 class FakeIdStore extends IdStoreBase
 {
@@ -17,6 +18,19 @@ class FakeIdStore extends IdStoreBase
         $this->activeUsers = $activeUsers;
         $this->userChanges = $userChanges;
         parent::__construct($config);
+    }
+    
+    /**
+     * WARNING: This function only exists on the FAKE ID Store, and should only
+     * be used for setting up tests.
+     *
+     * @param string $employeeId
+     * @param array $changes
+     */
+    public function changeFakeRecord(string $employeeId, array $changes)
+    {
+        $record = $this->activeUsers[$employeeId];
+        $this->activeUsers[$employeeId] = ArrayHelper::merge($record, $changes);
     }
     
     public function getActiveUser(string $employeeId)

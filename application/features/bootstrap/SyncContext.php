@@ -205,10 +205,13 @@ class SyncContext implements Context
         
         $actualUsers = $this->getIdBrokerUsers($desiredFields);
         Assert::assertJsonStringEqualsJsonString(
-            Json::encode($table),
-            Json::encode(array_map(function($user) {
-                return $user->toArray();
-            }, $actualUsers))
+            Json::encode($table, JSON_PRETTY_PRINT),
+            Json::encode(
+                array_map(function($user) {
+                    return $user->toArray();
+                }, $actualUsers),
+                JSON_PRETTY_PRINT
+            )
         );
     }
     
@@ -267,5 +270,85 @@ class SyncContext implements Context
     {
         $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
         $synchronizer->syncUsersChangedSince($timestamp);
+    }
+
+    /**
+     * @Given :number users are active in the ID Store
+     */
+    public function usersAreActiveInTheIdStore($number)
+    {
+        $activeIdStoreUsers = [];
+        for ($i = 1; $i <= $number; $i++) {
+            $tempEmployeeId = 10000 + $i;
+            $activeIdStoreUsers[$tempEmployeeId] = [
+                'employeenumber' => (string)$tempEmployeeId,
+                'displayname' => 'Person ' . $i,
+                'username' => 'person_' . $i,
+                'firstname' => 'Person',
+                'lastname' => (string)$i,
+                'email' => 'person_' . $i . '@example.com',
+            ];
+        }
+        $this->idStore = $this->getFakeIdStore($activeIdStoreUsers);
+    }
+
+    /**
+     * @Given user :number in the list from ID Store will be rejected by the ID Broker
+     */
+    public function userInTheListFromIdStoreWillBeRejectedByTheIdBroker($number)
+    {
+        /* @var $idStore FakeIdStore */
+        $idStore = $this->idStore;
+        if ( ! $idStore instanceof FakeIdStore) {
+            Assert::fail('This test requires a FakeIdStore adapter.');
+        }
+        $employeeId = 10000 + $number;
+        $idStore->changeFakeRecord($employeeId, [
+            'email' => '',
+        ]);
+    }
+
+    /**
+     * @Then the ID Broker should now have :number active users.
+     */
+    public function theIdBrokerShouldNowHaveActiveUsers($number)
+    {
+        if ( ! is_numeric($number)) {
+            Assert::fail('Not given a number.');
+        }
+        $numActiveUsers = 0;
+        $idBrokerUsers = $this->idBroker->listUsers();
+        foreach ($idBrokerUsers as $user) {
+            if ($user->active === 'yes') {
+                $numActiveUsers += 1;
+            }
+        }
+        Assert::assertSame((int)$number,  $numActiveUsers, sprintf(
+            'Did not expect all of these users to be active: [%s]',
+            join(", ", $idBrokerUsers)
+        ));
+    }
+
+    /**
+     * @Given NO users exist in the ID Broker
+     */
+    public function noUsersExistInTheIdBroker()
+    {
+        $this->idBroker = new FakeIdBroker();
+    }
+
+    /**
+     * @Given :number users are active in the ID Store and are inactive in the ID Broker
+     */
+    public function usersAreActiveInTheIdStoreAndAreInactiveInTheIdBroker($number)
+    {
+        $this->usersAreActiveInTheIdStore($number);
+        
+        $idBrokerUsers = [];
+        foreach ($this->idStore->getAllActiveUsers() as $user) {
+            $user->active = 'no';
+            $idBrokerUsers[$user->employeeId] = $user->toArray();
+        }
+        $this->idBroker = new FakeIdBroker($idBrokerUsers);
     }
 }

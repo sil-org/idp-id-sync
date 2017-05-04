@@ -50,12 +50,14 @@ class Synchronizer
     /**
      * Get a list of all users in the ID Broker, indexed by `employee_id`.
      *
+     * @param array|null $fields (Optional:) The list of fields desired about
+     *     each user in the result.
      * @return array<string,array>
      * @throws Exception
      */
-    protected function getAllIdBrokerUsersByEmployeeId()
+    protected function getAllIdBrokerUsersByEmployeeId($fields = null)
     {
-        $rawList = $this->idBroker->listUsers();
+        $rawList = $this->idBroker->listUsers($fields);
         $usersByEmployeeId = [];
         
         foreach ($rawList as $user) {
@@ -84,7 +86,14 @@ class Synchronizer
     public function syncAll()
     {
         $idStoreUsers = $this->idStore->getAllActiveUsers();
-        $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId();
+        $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
+            'employee_id',
+            'active',
+        ]);
+        
+        $usersToAdd = [];
+        $usersToUpdateAndActivate = [];
+        $employeeIdsToDeactivate = [];
         
         foreach ($idStoreUsers as $idStoreUser) {
             $employeeId = $idStoreUser->employeeId;
@@ -100,10 +109,10 @@ class Synchronizer
             
             if (array_key_exists($employeeId, $idBrokerUserInfoByEmployeeId)) {
                 // User exists in both places. Update and set as active:
-                $this->activateAndUpdateUser($idStoreUser);
+                $usersToUpdateAndActivate[] = $idStoreUser;
             } else {
                 // User is only in the ID Store. Add to ID Broker:
-                $this->idBroker->createUser($idStoreUser->toArray());
+                $usersToAdd[] = $idStoreUser;
             }
             
             // Remove that user from the list of ID Broker users who have not
@@ -112,8 +121,55 @@ class Synchronizer
         }
         
         // Deactivate the remaining (unprocessed) users in the ID Broker list.
-        foreach (array_keys($idBrokerUserInfoByEmployeeId) as $employeeId) {
-            $this->deactivateUser($employeeId);
+        foreach ($idBrokerUserInfoByEmployeeId as $employeeId => $userInfo) {
+            // If this user not currently inactive, deactivate them.
+            if ($userInfo['active'] !== 'no') {
+                $employeeIdsToDeactivate[] = $employeeId;
+            }
+        }
+        
+        /** @todo Add a safety check here to avoid deactivating too many users. */
+        
+        foreach ($usersToAdd as $userToAdd) {
+            try {
+                $this->idBroker->createUser($userToAdd->toArray());
+            } catch (Exception $e) {
+                Yii::error(sprintf(
+                    'Failed to add user to ID Broker (Employee ID: %s). '
+                    . 'Error %s: %s',
+                    var_export($userToAdd->employeeId, true),
+                    $e->getCode(),
+                    $e->getMessage()
+                ));
+            }
+        }
+        
+        foreach ($usersToUpdateAndActivate as $userToUpdateAndActivate) {
+            try {
+                $this->activateAndUpdateUser($userToUpdateAndActivate);
+            } catch (Exception $e) {
+                Yii::error(sprintf(
+                    'Failed to update/activate user in the ID Broker (Employee ID: %s). '
+                    . 'Error %s: %s',
+                    var_export($userToUpdateAndActivate->employeeId, true),
+                    $e->getCode(),
+                    $e->getMessage()
+                ));
+            }
+        }
+        
+        foreach ($employeeIdsToDeactivate as $employeeIdToDeactivate) {
+            try {
+                $this->deactivateUser($employeeIdToDeactivate);
+            } catch (Exception $e) {
+                Yii::error(sprintf(
+                    'Failed to deactivate user in the ID Broker (Employee ID: %s). '
+                    . 'Error %s: %s',
+                    var_export($employeeIdToDeactivate, true),
+                    $e->getCode(),
+                    $e->getMessage()
+                ));
+            }
         }
     }
     
@@ -169,7 +225,17 @@ class Synchronizer
                 continue;
             }
             
-            $this->syncUser($employeeId);
+            try {
+                $this->syncUser($employeeId);
+            } catch (Exception $e) {
+                Yii::error(sprintf(
+                    'Failed to sync one of the specified users (Employee ID: '
+                    . '%s). Error (%s): %s',
+                    var_export($employeeId, true),
+                    $e->getCode(),
+                    $e->getMessage()
+                ));
+            }
         }
     }
     
