@@ -260,4 +260,63 @@ class SyncContext implements Context
         $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
         $synchronizer->syncUsersChangedSince($timestamp);
     }
+
+    /**
+     * @Given :number users are active in the ID Store
+     */
+    public function usersAreActiveInTheIdStore($number)
+    {
+        $activeIdStoreUsers = [];
+        for ($i = 1; $i <= $number; $i++) {
+            $tempEmployeeId = 10000 + $i;
+            $activeIdStoreUsers[$tempEmployeeId] = [
+                'employeenumber' => (string)$tempEmployeeId,
+                'displayname' => 'Person ' . $i,
+                'username' => 'person_' . $i,
+                'firstname' => 'Person',
+                'lastname' => (string)$i,
+                'email' => 'person_' . $i . '@example.com',
+            ];
+        }
+        $this->idStore = $this->getFakeIdStore($activeIdStoreUsers);
+    }
+
+    /**
+     * @Given user :number in the list from ID Store will be rejected by the ID Broker
+     */
+    public function userInTheListFromIdStoreWillBeRejectedByTheIdBroker($number)
+    {
+        /* @var $idStore FakeIdStore */
+        $idStore = $this->idStore;
+        if ( ! $idStore instanceof FakeIdStore) {
+            Assert::fail('This test requires a FakeIdStore adapter.');
+        }
+        $employeeId = 10000 + $number;
+        $idStore->changeFakeRecord($employeeId, [
+            'email' => null,
+        ]);
+    }
+
+    /**
+     * @Then the other :number users should have been successfully synced to ID Broker
+     */
+    public function theOtherUsersShouldHaveBeenSuccessfullySyncedToIdBroker($number)
+    {
+        $idStoreActiveUsers = $this->idStore->getAllActiveUsers();
+        $idBrokerUsers = $this->getIdBrokerUsers();
+        
+        Assert::assertCount($number, $idBrokerUsers);
+        Assert::assertJsonStringEqualsJsonString(
+            Json::encode($idStoreActiveUsers, JSON_PRETTY_PRINT),
+            Json::encode($idBrokerUsers, JSON_PRETTY_PRINT)
+        );
+    }
+
+    /**
+     * @Given NO users exist in the ID Broker
+     */
+    public function noUsersExistInTheIdBroker()
+    {
+        $this->idBroker = new FakeIdBroker();
+    }
 }

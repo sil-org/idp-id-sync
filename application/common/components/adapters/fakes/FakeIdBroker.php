@@ -27,6 +27,9 @@ class FakeIdBroker extends IdBrokerBase
 
     public function createUser(array $config = [])
     {
+        if (array_key_exists('email', $config) && empty($config['email'])) {
+            throw new \InvalidArgumentException('FAKE: Email cannot be empty.');
+        }
         $this->usersByEmployeeId[$config['employee_id']] = ArrayHelper::merge(
             ['active' => 'yes'], // 'active' should default to 'yes'
             $config

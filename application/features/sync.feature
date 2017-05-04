@@ -64,6 +64,13 @@ Feature: Synchronizing records
         | 10001          | Person One   | person_one | yes    |
         | 10002          | Person Two   | person_two | yes    |
 
+  Scenario: Handling a sync error gracefully
+    Given 5 users are active in the ID Store
+      And NO users exist in the ID Broker
+      And user 3 in the list from ID Store will be rejected by the ID Broker
+    When I sync all the users from the ID Store to the ID Broker
+    Then the other 4 users should have been successfully synced to ID Broker
+
   Scenario: Activate a user in ID Broker
     Given ONLY the following users are active in the ID Store:
         | employeenumber | displayname  | username   |
