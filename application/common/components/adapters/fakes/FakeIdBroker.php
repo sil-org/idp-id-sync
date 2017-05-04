@@ -71,6 +71,9 @@ class FakeIdBroker extends IdBrokerBase
 
     public function updateUser(array $config = [])
     {
+        if (array_key_exists('email', $config) && empty($config['email'])) {
+            throw new \InvalidArgumentException('FAKE: Email cannot be empty.');
+        }
         $employeeId = $config['employee_id'];
         $user = $this->usersByEmployeeId[$employeeId];
         foreach ($config as $attribute => $newValue) {
