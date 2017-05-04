@@ -204,8 +204,8 @@ class SyncContext implements Context
         
         $actualUsersInfo = $this->getIdBrokerUsers($desiredFields);
         Assert::assertJsonStringEqualsJsonString(
-            Json::encode($table),
-            Json::encode($actualUsersInfo)
+            Json::encode($table, JSON_PRETTY_PRINT),
+            Json::encode($actualUsersInfo, JSON_PRETTY_PRINT)
         );
     }
     
