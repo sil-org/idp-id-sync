@@ -151,3 +151,26 @@ Feature: Synchronizing records
         | 10002          | Changed User   | person_two   | yes    |
         | 10003          | Removed User   | person_three | no     |
         | 10004          | Added User     | person_four  | yes    |
+
+  Scenario: Syncing users changed since a specific point in time despite a sync error
+    Given the ID Store has the following log of when users were changed:
+        | changedat   | employeenumber |
+        | 1491401000  | 10001          |
+        | 1491402000  | 10002          |
+        | 1491403000  | 10003          |
+      And ONLY the following users are active in the ID Store:
+        | employeenumber | displayname    | username     | email          |
+        | 10001          | Unchanged 1    | person_one   | p1@example.com |
+        | 10002          | Changed 2      | person_two   |                |
+        | 10003          | Changed 3      | person_three | p3@example.com |
+      And ONLY the following users exist in the ID Broker:
+        | employee_id    | display_name   | username     | email          | active |
+        | 10001          | Unchanged 1    | person_one   | p1@example.com | yes    |
+        | 10002          | Original 2     | person_two   | p2@example.com | yes    |
+        | 10003          | Original 3     | person_three | p3@example.com | yes    |
+    When I ask the ID Store for the list of users changed since 1491401999 and sync them
+    Then ONLY the following users should exist in the ID Broker:
+        | employee_id    | display_name   | username     | email          | active |
+        | 10001          | Unchanged 1    | person_one   | p1@example.com | yes    |
+        | 10002          | Original 2     | person_two   | p2@example.com | yes    |
+        | 10003          | Changed 3      | person_three | p3@example.com | yes    |

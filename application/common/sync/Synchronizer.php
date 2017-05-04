@@ -220,7 +220,17 @@ class Synchronizer
                 continue;
             }
             
-            $this->syncUser($employeeId);
+            try {
+                $this->syncUser($employeeId);
+            } catch (Exception $e) {
+                Yii::error(sprintf(
+                    'Failed to sync one of the specified users (Employee ID: '
+                    . '%s). Error (%s): %s',
+                    var_export($employeeId, true),
+                    $e->getCode(),
+                    $e->getMessage()
+                ));
+            }
         }
     }
     
