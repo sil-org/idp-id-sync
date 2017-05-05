@@ -2,10 +2,11 @@
 namespace Sil\Idp\IdSync\common\sync;
 
 use Exception;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\models\User;
-use Yii;
 use yii\helpers\ArrayHelper;
 
 class Synchronizer
@@ -16,12 +17,17 @@ class Synchronizer
     /** @var IdStoreInterface */
     private $idStore;
     
+    /** @var LoggerInterface */
+    private $logger;
+    
     public function __construct(
         IdStoreInterface $idStore,
-        IdBrokerInterface $idBroker
+        IdBrokerInterface $idBroker,
+        LoggerInterface $logger = null
     ) {
         $this->idStore = $idStore;
         $this->idBroker = $idBroker;
+        $this->logger = $logger ?? new NullLogger();
     }
     
     /**
@@ -99,7 +105,7 @@ class Synchronizer
             $employeeId = $idStoreUser->employeeId;
             
             if (empty($employeeId)) {
-                Yii::warning(sprintf(
+                $this->logger->warning(sprintf(
                     'Received an empty Employee ID (%s) in the list of users '
                     . 'from the ID Store. Skipping it.',
                     var_export($employeeId, true)
@@ -134,7 +140,7 @@ class Synchronizer
             try {
                 $this->idBroker->createUser($userToAdd->toArray());
             } catch (Exception $e) {
-                Yii::error(sprintf(
+                $this->logger->error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
                     . 'Error %s: %s',
                     var_export($userToAdd->employeeId, true),
@@ -148,7 +154,7 @@ class Synchronizer
             try {
                 $this->activateAndUpdateUser($userToUpdateAndActivate);
             } catch (Exception $e) {
-                Yii::error(sprintf(
+                $this->logger->error(sprintf(
                     'Failed to update/activate user in the ID Broker (Employee ID: %s). '
                     . 'Error %s: %s',
                     var_export($userToUpdateAndActivate->employeeId, true),
@@ -162,7 +168,7 @@ class Synchronizer
             try {
                 $this->deactivateUser($employeeIdToDeactivate);
             } catch (Exception $e) {
-                Yii::error(sprintf(
+                $this->logger->error(sprintf(
                     'Failed to deactivate user in the ID Broker (Employee ID: %s). '
                     . 'Error %s: %s',
                     var_export($employeeIdToDeactivate, true),
@@ -217,7 +223,7 @@ class Synchronizer
     {
         foreach ($employeeIds as $employeeId) {
             if (empty($employeeId)) {
-                Yii::warning(sprintf(
+                $this->logger->warning(sprintf(
                     'The list of users to sync included an empty Employee ID '
                     . '(%s). Skipping it.',
                     var_export($employeeId, true)
@@ -228,7 +234,7 @@ class Synchronizer
             try {
                 $this->syncUser($employeeId);
             } catch (Exception $e) {
-                Yii::error(sprintf(
+                $this->logger->error(sprintf(
                     'Failed to sync one of the specified users (Employee ID: '
                     . '%s). Error (%s): %s',
                     var_export($employeeId, true),
