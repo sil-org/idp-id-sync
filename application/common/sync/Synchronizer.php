@@ -52,6 +52,16 @@ class Synchronizer
     }
     
     /**
+     * Create the given user in the ID Broker.
+     *
+     * @param User $user The user's information.
+     */
+    protected function createUser(User $user)
+    {
+        $this->idBroker->createUser($user->toArray());
+    }
+    
+    /**
      * Deactivate the specified user in the ID Broker.
      *
      * @param string $employeeId The Employee ID of the user to deactivate.
@@ -146,7 +156,7 @@ class Synchronizer
         
         foreach ($usersToAdd as $userToAdd) {
             try {
-                $this->idBroker->createUser($userToAdd->toArray());
+                $this->createUser($userToAdd);
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
@@ -212,7 +222,7 @@ class Synchronizer
             if ($isInIdBroker) {
                 $this->activateAndUpdateUser($idStoreUser);
             } else {
-                $this->idBroker->createUser($idStoreUser->toArray());
+                $this->createUser($idStoreUser);
             }
         } else {
             if ($isInIdBroker) {
