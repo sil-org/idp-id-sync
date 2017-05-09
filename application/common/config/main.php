@@ -7,8 +7,8 @@ use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
-$APP_ENV = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
-$IDP_NAME = Env::get('IDP_NAME');
+$appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
+$idpName = Env::get('IDP_NAME');
 
 $idBrokerOptionalConfig = [];
 if (Env::get('ID_BROKER_ACCESS_TOKEN') !== null) {
@@ -55,10 +55,10 @@ return [
                     // Disable logging of _SERVER, _POST, etc.
                     'logVars' => [],
                     
-                    'prefix' => function($message) use ($APP_ENV, $IDP_NAME) {
+                    'prefix' => function($message) use ($appEnv, $idpName) {
                         return Json::encode([
-                            'app_env' => $APP_ENV,
-                            'idp_name' => $IDP_NAME,
+                            'app_env' => $appEnv,
+                            'idp_name' => $idpName,
                         ]);
                     },
                 ],
