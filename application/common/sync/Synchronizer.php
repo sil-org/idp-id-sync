@@ -77,7 +77,6 @@ class Synchronizer
      * @param array|null $fields (Optional:) The list of fields desired about
      *     each user in the result.
      * @return array<string,array>
-     * @throws Exception
      */
     protected function getAllIdBrokerUsersByEmployeeId($fields = null)
     {
@@ -90,10 +89,11 @@ class Synchronizer
             
             // Prevent duplicates.
             if (array_key_exists($employeeId, $usersByEmployeeId)) {
-                throw new Exception(sprintf(
-                    'Duplicate Employee ID found: %s',
+                $this->logger->error(sprintf(
+                    'Duplicate Employee ID found: %s. Skipping it.',
                     $employeeId
-                ), 1490801282);
+                ));
+                continue;
             }
             
             $user->employeeId = null;
