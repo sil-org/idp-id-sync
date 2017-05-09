@@ -26,6 +26,7 @@ if (Env::get('ID_STORE_BASE_URL') !== null) {
 
 return [
     'id' => 'id-sync',
+    'bootstrap' => ['log'],
     'components' => [
         
         'idBroker' => ArrayHelper::merge([
