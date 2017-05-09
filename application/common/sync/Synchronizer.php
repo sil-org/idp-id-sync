@@ -11,6 +11,8 @@ use yii\helpers\ArrayHelper;
 
 class Synchronizer
 {
+    public $dateTimeFormat = 'n/j/y g:ia T';
+    
     /** @var IdBrokerInterface */
     private $idBroker;
     
@@ -49,6 +51,7 @@ class Synchronizer
         $this->idBroker->updateUser(
             ArrayHelper::merge(['active' => 'yes'], $user->toArray())
         );
+        $this->logger->info('Updated/activated user: ' . $user->employeeId);
     }
     
     /**
@@ -59,6 +62,7 @@ class Synchronizer
     protected function createUser(User $user)
     {
         $this->idBroker->createUser($user->toArray());
+        $this->logger->info('Created user: ' . $user->employeeId);
     }
     
     /**
@@ -69,6 +73,7 @@ class Synchronizer
     protected function deactivateUser($employeeId)
     {
         $this->idBroker->deactivateUser($employeeId);
+        $this->logger->info('Deactivated user: ' . $employeeId);
     }
     
     /**
@@ -109,6 +114,8 @@ class Synchronizer
      */
     public function syncAll()
     {
+        $this->logger->info('Syncing all users...');
+        
         $idStoreUsers = $this->idStore->getAllActiveUsers();
         $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
             'employee_id',
@@ -118,6 +125,12 @@ class Synchronizer
         $usersToAdd = [];
         $usersToUpdateAndActivate = [];
         $employeeIdsToDeactivate = [];
+        
+        $this->logger->info(sprintf(
+            'Found %s ID Store users and %s ID Broker users.',
+            count($idStoreUsers),
+            count($idBrokerUserInfoByEmployeeId)
+        ));
         
         foreach ($idStoreUsers as $idStoreUser) {
             $employeeId = $idStoreUser->employeeId;
@@ -154,6 +167,10 @@ class Synchronizer
         
         /** @todo Add a safety check here to avoid deactivating too many users. */
         
+        $this->logger->info(sprintf(
+            'Adding %s users to the ID Broker.',
+            count($usersToAdd)
+        ));
         foreach ($usersToAdd as $userToAdd) {
             try {
                 $this->createUser($userToAdd);
@@ -168,6 +185,10 @@ class Synchronizer
             }
         }
         
+        $this->logger->info(sprintf(
+            'Updating/activating %s users in the ID Broker.',
+            count($usersToUpdateAndActivate)
+        ));
         foreach ($usersToUpdateAndActivate as $userToUpdateAndActivate) {
             try {
                 $this->activateAndUpdateUser($userToUpdateAndActivate);
@@ -182,6 +203,10 @@ class Synchronizer
             }
         }
         
+        $this->logger->info(sprintf(
+            'Deactivating %s users in the ID Broker.',
+            count($employeeIdsToDeactivate)
+        ));
         foreach ($employeeIdsToDeactivate as $employeeIdToDeactivate) {
             try {
                 $this->deactivateUser($employeeIdToDeactivate);
@@ -195,6 +220,8 @@ class Synchronizer
                 ));
             }
         }
+        
+        $this->logger->info('Done attempting to syncing all users.');
     }
     
     /**
@@ -241,6 +268,11 @@ class Synchronizer
      */
     public function syncUsers(array $employeeIds)
     {
+        $this->logger->info(sprintf(
+            'Syncing %s specific users...',
+            count($employeeIds)
+        ));
+        
         foreach ($employeeIds as $employeeId) {
             if (empty($employeeId)) {
                 $this->logger->warning(sprintf(
@@ -263,6 +295,11 @@ class Synchronizer
                 ));
             }
         }
+        
+        $this->logger->info(sprintf(
+            'Done attempting to sync %s specific users.',
+            count($employeeIds)
+        ));
     }
     
     /**
@@ -274,11 +311,21 @@ class Synchronizer
      */
     public function syncUsersChangedSince($timestamp)
     {
+        $this->logger->info(sprintf(
+            'Syncing users changed since %s...',
+            date($this->dateTimeFormat, $timestamp)
+        ));
+        
         $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
         $employeeIds = [];
         foreach ($changedUsers as $changedUser) {
             $employeeIds[] = $changedUser->employeeId;
         }
         $this->syncUsers($employeeIds);
+        
+        $this->logger->info(sprintf(
+            'Done attempting to sync users changed since %s.',
+            date($this->dateTimeFormat, $timestamp)
+        ));
     }
 }
