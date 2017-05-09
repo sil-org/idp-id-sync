@@ -20,6 +20,14 @@ class Synchronizer
     /** @var LoggerInterface */
     private $logger;
     
+    /**
+     * Create a new Synchronizer object.
+     *
+     * @param IdStoreInterface $idStore The ID Store to communicate with.
+     * @param IdBrokerInterface $idBroker The ID Broker to communicate with.
+     * @param LoggerInterface $logger (Optional:) The PSR-3 logger to send log
+     *     data to.
+     */
     public function __construct(
         IdStoreInterface $idStore,
         IdBrokerInterface $idBroker,
@@ -34,7 +42,7 @@ class Synchronizer
      * Update the given user in the ID Broker, setting it to be active (unless
      * the given user already provides some other value for 'active').
      *
-     * @param User $user The user's information (as key/value pairs).
+     * @param User $user The user's information.
      */
     protected function activateAndUpdateUser(User $user)
     {
