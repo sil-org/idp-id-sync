@@ -260,7 +260,7 @@ class Synchronizer
         $this->activateAndUpdateUsers($usersToUpdateAndActivate);
         $this->deactivateUsers($employeeIdsToDeactivate);
         
-        $this->logger->info('Done attempting to syncing all users.');
+        $this->logger->info('Done attempting to sync all users.');
     }
     
     /**
