@@ -55,6 +55,36 @@ class Synchronizer
     }
     
     /**
+     * Update the given Users in the ID Broker, setting them to be active
+     * (unless the User already provides some other value for 'active').
+     *
+     * @param User[] $usersToUpdateAndActivate The user's information.
+     */
+    protected function activateAndUpdateUsers(array $usersToUpdateAndActivate)
+    {
+        $numUsersUpdated = 0;
+        foreach ($usersToUpdateAndActivate as $userToUpdateAndActivate) {
+            try {
+                $this->activateAndUpdateUser($userToUpdateAndActivate);
+                $numUsersUpdated += 1;
+            } catch (Exception $e) {
+                $this->logger->error(sprintf(
+                    'Failed to update/activate user in the ID Broker (Employee ID: %s). '
+                    . 'Error %s: %s',
+                    var_export($userToUpdateAndActivate->employeeId, true),
+                    $e->getCode(),
+                    $e->getMessage()
+                ));
+            }
+        }
+        
+        $this->logger->notice('Updated {successful} of {total}.', [
+            'successful' => $numUsersUpdated,
+            'total' => count($usersToUpdateAndActivate),
+        ]);
+    }
+    
+    /**
      * Create the given user in the ID Broker.
      *
      * @param User $user The user's information.
@@ -66,6 +96,35 @@ class Synchronizer
     }
     
     /**
+     * Create the given Users in the ID Broker.
+     *
+     * @param User[] $usersToAdd The list of Users to be added.
+     */
+    protected function createUsers(array $usersToAdd)
+    {
+        $numUsersAdded = 0;
+        foreach ($usersToAdd as $userToAdd) {
+            try {
+                $this->createUser($userToAdd);
+                $numUsersAdded += 1;
+            } catch (Exception $e) {
+                $this->logger->error(sprintf(
+                    'Failed to add user to ID Broker (Employee ID: %s). '
+                    . 'Error %s: %s',
+                    var_export($userToAdd->employeeId, true),
+                    $e->getCode(),
+                    $e->getMessage()
+                ));
+            }
+        }
+        
+        $this->logger->notice('Added {successful} of {total}.', [
+            'successful' => $numUsersAdded,
+            'total' => count($usersToAdd),
+        ]);
+    }
+    
+    /**
      * Deactivate the specified user in the ID Broker.
      *
      * @param string $employeeId The Employee ID of the user to deactivate.
@@ -74,6 +133,36 @@ class Synchronizer
     {
         $this->idBroker->deactivateUser($employeeId);
         $this->logger->info('Deactivated user: ' . $employeeId);
+    }
+    
+    /**
+     * Deactivate the specified users in the ID Broker.
+     *
+     * @param string[] $employeeIdsToDeactivate The Employee IDs of the users to
+     *     deactivate.
+     */
+    protected function deactivateUsers($employeeIdsToDeactivate)
+    {
+        $numUsersDeactivated = 0;
+        foreach ($employeeIdsToDeactivate as $employeeIdToDeactivate) {
+            try {
+                $this->deactivateUser($employeeIdToDeactivate);
+                $numUsersDeactivated += 1;
+            } catch (Exception $e) {
+                $this->logger->error(sprintf(
+                    'Failed to deactivate user in the ID Broker (Employee ID: %s). '
+                    . 'Error %s: %s',
+                    var_export($employeeIdToDeactivate, true),
+                    $e->getCode(),
+                    $e->getMessage()
+                ));
+            }
+        }
+        
+        $this->logger->notice('Deactivated {successful} of {total}.', [
+            'successful' => $numUsersDeactivated,
+            'total' => count($employeeIdsToDeactivate),
+        ]);
     }
     
     /**
@@ -167,63 +256,9 @@ class Synchronizer
         
         /** @todo Add a safety check here to avoid deactivating too many users. */
         
-        $numUsersAdded = 0;
-        foreach ($usersToAdd as $userToAdd) {
-            try {
-                $this->createUser($userToAdd);
-                $numUsersAdded += 1;
-            } catch (Exception $e) {
-                $this->logger->error(sprintf(
-                    'Failed to add user to ID Broker (Employee ID: %s). '
-                    . 'Error %s: %s',
-                    var_export($userToAdd->employeeId, true),
-                    $e->getCode(),
-                    $e->getMessage()
-                ));
-            }
-        }
-        
-        $numUsersUpdated = 0;
-        foreach ($usersToUpdateAndActivate as $userToUpdateAndActivate) {
-            try {
-                $this->activateAndUpdateUser($userToUpdateAndActivate);
-                $numUsersUpdated += 1;
-            } catch (Exception $e) {
-                $this->logger->error(sprintf(
-                    'Failed to update/activate user in the ID Broker (Employee ID: %s). '
-                    . 'Error %s: %s',
-                    var_export($userToUpdateAndActivate->employeeId, true),
-                    $e->getCode(),
-                    $e->getMessage()
-                ));
-            }
-        }
-        
-        $numUsersDeactivated = 0;
-        foreach ($employeeIdsToDeactivate as $employeeIdToDeactivate) {
-            try {
-                $this->deactivateUser($employeeIdToDeactivate);
-                $numUsersDeactivated += 1;
-            } catch (Exception $e) {
-                $this->logger->error(sprintf(
-                    'Failed to deactivate user in the ID Broker (Employee ID: %s). '
-                    . 'Error %s: %s',
-                    var_export($employeeIdToDeactivate, true),
-                    $e->getCode(),
-                    $e->getMessage()
-                ));
-            }
-        }
-        
-        $this->logger->notice(sprintf(
-            'Added %s of %s. Updated %s of %s. Deactivated %s of %s.',
-            $numUsersAdded,
-            count($usersToAdd),
-            $numUsersUpdated,
-            count($usersToUpdateAndActivate),
-            $numUsersDeactivated,
-            count($employeeIdsToDeactivate)
-        ));
+        $this->createUsers($usersToAdd);
+        $this->activateAndUpdateUsers($usersToUpdateAndActivate);
+        $this->deactivateUsers($employeeIdsToDeactivate);
         
         $this->logger->info('Done attempting to syncing all users.');
     }
