@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec9a4bbeb2fe97de3e901096f2fd065a",
+    "content-hash": "174823d9d8bd984094e68c84b69c503e",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -833,16 +833,16 @@
         },
         {
             "name": "silinternational/psr3-adapters",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/silinternational/psr3-adapters.git",
-                "reference": "dbe54de3ed09522e6ffae9dd611b43b9b3d0a690"
+                "reference": "bbaef684f34f94f64dcf018698028b786f67caaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silinternational/psr3-adapters/zipball/dbe54de3ed09522e6ffae9dd611b43b9b3d0a690",
-                "reference": "dbe54de3ed09522e6ffae9dd611b43b9b3d0a690",
+                "url": "https://api.github.com/repos/silinternational/psr3-adapters/zipball/bbaef684f34f94f64dcf018698028b786f67caaa",
+                "reference": "bbaef684f34f94f64dcf018698028b786f67caaa",
                 "shasum": ""
             },
             "require": {
@@ -876,7 +876,7 @@
                 }
             ],
             "description": "Various PSR3-compatible logging adapters.",
-            "time": "2017-05-09T14:31:43+00:00"
+            "time": "2017-05-09T19:14:19+00:00"
         },
         {
             "name": "silinternational/yii2-jsonsyslog",
