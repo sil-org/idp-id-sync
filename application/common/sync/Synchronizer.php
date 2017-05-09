@@ -227,7 +227,9 @@ class Synchronizer
         } else {
             if ($isInIdBroker) {
                 $this->deactivateUser($idBrokerUser->employeeId);
-            } // else: Nothing to do, since the user doesn't exist anywhere.
+            } else {
+                $this->logger->error('Cannot find user anywhere: ' . $employeeId);
+            }
         }
     }
     
