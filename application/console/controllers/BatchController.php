@@ -2,14 +2,24 @@
 namespace Sil\Idp\IdSync\console\controllers;
 
 use Sil\Idp\IdSync\common\sync\Synchronizer;
+use Sil\Psr3Adapters\Psr3Yii2Logger;
 use Yii;
 use yii\console\Controller;
 
 class BatchController extends Controller
 {
+    protected function getSynchronizer()
+    {
+        return new Synchronizer(
+            Yii::$app->idStore,
+            Yii::$app->idBroker,
+            new Psr3Yii2Logger()
+        );
+    }
+    
     public function actionFull()
     {
-        $synchronizer = new Synchronizer(Yii::$app->idStore, Yii::$app->idBroker);
+        $synchronizer = $this->getSynchronizer();
         $synchronizer->syncAll();
     }
     
@@ -19,7 +29,7 @@ class BatchController extends Controller
      */
     public function actionIncremental()
     {
-        $synchronizer = new Synchronizer(Yii::$app->idStore, Yii::$app->idBroker);
+        $synchronizer = $this->getSynchronizer();
         $synchronizer->syncUsersChangedSince(strtotime('-11 minutes'));
     }
 }
