@@ -167,13 +167,11 @@ class Synchronizer
         
         /** @todo Add a safety check here to avoid deactivating too many users. */
         
-        $this->logger->info(sprintf(
-            'Adding %s users to the ID Broker.',
-            count($usersToAdd)
-        ));
+        $numUsersAdded = 0;
         foreach ($usersToAdd as $userToAdd) {
             try {
                 $this->createUser($userToAdd);
+                $numUsersAdded += 1;
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
@@ -185,13 +183,11 @@ class Synchronizer
             }
         }
         
-        $this->logger->info(sprintf(
-            'Updating/activating %s users in the ID Broker.',
-            count($usersToUpdateAndActivate)
-        ));
+        $numUsersUpdated = 0;
         foreach ($usersToUpdateAndActivate as $userToUpdateAndActivate) {
             try {
                 $this->activateAndUpdateUser($userToUpdateAndActivate);
+                $numUsersUpdated += 1;
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to update/activate user in the ID Broker (Employee ID: %s). '
@@ -203,13 +199,11 @@ class Synchronizer
             }
         }
         
-        $this->logger->info(sprintf(
-            'Deactivating %s users in the ID Broker.',
-            count($employeeIdsToDeactivate)
-        ));
+        $numUsersDeactivated = 0;
         foreach ($employeeIdsToDeactivate as $employeeIdToDeactivate) {
             try {
                 $this->deactivateUser($employeeIdToDeactivate);
+                $numUsersDeactivated += 1;
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to deactivate user in the ID Broker (Employee ID: %s). '
@@ -220,6 +214,16 @@ class Synchronizer
                 ));
             }
         }
+        
+        $this->logger->notice(sprintf(
+            'Added %s of %s. Updated %s of %s. Deactivated %s of %s.',
+            $numUsersAdded,
+            count($usersToAdd),
+            $numUsersUpdated,
+            count($usersToUpdateAndActivate),
+            $numUsersDeactivated,
+            count($employeeIdsToDeactivate)
+        ));
         
         $this->logger->info('Done attempting to syncing all users.');
     }
