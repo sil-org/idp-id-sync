@@ -70,10 +70,11 @@ class Synchronizer
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to update/activate user in the ID Broker (Employee ID: %s). '
-                    . 'Error %s: %s',
+                    . 'Error %s: %s. [%s]',
                     var_export($userToUpdateAndActivate->employeeId, true),
                     $e->getCode(),
-                    $e->getMessage()
+                    $e->getMessage(),
+                    1494360119
                 ));
             }
         }
@@ -111,10 +112,11 @@ class Synchronizer
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
-                    . 'Error %s: %s',
+                    . 'Error %s: %s. [%s]',
                     var_export($userToAdd->employeeId, true),
                     $e->getCode(),
-                    $e->getMessage()
+                    $e->getMessage(),
+                    1494360152
                 ));
             }
         }
@@ -153,10 +155,11 @@ class Synchronizer
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to deactivate user in the ID Broker (Employee ID: %s). '
-                    . 'Error %s: %s',
+                    . 'Error %s: %s. [%s]',
                     var_export($employeeIdToDeactivate, true),
                     $e->getCode(),
-                    $e->getMessage()
+                    $e->getMessage(),
+                    1494360189
                 ));
             }
         }
@@ -187,8 +190,9 @@ class Synchronizer
             // Prevent duplicates.
             if (array_key_exists($employeeId, $usersByEmployeeId)) {
                 $this->logger->error(sprintf(
-                    'Duplicate Employee ID found: %s. Skipping it.',
-                    $employeeId
+                    'Duplicate Employee ID found: %s. Skipping it. [%s]',
+                    $employeeId,
+                    1494360205
                 ));
                 continue;
             }
@@ -297,7 +301,11 @@ class Synchronizer
             if ($isInIdBroker) {
                 $this->deactivateUser($idBrokerUser->employeeId);
             } else {
-                $this->logger->error('Cannot find user anywhere: ' . $employeeId);
+                $this->logger->error(sprintf(
+                    'Cannot find user anywhere: %s. [%s]',
+                    $employeeId,
+                    1494360236
+                ));
             }
         }
     }
@@ -330,10 +338,11 @@ class Synchronizer
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to sync one of the specified users (Employee ID: '
-                    . '%s). Error (%s): %s',
+                    . '%s). Error (%s): %s. [%s]',
                     var_export($employeeId, true),
                     $e->getCode(),
-                    $e->getMessage()
+                    $e->getMessage(),
+                    1494360265
                 ));
             }
         }
