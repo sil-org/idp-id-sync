@@ -30,7 +30,7 @@ if (Env::get('ID_STORE_BASE_URL') !== null) {
 }
 
 return [
-    'id' => $IDP_NAME,
+    'id' => $idpName,
     'bootstrap' => ['log'],
     'components' => [
         
