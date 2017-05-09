@@ -78,9 +78,10 @@ class Synchronizer
             }
         }
         
-        $this->logger->notice('Updated {successful} of {total}.', [
-            'successful' => $numUsersUpdated,
-            'total' => count($usersToUpdateAndActivate),
+        $this->logger->notice([
+            'action' => 'update',
+            'attempted' => count($usersToUpdateAndActivate),
+            'succeeded' => $numUsersUpdated,
         ]);
     }
     
@@ -118,9 +119,10 @@ class Synchronizer
             }
         }
         
-        $this->logger->notice('Added {successful} of {total}.', [
-            'successful' => $numUsersAdded,
-            'total' => count($usersToAdd),
+        $this->logger->notice([
+            'action' => 'create',
+            'attempted' => count($usersToAdd),
+            'succeeded' => $numUsersAdded,
         ]);
     }
     
@@ -159,9 +161,10 @@ class Synchronizer
             }
         }
         
-        $this->logger->notice('Deactivated {successful} of {total}.', [
-            'successful' => $numUsersDeactivated,
-            'total' => count($employeeIdsToDeactivate),
+        $this->logger->notice([
+            'action' => 'deactivate',
+            'attempted' => count($employeeIdsToDeactivate),
+            'succeeded' => $numUsersDeactivated,
         ]);
     }
     
