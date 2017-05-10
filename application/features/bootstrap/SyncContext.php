@@ -4,11 +4,13 @@ namespace Sil\Idp\IdSync\Behat\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
+use Psr\Log\LoggerInterface;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Sil\Psr3Adapters\Psr3ConsoleLogger;
 use yii\helpers\Json;
 
 /**
@@ -22,9 +24,17 @@ class SyncContext implements Context
     /** @var IdStoreInterface */
     private $idStore;
     
+    /** @var LoggerInterface */
+    protected $logger;
+    
     private $tempEmployeeId;
     
     private $tempUserChanges = [];
+    
+    public function __construct()
+    {
+        $this->logger = new Psr3ConsoleLogger();
+    }
     
     /**
      * @param array $activeUsers
@@ -73,7 +83,7 @@ class SyncContext implements Context
      */
     public function iGetTheUserInfoFromTheIdStoreAndSendItToTheIdBroker()
     {
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker, $this->logger);
         $synchronizer->syncUser($this->tempEmployeeId);
     }
 
@@ -125,7 +135,7 @@ class SyncContext implements Context
      */
     public function iLearnTheUserDoesNotExistInTheIdStoreAndITellTheIdBroker()
     {
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker, $this->logger);
         $synchronizer->syncUser($this->tempEmployeeId);
     }
 
@@ -188,7 +198,7 @@ class SyncContext implements Context
      */
     public function iSyncAllTheUsersFromTheIdStoreToTheIdBroker()
     {
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker, $this->logger);
         $synchronizer->syncAll();
     }
 
@@ -268,7 +278,7 @@ class SyncContext implements Context
      */
     public function iAskTheIdStoreForTheListOfUsersChangedSinceAndSyncThem($timestamp)
     {
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker);
+        $synchronizer = new Synchronizer($this->idStore, $this->idBroker, $this->logger);
         $synchronizer->syncUsersChangedSince($timestamp);
     }
 

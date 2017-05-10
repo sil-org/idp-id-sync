@@ -2,8 +2,13 @@
 
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
+use Sil\JsonSyslog\JsonSyslogTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
+
+$appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
+$idpName = Env::get('IDP_NAME');
 
 $idBrokerOptionalConfig = [];
 if (Env::get('ID_BROKER_ACCESS_TOKEN') !== null) {
@@ -25,7 +30,8 @@ if (Env::get('ID_STORE_BASE_URL') !== null) {
 }
 
 return [
-    'id' => 'id-sync',
+    'id' => $idpName,
+    'bootstrap' => ['log'],
     'components' => [
         
         'idBroker' => ArrayHelper::merge([
@@ -41,6 +47,22 @@ return [
         ], $idStoreOptionalConfig),
         
         'log' => [
+            'targets' => [
+                [
+                    'class' => JsonSyslogTarget::class,
+                    'categories' => ['application'],
+                    
+                    // Disable logging of _SERVER, _POST, etc.
+                    'logVars' => [],
+                    
+                    'prefix' => function($message) use ($appEnv, $idpName) {
+                        return Json::encode([
+                            'app_env' => $appEnv,
+                            'idp_name' => $idpName,
+                        ]);
+                    },
+                ],
+            ],
         ],
     ],
 ];

@@ -3,6 +3,7 @@ namespace Sil\Idp\IdSync\frontend\controllers;
 
 use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Idp\IdSync\frontend\components\BaseRestController;
+use Sil\Psr3Adapters\Psr3Yii2Logger;
 use Yii;
 use yii\web\UnprocessableEntityHttpException;
 
@@ -17,7 +18,11 @@ class UserController extends BaseRestController
             );
         }
         
-        $synchronizer = new Synchronizer(Yii::$app->idStore, Yii::$app->idBroker);
+        $synchronizer = new Synchronizer(
+            Yii::$app->idStore,
+            Yii::$app->idBroker,
+            new Psr3Yii2Logger()
+        );
         $synchronizer->syncUser($employeeId);
     }
 }
