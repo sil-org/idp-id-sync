@@ -54,7 +54,7 @@ class User
         $this->username = $userInfo[self::USERNAME] ?? null;
         $this->email = $userInfo[self::EMAIL] ?? null;
         $this->active = $userInfo[self::ACTIVE] ?? null;
-        $this->locked = $userInfo[self::LOCKED] ?? null;
+        $this->setLocked($userInfo[self::LOCKED] ?? null);
         
         if (empty($this->employeeId)) {
             throw new InvalidArgumentException('Employee ID cannot be empty.', 1493733219);
@@ -64,6 +64,21 @@ class User
     public function __toString()
     {
         return \json_encode($this->toArray(), JSON_PRETTY_PRINT);
+    }
+    
+    public function setLocked($input)
+    {
+        if ($input === null) {
+            return;
+        }
+        
+        $lowercasedInput = strtolower(trim($input));
+        
+        if (in_array($lowercasedInput, [false, 'false', 'no'])) {
+            $this->locked = 'no';
+        } else {
+            $this->locked = 'yes';
+        }
     }
     
     /**
