@@ -9,6 +9,9 @@ default:
         sync_features:
             paths:    [ %paths.base%/../features/sync.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\SyncContext ]
+        user_features:
+            paths:    [ %paths.base%/../features/user.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\UserContext ]
         webhook_features:
             paths:    [ %paths.base%/../features/webhook.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\WebhookContext ]
