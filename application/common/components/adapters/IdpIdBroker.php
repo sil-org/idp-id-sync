@@ -3,6 +3,7 @@ namespace Sil\Idp\IdSync\common\components\adapters;
 
 use InvalidArgumentException;
 use Sil\Idp\IdBroker\Client\IdBrokerClient;
+use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\models\User;
 
@@ -67,6 +68,13 @@ class IdpIdBroker extends IdBrokerBase
      */
     public function createUser(array $config = [])
     {
+        if (empty($config[User::EMAIL])) {
+            throw new MissingEmailException(
+                'An email address is required.',
+                1494876311
+            );
+        }
+        
         return new User($this->getClient()->createUser($config));
     }
     
