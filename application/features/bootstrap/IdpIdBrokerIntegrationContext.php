@@ -1,11 +1,8 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
-use Exception;
 use PHPUnit\Framework\Assert;
-use Sil\Idp\IdBroker\Client\IdBrokerClient;
 use Sil\Idp\IdSync\common\components\adapters\IdpIdBroker;
 use Sil\Idp\IdSync\common\models\User;
 use Sil\PhpEnv\Env;
