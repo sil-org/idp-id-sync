@@ -12,6 +12,7 @@
     "silinternational/yii2-jsonsyslog": "^1.0",
     "yiisoft/yii2": "^2.0.11",
     "yiisoft/yii2-gii": "^2.0",
+    "yiisoft/yii2-swiftmailer": "^2.0",
     "guzzlehttp/guzzle": "^6.2"
   },
   "require-dev": {
