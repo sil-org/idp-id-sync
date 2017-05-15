@@ -4,8 +4,11 @@ namespace Sil\Idp\IdSync\common\sync;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
+use Sil\Idp\IdSync\common\components\notify\NullNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\ArrayHelper;
 
@@ -22,6 +25,9 @@ class Synchronizer
     /** @var LoggerInterface */
     private $logger;
     
+    /** @var NotifierInterface */
+    private $notifier;
+    
     /**
      * Create a new Synchronizer object.
      *
@@ -29,15 +35,18 @@ class Synchronizer
      * @param IdBrokerInterface $idBroker The ID Broker to communicate with.
      * @param LoggerInterface $logger (Optional:) The PSR-3 logger to send log
      *     data to.
+     * @param MailerInterface $mailer (Optional:) An object for sending
      */
     public function __construct(
         IdStoreInterface $idStore,
         IdBrokerInterface $idBroker,
-        LoggerInterface $logger = null
+        LoggerInterface $logger = null,
+        NotifierInterface $notifier = null
     ) {
         $this->idStore = $idStore;
         $this->idBroker = $idBroker;
         $this->logger = $logger ?? new NullLogger();
+        $this->notifier = $notifier ?? new NullNotifier();
     }
     
     /**
@@ -93,8 +102,19 @@ class Synchronizer
      */
     protected function createUser(User $user)
     {
-        $this->idBroker->createUser($user->toArray());
-        $this->logger->info('Created user: ' . $user->employeeId);
+        try {
+            $this->idBroker->createUser($user->toArray());
+            $this->logger->info('Created user: ' . $user->employeeId);
+        } catch (MissingEmailException $e) {
+            $this->logger->warning(sprintf(
+                'A User (Employee ID: %s) lacked an email address.',
+                $user->employeeId
+            ));
+            $this->notifier->sendMissingEmailNotice(
+                $user,
+                $this->idStore->getIdStoreName()
+            );
+        }
     }
     
     /**
