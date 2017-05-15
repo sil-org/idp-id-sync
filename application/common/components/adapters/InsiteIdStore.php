@@ -177,4 +177,9 @@ class InsiteIdStore extends IdStoreBase
         }
         return $this->httpClient;
     }
+
+    public function getIdStoreName(): string
+    {
+        return 'Insite';
+    }
 }

@@ -65,4 +65,9 @@ class FakeIdStore extends IdStoreBase
         // For simplicity's sake, just use the field names from Insite.
         return InsiteIdStore::getIdBrokerFieldNames();
     }
+
+    public function getIdStoreName(): string
+    {
+        return 'the fake ID Store';
+    }
 }
