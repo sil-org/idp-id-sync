@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "63deaf206a2067a9bc28ffe4029d1c42",
+    "content-hash": "8f0c2eceef49ee879bd1c061d00882b8",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -746,16 +746,16 @@
         },
         {
             "name": "silinternational/idp-id-broker-php-client",
-            "version": "0.4.3",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/silinternational/idp-id-broker-php-client.git",
-                "reference": "077e2cab8c1aa1e413263334c1a2f791a47fbd1e"
+                "reference": "b73f20df124e7c9bd1dbdd99cde757e65a9239f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silinternational/idp-id-broker-php-client/zipball/077e2cab8c1aa1e413263334c1a2f791a47fbd1e",
-                "reference": "077e2cab8c1aa1e413263334c1a2f791a47fbd1e",
+                "url": "https://api.github.com/repos/silinternational/idp-id-broker-php-client/zipball/b73f20df124e7c9bd1dbdd99cde757e65a9239f3",
+                "reference": "b73f20df124e7c9bd1dbdd99cde757e65a9239f3",
                 "shasum": ""
             },
             "require": {
@@ -796,7 +796,7 @@
                 "idp",
                 "php client"
             ],
-            "time": "2017-05-11T19:53:18+00:00"
+            "time": "2017-05-15T16:07:28+00:00"
         },
         {
             "name": "silinternational/php-env",
