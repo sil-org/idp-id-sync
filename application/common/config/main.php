@@ -6,6 +6,7 @@ use Sil\JsonSyslog\JsonSyslogTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\swiftmailer\Mailer as SwiftMailer;
 
 $appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
 $idpName = Env::get('IDP_NAME');
@@ -63,6 +64,10 @@ return [
                     },
                 ],
             ],
+        ],
+        
+        'mailer' => [
+            'class' => SwiftMailer::class,
         ],
     ],
 ];
