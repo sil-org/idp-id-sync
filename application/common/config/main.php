@@ -6,7 +6,7 @@ use Sil\JsonSyslog\JsonSyslogTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
-use yii\swiftmailer\Mailer as SwiftMailer;
+use yii\swiftmailer\Mailer;
 
 $appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
 $idpName = Env::get('IDP_NAME');
@@ -67,7 +67,28 @@ return [
         ],
         
         'mailer' => [
-            'class' => SwiftMailer::class,
+            'class' => Mailer::class,
+            'htmlLayout' => '@common/mail/layouts/html.php',
+            'useFileTransport' => Env::get('MAILER_USEFILES', false),
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => Env::get('MAILER_HOST'),
+                'username' => Env::get('MAILER_USERNAME'),
+                'password' => Env::get('MAILER_PASSWORD'),
+                'port' => '465',
+                'encryption' => 'ssl',
+            ],
+        ],
+    ],
+    'params' => [
+        'notifier' => [
+            /*
+             * To send notifications emails (such as to HR when a user lacks an
+             * email address), provide both a 'to' and a 'from' email address.
+             */
+            'emailTo' => Env::get('NOTIFIER_EMAIL_TO'),
+            'emailFrom' => Env::get('MAILER_USERNAME'),
+            'organizationName' => $idpName,
         ],
     ],
 ];

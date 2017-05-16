@@ -9,7 +9,6 @@ use yii\helpers\Html;
 /* @var $username string */
 /* @var $firstName string */
 /* @var $lastName string */
-/* @var $ourEmailAddress string */
 
 ?>
 <h2>Missing Email</h2>
@@ -24,7 +23,3 @@ use yii\helpers\Html;
   <li><b>First Name:</b> <?= Html::encode($firstName) ?></li>
   <li><b>Last Name:</b> <?= Html::encode($lastName) ?></li>
 </ul>
-<p>
-  If you have any questions about this, you can contact us here: <br />
-  <?= Html::mailto(Html::encode($ourEmailAddress)) ?>
-</p>
