@@ -11,7 +11,7 @@ use yii\mail\MailerInterface;
 class EmailNotifier implements NotifierInterface
 {
     /** @var string */
-    protected $idpName;
+    protected $organizationName;
     
     /** @var string */
     protected $idStoreName;
@@ -19,42 +19,57 @@ class EmailNotifier implements NotifierInterface
     /** @var MailerInterface */
     protected $mailer;
     
-    /**
-     * The email address that the recipient(s) of these notices (e.g. - HR) will
-     * be given, in case they have questions about a notification.
-     *
-     * @var string
-     */
-    protected $ourEmailAddress;
+    /** @var string */
+    protected $toEmailAddress;
+    
+    /** @var string */
+    protected $fromEmailAddress;
     
     /**
      * Constructor.
      *
      * @param MailerInterface $mailer The Mailer to use for actually sending
      *     email.
+     * @param string $toEmailAddress What address to send the email to.
+     * @param string $fromEmailAddress What address to send the email from.
+     * @param string $organizationName The name of the organization.
+     * @param string $idStoreName The name of the ID Store.
      */
     public function __construct(
         MailerInterface $mailer,
-        string $idpName,
-        string $idStoreName,
-        string $ourEmailAddress
+        string $toEmailAddress,
+        string $fromEmailAddress,
+        string $organizationName,
+        string $idStoreName
     ) {
         $this->mailer = $mailer;
-        $this->idpName = $idpName;
+        $this->toEmailAddress = $toEmailAddress;
+        $this->fromEmailAddress = $fromEmailAddress;
+        $this->organizationName = $organizationName;
         $this->idStoreName = $idStoreName;
-        $this->ourEmailAddress = $ourEmailAddress;
     }
     
     public function sendMissingEmailNotice(User $user)
     {
-        $this->mailer->compose('missing-email', [
+        $message = $this->mailer->compose('@common/mail/missing-email', [
             'idStoreName' => $this->idStoreName,
-            'idpName' => $this->idpName,
+            'organizationName' => $this->organizationName,
             'employeeId' => $user->employeeId,
             'username' => $user->username,
             'firstName' => $user->firstName,
             'lastName' => $user->lastName,
-            'ourEmailAddress' => $this->ourEmailAddress,
         ]);
+        $message->setTo($this->toEmailAddress);
+        $message->setFrom($this->fromEmailAddress);
+        $message->setSubject('Email address missing for ' . $user->username);
+        $isSuccessful = $message->send();
+        if ( ! $isSuccessful) {
+            throw new \Exception(sprintf(
+                'Failed to send notification email (%s) from %s to %s.',
+                $message->getSubject(),
+                var_export($message->getFrom(), true),
+                var_export($message->getTo(), true)
+            ));
+        }
     }
 }
