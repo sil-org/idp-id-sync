@@ -1,4 +1,4 @@
-start: app
+start: broker app
 
 app: deps
 	docker-compose up -d app
