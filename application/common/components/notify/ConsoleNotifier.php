@@ -12,7 +12,7 @@ class ConsoleNotifier implements NotifierInterface
     public function sendMissingEmailNotice(User $user)
     {
         echo sprintf(
-            'NOTIFIER: A user (%s, EmployeeID %s) lacks an email address.',
+            'NOTIFIER: A user (%s, Employee ID %s) lacks an email address.',
             $user->username,
             $user->employeeId
         ) . PHP_EOL;
