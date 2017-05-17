@@ -102,19 +102,8 @@ class Synchronizer
      */
     protected function createUser(User $user)
     {
-        try {
-            $this->idBroker->createUser($user->toArray());
-            $this->logger->info('Created user: ' . $user->employeeId);
-        } catch (MissingEmailException $e) {
-            $this->logger->warning(sprintf(
-                'A User (Employee ID: %s) lacked an email address.',
-                $user->employeeId
-            ));
-            $this->notifier->sendMissingEmailNotice(
-                $user,
-                $this->idStore->getIdStoreName()
-            );
-        }
+        $this->idBroker->createUser($user->toArray());
+        $this->logger->info('Created user: ' . $user->employeeId);
     }
     
     /**
@@ -125,10 +114,17 @@ class Synchronizer
     protected function createUsers(array $usersToAdd)
     {
         $numUsersAdded = 0;
+        $usersWithoutEmail = [];
         foreach ($usersToAdd as $userToAdd) {
             try {
                 $this->createUser($userToAdd);
                 $numUsersAdded += 1;
+            } catch (MissingEmailException $e) {
+                $usersWithoutEmail[] = $userToAdd;
+                $this->logger->warning(sprintf(
+                    'A User (Employee ID: %s) lacked an email address.',
+                    $userToAdd->employeeId
+                ));
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
@@ -146,6 +142,10 @@ class Synchronizer
             'attempted' => count($usersToAdd),
             'succeeded' => $numUsersAdded,
         ]);
+        
+        if ( ! empty($usersWithoutEmail)) {
+            $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
+        }
     }
     
     /**
@@ -343,6 +343,8 @@ class Synchronizer
             count($employeeIds)
         ));
         
+        $usersWithoutEmail = [];
+        
         foreach ($employeeIds as $employeeId) {
             if (empty($employeeId)) {
                 $this->logger->warning(sprintf(
@@ -355,6 +357,14 @@ class Synchronizer
             
             try {
                 $this->syncUser($employeeId);
+            } catch (MissingEmailException $e) {
+                $usersWithoutEmail[] = new User([
+                    User::EMPLOYEE_ID => $employeeId,
+                ]);
+                $this->logger->warning(sprintf(
+                    'A User (Employee ID: %s) lacked an email address.',
+                    $employeeId
+                ));
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to sync one of the specified users (Employee ID: '
@@ -365,6 +375,10 @@ class Synchronizer
                     1494360265
                 ));
             }
+        }
+        
+        if ( ! empty($usersWithoutEmail)) {
+            $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
         }
         
         $this->logger->info(sprintf(
