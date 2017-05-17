@@ -99,7 +99,11 @@ class Synchronizer
     /**
      * Create the given user in the ID Broker.
      *
+     * NOTE: Make sure you catch (and handle) any `MissingEmailException`s
+     *       thrown by this method.
+     *
      * @param User $user The user's information.
+     * @throws MissingEmailException
      */
     protected function createUser(User $user)
     {
@@ -121,11 +125,11 @@ class Synchronizer
                 $this->createUser($userToAdd);
                 $numUsersAdded += 1;
             } catch (MissingEmailException $e) {
-                $usersWithoutEmail[] = $userToAdd;
                 $this->logger->warning(sprintf(
                     'A User (Employee ID: %s) lacked an email address.',
                     $userToAdd->employeeId
                 ));
+                $usersWithoutEmail[] = $userToAdd;
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
@@ -299,6 +303,34 @@ class Synchronizer
      */
     public function syncUser($employeeId)
     {
+        try {
+            $this->syncUserInternal($employeeId);
+        } catch (MissingEmailException $e) {
+            $this->logger->warning(sprintf(
+                'That User (Employee ID: %s) lacked an email address.',
+                $employeeId
+            ));
+            $user = new User([User::EMPLOYEE_ID => $employeeId]);
+            $this->notifier->sendMissingEmailNotice([$user]);
+        } catch (Exception $e) {
+            $this->logger->error(sprintf(
+                'Failed to sync the specified user (Employee ID: '
+                . '%s). Error (%s): %s. [%s]',
+                var_export($employeeId, true),
+                $e->getCode(),
+                $e->getMessage(),
+                1495036251
+            ));
+        }
+    }
+    
+    /**
+     * Actually make the calls to synchronize the specified user.
+     *
+     * @param string $employeeId The Employee ID of the user to sync.
+     */
+    protected function syncUserInternal($employeeId)
+    {
         if (empty($employeeId)) {
             throw new \InvalidArgumentException(
                 'Employee ID cannot be empty',
@@ -357,15 +389,15 @@ class Synchronizer
             }
             
             try {
-                $this->syncUser($employeeId);
+                $this->syncUserInternal($employeeId);
             } catch (MissingEmailException $e) {
-                $usersWithoutEmail[] = new User([
-                    User::EMPLOYEE_ID => $employeeId,
-                ]);
                 $this->logger->warning(sprintf(
                     'A User (Employee ID: %s) lacked an email address.',
                     $employeeId
                 ));
+                $usersWithoutEmail[] = new User([
+                    User::EMPLOYEE_ID => $employeeId,
+                ]);
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to sync one of the specified users (Employee ID: '
