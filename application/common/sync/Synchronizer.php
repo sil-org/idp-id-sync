@@ -35,7 +35,8 @@ class Synchronizer
      * @param IdBrokerInterface $idBroker The ID Broker to communicate with.
      * @param LoggerInterface $logger (Optional:) The PSR-3 logger to send log
      *     data to.
-     * @param MailerInterface $mailer (Optional:) An object for sending
+     * @param NotifierInterface $notifier (Optional:) An object for sending
+     *     notifications.
      */
     public function __construct(
         IdStoreInterface $idStore,
