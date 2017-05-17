@@ -9,7 +9,7 @@ use yii\helpers\Json;
 use yii\swiftmailer\Mailer;
 
 $appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
-$idpName = Env::get('IDP_NAME');
+$idpName = Env::requireEnv('IDP_NAME');
 
 $idBrokerOptionalConfig = [];
 if (Env::get('ID_BROKER_ACCESS_TOKEN') !== null) {
