@@ -49,19 +49,24 @@ class EmailNotifier implements NotifierInterface
         $this->idStoreName = $idStoreName;
     }
     
-    public function sendMissingEmailNotice(User $user)
+    /**
+     * {@inheritdoc}
+     */
+    public function sendMissingEmailNotice(array $users)
     {
+        $numUsers = count($users);
         $message = $this->mailer->compose('@common/mail/missing-email', [
             'idStoreName' => $this->idStoreName,
             'organizationName' => $this->organizationName,
-            'employeeId' => $user->employeeId,
-            'username' => $user->username,
-            'firstName' => $user->firstName,
-            'lastName' => $user->lastName,
+            'users' => $users,
         ]);
         $message->setTo($this->toEmailAddress);
         $message->setFrom($this->fromEmailAddress);
-        $message->setSubject('Email address missing for ' . $user->username);
+        $message->setSubject(sprintf(
+            'Email address missing for %s user%s',
+            $numUsers,
+            ($numUsers === 1 ? '' : 's')
+        ));
         $isSuccessful = $message->send();
         if ( ! $isSuccessful) {
             throw new \Exception(sprintf(

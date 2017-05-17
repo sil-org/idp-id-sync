@@ -5,21 +5,17 @@ use yii\helpers\Html;
 /* @var $message \yii\mail\BaseMessage Newly created mail message. */
 /* @var $idStoreName string */
 /* @var $organizationName string */
-/* @var $employeeId string */
-/* @var $username string */
-/* @var $firstName string */
-/* @var $lastName string */
+/* @var $users User[] */
 
 ?>
 <h2>Missing Email</h2>
 <p>
-  The following <?= Html::encode($idStoreName) ?> user is missing an email 
+  The following <?= count($users) ?> user(s) do not have an email 
   address. Without this, they will be unable to log in to certain 
   <?= Html::encode($organizationName) ?> websites.
 </p>
-<ul>
-  <li><b>Employee ID:</b> <?= Html::encode($employeeId) ?></li>
-  <li><b>Username:</b> <?= Html::encode($username) ?></li>
-  <li><b>First Name:</b> <?= Html::encode($firstName) ?></li>
-  <li><b>Last Name:</b> <?= Html::encode($lastName) ?></li>
-</ul>
+<ol>
+  <?php foreach ($users as $user): ?>
+    <li><?= Html::encode($username) ?>, <?= Html::encode($employeeId) ?></li>
+  <?php endforeach; ?>
+</ol>

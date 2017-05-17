@@ -9,7 +9,7 @@ use Sil\Idp\IdSync\common\models\User;
  */
 class NullNotifier implements NotifierInterface
 {
-    public function sendMissingEmailNotice(User $user)
+    public function sendMissingEmailNotice(array $users)
     {
         // noop
     }

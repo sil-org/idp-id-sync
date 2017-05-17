@@ -6,9 +6,9 @@ use Sil\Idp\IdSync\common\models\User;
 interface NotifierInterface
 {
     /**
-     * Send a notification that a User lacks an email address.
+     * Send a notification that there are Users that lack an email address.
      *
-     * @param User $user The User's available info.
+     * @param User[] $users The list of Users.
      */
-    public function sendMissingEmailNotice(User $user);
+    public function sendMissingEmailNotice(array $users);
 }
