@@ -49,10 +49,7 @@ class WebhookContext implements Context
         Assert::assertSame(
             (int)$responseCode,
             $this->response->getStatusCode(),
-            'Unexpected response: ' . var_export(
-                json_decode($this->response->getBody()->getContents()),
-                true
-            )
+            'Unexpected response: ' . $this->response->getBody()->getContents()
         );
     }
 }
