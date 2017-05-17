@@ -7,12 +7,14 @@ use yii\helpers\Html;
 /* @var $organizationName string */
 /* @var $users User[] */
 
+$numUsers = count($users);
 ?>
 <h2>Missing Email</h2>
 <p>
-  The following <?= count($users) ?> user(s) do not have an email 
-  address. Without this, they will be unable to log in to certain 
-  <?= Html::encode($organizationName) ?> websites.
+  The following 
+  <?= Html::encode($numUsers === 1 ? 'user does' : $numUsers . ' users do') ?> 
+  not have an email address. Without this, they will be unable to log in to 
+  certain <?= Html::encode($organizationName) ?> websites.
 </p>
 <ol>
   <?php foreach ($users as $user): ?>
