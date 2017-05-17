@@ -16,6 +16,11 @@ use yii\helpers\Html;
 </p>
 <ol>
   <?php foreach ($users as $user): ?>
-    <li><?= Html::encode($username) ?>, <?= Html::encode($employeeId) ?></li>
+    <li>
+      Employee ID <?= Html::encode($user->employeeId) ?>
+      <?php if ($user->username !== null): ?>
+        (<?= Html::encode($user->username) ?>)
+      <?php endif; ?>
+    </li>
   <?php endforeach; ?>
 </ol>
