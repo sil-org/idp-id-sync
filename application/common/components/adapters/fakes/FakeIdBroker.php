@@ -1,6 +1,7 @@
 <?php
 namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
+use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\models\User;
 use yii\base\NotSupportedException;
@@ -28,9 +29,19 @@ class FakeIdBroker extends IdBrokerBase
 
     public function createUser(array $config = [])
     {
-        if (array_key_exists('email', $config) && empty($config['email'])) {
-            throw new \InvalidArgumentException('FAKE: Email cannot be empty.');
+        /*
+         * NOTE: Only have the FakeIdBroker require a value for 'email' if the
+         * given $config includes an 'email' key. This is to avoid having to
+         * include a dummy email address in our tests where the email address
+         * would be irrelevant.
+         */
+        if (array_key_exists(User::EMAIL, $config) && empty($config[User::EMAIL])) {
+            throw new MissingEmailException(
+                'An email address is required.',
+                1494880621
+            );
         }
+        
         $this->usersByEmployeeId[$config['employee_id']] = ArrayHelper::merge(
             ['active' => 'yes'], // 'active' should default to 'yes'
             $config

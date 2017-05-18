@@ -23,6 +23,13 @@ interface IdStoreInterface
     public function getAllActiveUsers();
     
     /**
+     * Get a user-friendly name for this ID Store.
+     *
+     * @return string The name of the ID Store.
+     */
+    public function getIdStoreName();
+    
+    /**
      * Get a list of users who have had qualifying changes (name, email, locked,
      * activated, added) since the given Unix timestamp.
      * 

@@ -47,7 +47,11 @@ class User
      */
     public function __construct($userInfo = [])
     {
-        $this->employeeId = $userInfo[self::EMPLOYEE_ID];
+        if (empty($userInfo[self::EMPLOYEE_ID])) {
+            throw new InvalidArgumentException('Employee ID cannot be empty.', 1493733219);
+        }
+        
+        $this->employeeId = (string)$userInfo[self::EMPLOYEE_ID];
         $this->firstName = $userInfo[self::FIRST_NAME] ?? null;
         $this->lastName = $userInfo[self::LAST_NAME] ?? null;
         $this->displayName = $userInfo[self::DISPLAY_NAME] ?? null;
@@ -55,10 +59,6 @@ class User
         $this->email = $userInfo[self::EMAIL] ?? null;
         $this->active = $userInfo[self::ACTIVE] ?? null;
         $this->setLocked($userInfo[self::LOCKED] ?? null);
-        
-        if (empty($this->employeeId)) {
-            throw new InvalidArgumentException('Employee ID cannot be empty.', 1493733219);
-        }
     }
     
     public function __toString()

@@ -13,6 +13,7 @@ app:
         ID_BROKER_ACCESS_TOKEN: codeship-sync-to-broker-11111111
         ID_STORE_ADAPTER: fake
         ID_SYNC_ACCESS_TOKENS: codeship-test-to-sync-22222222
+        IDP_NAME: Test
         TEST_ID_SYNC_BASE_URL: http://localhost
 
 broker:

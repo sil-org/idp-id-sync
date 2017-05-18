@@ -5,7 +5,6 @@ use Sil\PhpEnv\Env;
 use yii\web\JsonParser;
 
 return [
-    'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     
     // http://www.yiiframework.com/doc-2.0/guide-structure-applications.html#controllerNamespace

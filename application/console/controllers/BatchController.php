@@ -1,21 +1,12 @@
 <?php
 namespace Sil\Idp\IdSync\console\controllers;
 
-use Sil\Idp\IdSync\common\sync\Synchronizer;
-use Sil\Psr3Adapters\Psr3Yii2Logger;
-use Yii;
+use Sil\Idp\IdSync\common\traits\SyncProvider;
 use yii\console\Controller;
 
 class BatchController extends Controller
 {
-    protected function getSynchronizer()
-    {
-        return new Synchronizer(
-            Yii::$app->idStore,
-            Yii::$app->idBroker,
-            new Psr3Yii2Logger()
-        );
-    }
+    use SyncProvider;
     
     public function actionFull()
     {

@@ -8,8 +8,10 @@ use Psr\Log\LoggerInterface;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
+use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Psr3Adapters\Psr3ConsoleLogger;
 use yii\helpers\Json;
 
@@ -27,6 +29,9 @@ class SyncContext implements Context
     /** @var LoggerInterface */
     protected $logger;
     
+    /** @var NotifierInterface */
+    protected $notifier;
+    
     private $tempEmployeeId;
     
     private $tempUserChanges = [];
@@ -34,6 +39,7 @@ class SyncContext implements Context
     public function __construct()
     {
         $this->logger = new Psr3ConsoleLogger();
+        $this->notifier = new ConsoleNotifier();
     }
     
     /**
@@ -65,6 +71,16 @@ class SyncContext implements Context
             $this->tempEmployeeId => $tempIdStoreUserInfo,
         ]);
     }
+    
+    protected function createSynchronizer()
+    {
+        return new Synchronizer(
+            $this->idStore,
+            $this->idBroker,
+            $this->logger,
+            $this->notifier
+        );
+    }
 
     /**
      * @Given the user exists in the ID Broker
@@ -83,7 +99,7 @@ class SyncContext implements Context
      */
     public function iGetTheUserInfoFromTheIdStoreAndSendItToTheIdBroker()
     {
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker, $this->logger);
+        $synchronizer = $this->createSynchronizer();
         $synchronizer->syncUser($this->tempEmployeeId);
     }
 
@@ -135,7 +151,7 @@ class SyncContext implements Context
      */
     public function iLearnTheUserDoesNotExistInTheIdStoreAndITellTheIdBroker()
     {
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker, $this->logger);
+        $synchronizer = $this->createSynchronizer();
         $synchronizer->syncUser($this->tempEmployeeId);
     }
 
@@ -198,7 +214,7 @@ class SyncContext implements Context
      */
     public function iSyncAllTheUsersFromTheIdStoreToTheIdBroker()
     {
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker, $this->logger);
+        $synchronizer = $this->createSynchronizer();
         $synchronizer->syncAll();
     }
 
@@ -278,7 +294,7 @@ class SyncContext implements Context
      */
     public function iAskTheIdStoreForTheListOfUsersChangedSinceAndSyncThem($timestamp)
     {
-        $synchronizer = new Synchronizer($this->idStore, $this->idBroker, $this->logger);
+        $synchronizer = $this->createSynchronizer();
         $synchronizer->syncUsersChangedSince($timestamp);
     }
 

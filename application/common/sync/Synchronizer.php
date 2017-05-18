@@ -4,8 +4,11 @@ namespace Sil\Idp\IdSync\common\sync;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
+use Sil\Idp\IdSync\common\components\notify\NullNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\ArrayHelper;
 
@@ -22,22 +25,29 @@ class Synchronizer
     /** @var LoggerInterface */
     private $logger;
     
+    /** @var NotifierInterface */
+    private $notifier;
+    
     /**
      * Create a new Synchronizer object.
      *
      * @param IdStoreInterface $idStore The ID Store to communicate with.
      * @param IdBrokerInterface $idBroker The ID Broker to communicate with.
-     * @param LoggerInterface $logger (Optional:) The PSR-3 logger to send log
-     *     data to.
+     * @param LoggerInterface|null $logger (Optional:) The PSR-3 logger to send
+     *     log data to.
+     * @param NotifierInterface|null $notifier (Optional:) An object for sending
+     *     notifications.
      */
     public function __construct(
         IdStoreInterface $idStore,
         IdBrokerInterface $idBroker,
-        LoggerInterface $logger = null
+        LoggerInterface $logger = null,
+        NotifierInterface $notifier = null
     ) {
         $this->idStore = $idStore;
         $this->idBroker = $idBroker;
         $this->logger = $logger ?? new NullLogger();
+        $this->notifier = $notifier ?? new NullNotifier();
     }
     
     /**
@@ -89,7 +99,11 @@ class Synchronizer
     /**
      * Create the given user in the ID Broker.
      *
+     * NOTE: Make sure you catch (and handle) any `MissingEmailException`s
+     *       thrown by this method.
+     *
      * @param User $user The user's information.
+     * @throws MissingEmailException
      */
     protected function createUser(User $user)
     {
@@ -105,10 +119,17 @@ class Synchronizer
     protected function createUsers(array $usersToAdd)
     {
         $numUsersAdded = 0;
+        $usersWithoutEmail = [];
         foreach ($usersToAdd as $userToAdd) {
             try {
                 $this->createUser($userToAdd);
                 $numUsersAdded += 1;
+            } catch (MissingEmailException $e) {
+                $this->logger->warning(sprintf(
+                    'A User (Employee ID: %s) lacked an email address.',
+                    $userToAdd->employeeId
+                ));
+                $usersWithoutEmail[] = $userToAdd;
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
@@ -126,6 +147,10 @@ class Synchronizer
             'attempted' => count($usersToAdd),
             'succeeded' => $numUsersAdded,
         ]);
+        
+        if ( ! empty($usersWithoutEmail)) {
+            $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
+        }
     }
     
     /**
@@ -274,9 +299,37 @@ class Synchronizer
      * Synchronize a specific user, requesting their information from the
      * ID Store and updating it accordingly in the ID Broker.
      *
-     * @param string $employeeId The EmployeeID of the user to sync.
+     * @param string $employeeId The Employee ID of the user to sync.
      */
     public function syncUser($employeeId)
+    {
+        try {
+            $this->syncUserInternal($employeeId);
+        } catch (MissingEmailException $e) {
+            $this->logger->warning(sprintf(
+                'That User (Employee ID: %s) lacked an email address.',
+                $employeeId
+            ));
+            $user = new User([User::EMPLOYEE_ID => $employeeId]);
+            $this->notifier->sendMissingEmailNotice([$user]);
+        } catch (Exception $e) {
+            $this->logger->error(sprintf(
+                'Failed to sync the specified user (Employee ID: '
+                . '%s). Error (%s): %s. [%s]',
+                var_export($employeeId, true),
+                $e->getCode(),
+                $e->getMessage(),
+                1495036251
+            ));
+        }
+    }
+    
+    /**
+     * Actually make the calls to synchronize the specified user.
+     *
+     * @param string $employeeId The Employee ID of the user to sync.
+     */
+    protected function syncUserInternal($employeeId)
     {
         if (empty($employeeId)) {
             throw new \InvalidArgumentException(
@@ -323,6 +376,8 @@ class Synchronizer
             count($employeeIds)
         ));
         
+        $usersWithoutEmail = [];
+        
         foreach ($employeeIds as $employeeId) {
             if (empty($employeeId)) {
                 $this->logger->warning(sprintf(
@@ -334,7 +389,15 @@ class Synchronizer
             }
             
             try {
-                $this->syncUser($employeeId);
+                $this->syncUserInternal($employeeId);
+            } catch (MissingEmailException $e) {
+                $this->logger->warning(sprintf(
+                    'A User (Employee ID: %s) lacked an email address.',
+                    $employeeId
+                ));
+                $usersWithoutEmail[] = new User([
+                    User::EMPLOYEE_ID => $employeeId,
+                ]);
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to sync one of the specified users (Employee ID: '
@@ -345,6 +408,10 @@ class Synchronizer
                     1494360265
                 ));
             }
+        }
+        
+        if ( ! empty($usersWithoutEmail)) {
+            $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
         }
         
         $this->logger->info(sprintf(
