@@ -11,6 +11,7 @@ use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Psr3Adapters\Psr3ConsoleLogger;
 use yii\helpers\Json;
 
@@ -27,6 +28,9 @@ class SyncContext implements Context
     
     /** @var LoggerInterface */
     protected $logger;
+    
+    /** @var NotifierInterface */
+    protected $notifier;
     
     private $tempEmployeeId;
     
