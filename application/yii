@@ -24,8 +24,13 @@ try {
         require(__DIR__ . '/common/config/main.php'),
         require(__DIR__ . '/console/config/main.php')
     );
-} catch (Sil\PhpEnv\EnvVarNotFoundException $e) {
+} catch (\Exception $e) {
     fwrite(STDERR, $e->getMessage() . PHP_EOL);
+    
+    openlog('id-broker', LOG_NDELAY | LOG_PERROR, LOG_USER);
+    syslog(LOG_CRIT, $e->getMessage());
+    closelog();
+    
     exit(1);
 }
 

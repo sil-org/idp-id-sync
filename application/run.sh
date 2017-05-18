@@ -7,13 +7,20 @@ else
     sed -i /etc/rsyslog.conf -e "s/LOGENTRIESKEY/${LOGENTRIES_KEY}/"
     # Start syslog
     rsyslogd
+    
+    # Give syslog time to fully start up.
+    sleep 3
 fi
 
 # Configure (and start) cron.
-./start-cron.sh
+output=$(./start-cron.sh 2>&1)
 
 # If the cron stuff failed, exit.
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+rc=$?;
+if [[ $rc != 0 ]]; then
+  logger -p 1 -t application.crit "FAILED to start cron jobs. Exit code ${rc}. Message: ${output}"
+  exit $rc;
+fi
 
 # Run apache in foreground
 apache2ctl -D FOREGROUND
