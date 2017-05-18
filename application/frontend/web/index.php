@@ -13,7 +13,7 @@ try {
         require(__DIR__ . '/../../common/config/main.php'),
         require(__DIR__ . '/../config/main.php')
     );
-} catch (EnvVarNotFoundException $e) {
+} catch (Sil\PhpEnv\EnvVarNotFoundException $e) {
     header('Content-Type: application/json');
     http_response_code(500);
     
