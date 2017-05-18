@@ -13,7 +13,7 @@ try {
         require(__DIR__ . '/../../common/config/main.php'),
         require(__DIR__ . '/../config/main.php')
     );
-} catch (Sil\PhpEnv\EnvVarNotFoundException $e) {
+} catch (\Exception $e) {
     
     // Log to syslog (Logentries).
     openlog('id-broker', LOG_NDELAY | LOG_PERROR, LOG_USER);
