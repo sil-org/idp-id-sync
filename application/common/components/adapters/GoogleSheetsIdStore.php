@@ -46,9 +46,9 @@ class GoogleSheetsIdStore extends IdStoreBase
     public function init()
     {
         $requiredProperties = [
-//            'applicationName',
-//            'jsonAuthString',
-//            'spreadsheetId',
+            'applicationName',
+            'jsonAuthString',
+            'spreadsheetId',
         ];
         foreach ($requiredProperties as $requiredProperty) {
             if (empty($this->$requiredProperty)) {
