@@ -19,16 +19,7 @@ if (Env::get('ID_BROKER_BASE_URL') !== null) {
     $idBrokerOptionalConfig['baseUrl'] = Env::get('ID_BROKER_BASE_URL');
 }
 
-$idStoreOptionalConfig = [];
-if (Env::get('ID_STORE_CONFIG_apiKey') !== null) {
-    $idStoreOptionalConfig['apiKey'] = Env::get('ID_STORE_CONFIG_apiKey');
-}
-if (Env::get('ID_STORE_CONFIG_apiSecret') !== null) {
-    $idStoreOptionalConfig['apiSecret'] = Env::get('ID_STORE_CONFIG_apiSecret');
-}
-if (Env::get('ID_STORE_CONFIG_baseUrl') !== null) {
-    $idStoreOptionalConfig['baseUrl'] = Env::get('ID_STORE_CONFIG_baseUrl');
-}
+$idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
 
 return [
     'id' => $idpName,
