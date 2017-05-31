@@ -6,9 +6,9 @@ use Sil\Idp\IdSync\common\components\adapters\GoogleSheetsIdStore;
 use Sil\PhpEnv\Env;
 
 $store = new GoogleSheetsIdStore([
-    'applicationName' => Env::requireEnv('ID_STORE_applicationName'),
-    'jsonAuthString' => Env::requireEnv('ID_STORE_jsonAuthString'),
-    'spreadsheetId' => Env::requireEnv('ID_STORE_spreadsheetId'),
+    'applicationName' => Env::requireEnv('ID_STORE_CONFIG_applicationName'),
+    'jsonAuthString' => Env::requireEnv('ID_STORE_CONFIG_jsonAuthString'),
+    'spreadsheetId' => Env::requireEnv('ID_STORE_CONFIG_spreadsheetId'),
 ]);
 
 var_dump($store->getAllActiveUsers());

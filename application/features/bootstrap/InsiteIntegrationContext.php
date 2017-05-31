@@ -32,9 +32,9 @@ class InsiteIntegrationContext implements Context
      */
     public function iCanMakeAuthenticatedCallsToTheIdStore()
     {
-        $insiteApiKey = Env::requireEnv('TEST_INSITE_API_KEY');
-        $insiteApiSecret = Env::requireEnv('TEST_INSITE_API_SECRET');
-        $insiteBaseUrl = Env::requireEnv('TEST_INSITE_BASE_URL');
+        $insiteApiKey = Env::requireEnv('TEST_INSITE_CONFIG_apiKey');
+        $insiteApiSecret = Env::requireEnv('TEST_INSITE_CONFIG_apiSecret');
+        $insiteBaseUrl = Env::requireEnv('TEST_INSITE_CONFIG_baseUrl');
         
         $this->idStore = new InsiteIdStore([
             'apiKey' => $insiteApiKey,
