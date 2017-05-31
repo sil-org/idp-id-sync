@@ -4,7 +4,7 @@ default:
             paths:    [ %paths.base%/../features/idp-id-broker-integration.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\IdpIdBrokerIntegrationContext ]
         insite_integration_features:
-            paths:    [ %paths.base%/../features/insite-integration.feature ]
+            paths:    [ %paths.base%/../features/id-store-integration.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\InsiteIntegrationContext ]
         sync_features:
             paths:    [ %paths.base%/../features/sync.feature ]

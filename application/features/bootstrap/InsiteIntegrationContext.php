@@ -28,9 +28,9 @@ class InsiteIntegrationContext implements Context
     }
     
     /**
-     * @Given I can make authenticated calls to Insite
+     * @Given I can make authenticated calls to the ID Store
      */
-    public function iCanMakeAuthenticatedCallsToInsite()
+    public function iCanMakeAuthenticatedCallsToTheIdStore()
     {
         $insiteApiKey = Env::requireEnv('TEST_INSITE_API_KEY');
         $insiteApiSecret = Env::requireEnv('TEST_INSITE_API_SECRET');
@@ -44,9 +44,9 @@ class InsiteIntegrationContext implements Context
     }
     
     /**
-     * @When I ask Insite for a specific active user
+     * @When I ask the ID Store for a specific active user
      */
-    public function iAskInsiteForASpecificActiveUser()
+    public function iAskTheIdStoreForASpecificActiveUser()
     {
         $employeeId = Env::requireEnv('TEST_INSITE_EMPLOYEE_ID');
         $this->result = $this->idStore->getActiveUser($employeeId);
@@ -62,9 +62,9 @@ class InsiteIntegrationContext implements Context
     }
     
     /**
-     * @When I ask Insite for all active users
+     * @When I ask the ID Store for all active users
      */
-    public function iAskInsiteForAllActiveUsers()
+    public function iAskTheIdStoreForAllActiveUsers()
     {
         $this->result = $this->idStore->getAllActiveUsers();
     }
@@ -82,9 +82,9 @@ class InsiteIntegrationContext implements Context
     }
     
     /**
-     * @When I ask Insite for all users changed since a specific point in time
+     * @When I ask the ID Store for all users changed since a specific point in time
      */
-    public function iAskInsiteForAllUsersChangedSinceASpecificPointInTime()
+    public function iAskTheIdStoreForAllUsersChangedSinceASpecificPointInTime()
     {
         $this->result = $this->idStore->getUsersChangedSince(1489764017);
     }
