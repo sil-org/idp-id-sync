@@ -1,6 +1,7 @@
 <?php
 namespace Sil\Idp\IdSync\common\components;
 
+use Sil\Idp\IdSync\common\components\adapters\GoogleSheetsIdStore;
 use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
@@ -10,10 +11,12 @@ use yii\base\Component;
 abstract class IdStoreBase extends Component implements IdStoreInterface
 {
     const ADAPTER_FAKE = 'fake';
+    const ADAPTER_GOOGLE_SHEETS = 'googlesheets';
     const ADAPTER_INSITE = 'insite';
     
     protected static $adapters = [
         self::ADAPTER_FAKE => FakeIdStore::class,
+        self::ADAPTER_GOOGLE_SHEETS => GoogleSheetsIdStore::class,
         self::ADAPTER_INSITE => InsiteIdStore::class,
     ];
     
