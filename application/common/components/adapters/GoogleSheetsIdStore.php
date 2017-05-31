@@ -9,37 +9,37 @@ use yii\helpers\Json;
 class GoogleSheetsIdStore extends IdStoreBase
 {
     /**
-     * @var null|string Stores Application Name to use with Google_Client
+     * @var null|string The Application Name to use with Google_Client.
      */
     public $applicationName = null;
-
+    
     /**
-     * @var null|string Stores JSON authentication credentials from Google
+     * @var null|string The JSON authentication credentials from Google.
      */
     public $jsonAuthString = null;
-
+    
     /**
-     * @var null|string Stores Spreadsheet ID
+     * @var null|string The Spreadsheet ID.
      */
     public $spreadsheetId = null;
-
+    
     /**
-     * @var array<string> oAuth Scopes needed for reading/writing sheets
+     * @var array<string> OAuth Scopes needed for reading/writing sheets.
      */
     public $scopes = [\Google_Service_Sheets::SPREADSHEETS];
-
-
+    
+    
     /**
      * @var \Google_Client
      */
     private $client;
-
+    
     /**
      * @var \Google_Service_Sheets
      */
     private $sheets;
-
-
+    
+    
     /**
      * Init and ensure required properties are set
      */
@@ -58,11 +58,10 @@ class GoogleSheetsIdStore extends IdStoreBase
                 ), 1495648880);
             }
         }
-
+        
         parent::init();
     }
-
-
+    
     public function initGoogleClient()
     {
         $jsonCreds = Json::decode($this->jsonAuthString);
@@ -73,7 +72,7 @@ class GoogleSheetsIdStore extends IdStoreBase
         $this->client->setAccessType('offline');
         $this->sheets = new \Google_Service_Sheets($this->client);
     }
-
+    
     /**
      * Get the specified user's information. Note that inactive users will be
      * treated as non-existent users.
@@ -92,7 +91,7 @@ class GoogleSheetsIdStore extends IdStoreBase
         }
         return null;
     }
-
+    
     /**
      * Get information about each of the (active) users.
      *
@@ -103,22 +102,21 @@ class GoogleSheetsIdStore extends IdStoreBase
         $allUsers = [];
         $start = 2;
         $howMany = 100;
-
+        
         $hasAllUsers = false;
         while ( ! $hasAllUsers) {
             $batch = $this->getUsersFromSpreadsheet($start, $howMany);
             $allUsers = array_merge($allUsers, $batch);
             $start += $howMany;
-
+            
             if (count($batch) < $howMany) {
                 $hasAllUsers = true;
             }
         }
-
+        
         return self::getAsUsers($allUsers);
     }
-
-
+    
     public static function getIdBrokerFieldNames(): array
     {
         return [
@@ -132,7 +130,7 @@ class GoogleSheetsIdStore extends IdStoreBase
             'active' => User::ACTIVE,
         ];
     }
-
+    
     /**
      * Get a user-friendly name for this ID Store.
      *
@@ -142,7 +140,7 @@ class GoogleSheetsIdStore extends IdStoreBase
     {
         return 'Google Sheets';
     }
-
+    
     /**
      * Get a list of users who have had qualifying changes (name, email, locked,
      * activated, added) since the given Unix timestamp.
@@ -154,7 +152,7 @@ class GoogleSheetsIdStore extends IdStoreBase
     {
         return $this->getAllActiveUsers();
     }
-
+    
     /**
      * @param int $startRow
      * @param int $howMany
@@ -174,7 +172,7 @@ class GoogleSheetsIdStore extends IdStoreBase
                 if (empty($user[0])) {
                     break;
                 }
-
+                
                 $users[] = [
                     User::EMPLOYEE_ID => $user[0],
                     User::FIRST_NAME => $user[1],
@@ -185,7 +183,7 @@ class GoogleSheetsIdStore extends IdStoreBase
                     User::ACTIVE => $user[6] ?? 'yes',
                     User::LOCKED => $user[7] ?? 'no',
                 ];
-
+                
                 /*
                  * Update last_synced column in spreadsheet
                  */
@@ -201,12 +199,11 @@ class GoogleSheetsIdStore extends IdStoreBase
                     $updateBody,
                     ['valueInputOption' => 'USER_ENTERED']
                 );
-
+                
                 $currentRow++;
             }
         }
-
+        
         return $users;
     }
-
 }
