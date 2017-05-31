@@ -150,6 +150,9 @@ class GoogleSheetsIdStore extends IdStoreBase
      */
     public function getUsersChangedSince(int $unixTimestamp): array
     {
+        /* NOTE: For simplicity's sake (since this Google Sheets approach is
+         *       intended for smaller sets of users), simply resync all active
+         *       users when trying to do an incremental sync here.  */
         return $this->getAllActiveUsers();
     }
     
