@@ -30,14 +30,9 @@ class GoogleSheetsIdStore extends IdStoreBase
     
     
     /**
-     * @var \Google_Client
-     */
-    private $client;
-    
-    /**
      * @var \Google_Service_Sheets
      */
-    private $sheets;
+    private $sheets = null;
     
     
     /**
@@ -62,15 +57,15 @@ class GoogleSheetsIdStore extends IdStoreBase
         parent::init();
     }
     
-    public function initGoogleClient()
+    protected function initGoogleClient()
     {
         $jsonCreds = Json::decode($this->jsonAuthString);
-        $this->client = new \Google_Client();
-        $this->client->setApplicationName($this->applicationName);
-        $this->client->setScopes($this->scopes);
-        $this->client->setAuthConfig($jsonCreds);
-        $this->client->setAccessType('offline');
-        $this->sheets = new \Google_Service_Sheets($this->client);
+        $googleClient = new \Google_Client();
+        $googleClient->setApplicationName($this->applicationName);
+        $googleClient->setScopes($this->scopes);
+        $googleClient->setAuthConfig($jsonCreds);
+        $googleClient->setAccessType('offline');
+        $this->sheets = new \Google_Service_Sheets($googleClient);
     }
     
     /**
@@ -163,6 +158,10 @@ class GoogleSheetsIdStore extends IdStoreBase
      */
     public function getUsersFromSpreadsheet(int $startRow = 2, int $howMany = 100): array
     {
+        if ( ! $this->sheets instanceof \Google_Service_Sheets) {
+            $this->initGoogleClient();
+        }
+        
         $users = [];
         $currentRow = $startRow;
         $range = sprintf('Users!A%s:H%s', $startRow, $startRow + $howMany - 1);

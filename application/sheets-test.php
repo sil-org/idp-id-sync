@@ -8,6 +8,5 @@ $store = new GoogleSheetsIdStore();
 $store->applicationName = Env::requireEnv('ID_STORE_applicationName');
 $store->jsonAuthString = Env::requireEnv('ID_STORE_jsonAuthString');
 $store->spreadsheetId = Env::requireEnv('ID_STORE_spreadsheetId');
-$store->initGoogleClient();
 
 var_dump($store->getAllActiveUsers());
