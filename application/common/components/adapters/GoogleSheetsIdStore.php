@@ -94,14 +94,42 @@ class GoogleSheetsIdStore extends IdStoreBase
      */
     public function getAllActiveUsers(): array
     {
-        $allUsers = [];
+        $allUsersInfo = $this->getAllUsersInfo();
+        
+        $allActiveUsersInfo = array_filter(
+            $allUsersInfo,
+            function($user) {
+                return ($user[User::ACTIVE] === 'yes');
+            }
+        );
+        
+        return array_map(
+            function($entry) {
+                // Unset 'active', since ID Stores only return active users.
+                unset($entry[User::ACTIVE]);
+                
+                // Convert the resulting user info to a User.
+                return self::getAsUser($entry);
+            },
+            $allActiveUsersInfo
+        );
+    }
+    
+    /**
+     * Get information about ALL of the users (active or not).
+     *
+     * @return array[] A list of users' information.
+     */
+    protected function getAllUsersInfo(): array
+    {
+        $allUsersInfo = [];
         $start = 2;
         $howMany = 100;
         
         $hasAllUsers = false;
         while ( ! $hasAllUsers) {
-            $batch = $this->getUsersFromSpreadsheet($start, $howMany);
-            $allUsers = array_merge($allUsers, $batch);
+            $batch = $this->getUsersInfoFromSpreadsheet($start, $howMany);
+            $allUsersInfo = array_merge($allUsersInfo, $batch);
             $start += $howMany;
             
             if (count($batch) < $howMany) {
@@ -109,7 +137,7 @@ class GoogleSheetsIdStore extends IdStoreBase
             }
         }
         
-        return self::getAsUsers($allUsers);
+        return $allUsersInfo;
     }
     
     public static function getIdBrokerFieldNames(): array
@@ -122,7 +150,7 @@ class GoogleSheetsIdStore extends IdStoreBase
             'email' => User::EMAIL,
             'username' => User::USERNAME,
             'locked' => User::LOCKED,
-            'active' => User::ACTIVE,
+            // No 'active' needed, since all ID Store records returned are active.
         ];
     }
     
@@ -156,8 +184,10 @@ class GoogleSheetsIdStore extends IdStoreBase
      * @param int $howMany
      * @return array
      */
-    public function getUsersFromSpreadsheet(int $startRow = 2, int $howMany = 100): array
-    {
+    protected function getUsersInfoFromSpreadsheet(
+        int $startRow = 2,
+        int $howMany = 100
+    ) {
         if ( ! $this->sheets instanceof \Google_Service_Sheets) {
             $this->initGoogleClient();
         }
