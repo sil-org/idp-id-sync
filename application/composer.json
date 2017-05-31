@@ -7,7 +7,7 @@
     "forevermatt/calc-api-sig": "^0.1.1",
     "roave/security-advisories": "dev-master",
     "silinternational/idp-id-broker-php-client": "^0.4.2 || ^1.0",
-    "silinternational/php-env": "^1.0",
+    "silinternational/php-env": "^2.1",
     "silinternational/psr3-adapters": "^1.1",
     "silinternational/yii2-jsonsyslog": "^1.0",
     "yiisoft/yii2": "^2.0.11",
