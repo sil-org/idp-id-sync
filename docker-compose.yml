@@ -47,7 +47,7 @@ services:
         env_file:
             - ./local.env
         environment:
-            ID_BROKER_ACCESS_TOKEN: local-sync-123
+            ID_BROKER_CONFIG_accessToken: local-sync-123
         command: ["true"]
         ports: 
             - "22:22"
