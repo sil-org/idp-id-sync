@@ -11,14 +11,7 @@ use yii\swiftmailer\Mailer;
 $appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
 $idpName = Env::requireEnv('IDP_NAME');
 
-$idBrokerOptionalConfig = [];
-if (Env::get('ID_BROKER_CONFIG_accessToken') !== null) {
-    $idBrokerOptionalConfig['accessToken'] = Env::get('ID_BROKER_CONFIG_accessToken');
-}
-if (Env::get('ID_BROKER_CONFIG_baseUrl') !== null) {
-    $idBrokerOptionalConfig['baseUrl'] = Env::get('ID_BROKER_CONFIG_baseUrl');
-}
-
+$idBrokerOptionalConfig = Env::getArrayFromPrefix('ID_BROKER_CONFIG_');
 $idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
 
 return [
