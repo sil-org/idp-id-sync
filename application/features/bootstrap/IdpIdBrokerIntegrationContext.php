@@ -31,7 +31,7 @@ class IdpIdBrokerIntegrationContext implements Context
         
         $this->idBroker = new IdpIdBroker([
             'baseUrl' => 'http://broker', // For tests. Matches docker container name.
-            'accessToken' => Env::requireEnv('ID_BROKER_ACCESS_TOKEN'),
+            'accessToken' => Env::requireEnv('ID_BROKER_CONFIG_accessToken'),
         ]);
         
         $this->testUserData = $this->generateDataForNewTestUser();
