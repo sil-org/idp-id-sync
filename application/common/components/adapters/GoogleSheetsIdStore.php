@@ -14,10 +14,10 @@ class GoogleSheetsIdStore extends IdStoreBase
     public $applicationName = null;
     
     /**
-     * @var null|string The JSON authentication credentials from Google as a
-     *     base64 encoded string.
+     * @var null|string The path to the JSON file with authentication
+     *     credentials from Google.
      */
-    public $base64JsonAuthString = null;
+    public $jsonAuthFilePath = null;
     
     /**
      * @var null|string The JSON authentication credentials from Google.
@@ -46,8 +46,15 @@ class GoogleSheetsIdStore extends IdStoreBase
      */
     public function init()
     {
-        if ( ! empty($this->base64JsonAuthString)) {
-            $this->jsonAuthString = base64_decode($this->base64JsonAuthString);
+        if ( ! empty($this->jsonAuthFilePath)) {
+            if (file_exists($this->jsonAuthFilePath)) {
+                $this->jsonAuthString = \file_get_contents($this->jsonAuthFilePath);
+            } else {
+                throw new InvalidArgumentException(sprintf(
+                    'JSON auth file path of %s provided, but no such file exists.',
+                    var_export($this->jsonAuthFilePath, true)
+                ), 1497547815);
+            }
         }
         $requiredProperties = [
             'applicationName',
@@ -68,22 +75,13 @@ class GoogleSheetsIdStore extends IdStoreBase
     
     protected function initGoogleClient()
     {
-        try {
-            $jsonCreds = Json::decode($this->jsonAuthString);
-            $googleClient = new \Google_Client();
-            $googleClient->setApplicationName($this->applicationName);
-            $googleClient->setScopes($this->scopes);
-            $googleClient->setAuthConfig($jsonCreds);
-            $googleClient->setAccessType('offline');
-            $this->sheets = new \Google_Service_Sheets($googleClient);
-        } catch(\Exception $e) {
-            \Yii::error(sprintf(
-                'Failed to decode. Base64: %s',
-                var_export($this->base64JsonAuthString, true)
-            ));
-            \Yii::error($this->jsonAuthString);
-            throw $e;
-        }
+        $jsonCreds = Json::decode($this->jsonAuthString);
+        $googleClient = new \Google_Client();
+        $googleClient->setApplicationName($this->applicationName);
+        $googleClient->setScopes($this->scopes);
+        $googleClient->setAuthConfig($jsonCreds);
+        $googleClient->setAccessType('offline');
+        $this->sheets = new \Google_Service_Sheets($googleClient);
     }
     
     /**
