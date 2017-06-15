@@ -1,13 +1,14 @@
 <?php
 namespace Sil\Idp\IdSync\frontend\controllers;
 
-use Sil\Idp\IdSync\common\sync\Synchronizer;
+use Sil\Idp\IdSync\common\traits\SyncProvider;
 use Sil\Idp\IdSync\frontend\components\BaseRestController;
-use Yii;
 use yii\web\UnprocessableEntityHttpException;
 
 class UserController extends BaseRestController
 {
+    use SyncProvider;
+    
     public function actionChange($employeeId)
     {
         if (empty($employeeId)) {
@@ -17,7 +18,7 @@ class UserController extends BaseRestController
             );
         }
         
-        $synchronizer = new Synchronizer(Yii::$app->idStore, Yii::$app->idBroker);
+        $synchronizer = $this->getSynchronizer();
         $synchronizer->syncUser($employeeId);
     }
 }

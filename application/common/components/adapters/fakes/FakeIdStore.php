@@ -1,9 +1,9 @@
 <?php
 namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
-use yii\base\NotSupportedException;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
+use yii\helpers\ArrayHelper;
 
 class FakeIdStore extends IdStoreBase
 {
@@ -20,38 +20,54 @@ class FakeIdStore extends IdStoreBase
         parent::__construct($config);
     }
     
-    public function getActiveUser(string $employeeNumber)
+    /**
+     * WARNING: This function only exists on the FAKE ID Store, and should only
+     * be used for setting up tests.
+     *
+     * @param string $employeeId
+     * @param array $changes
+     */
+    public function changeFakeRecord(string $employeeId, array $changes)
     {
-        $idStoreUser = $this->activeUsers[$employeeNumber] ?? null;
+        $record = $this->activeUsers[$employeeId];
+        $this->activeUsers[$employeeId] = ArrayHelper::merge($record, $changes);
+    }
+    
+    public function getActiveUser(string $employeeId)
+    {
+        $idStoreUser = $this->activeUsers[$employeeId] ?? null;
         if ($idStoreUser !== null) {
-            return $this->translateToIdBrokerFieldNames($idStoreUser);
+            return self::getAsUser($idStoreUser);
         }
         return null;
     }
 
-    public function getActiveUsersChangedSince(int $unixTimestamp)
+    public function getUsersChangedSince(int $unixTimestamp)
     {
         $changesToReport = [];
         foreach ($this->userChanges as $userChange) {
-            if ($userChange['changedAt'] >= $unixTimestamp) {
+            if ($userChange['changedat'] >= $unixTimestamp) {
                 $changesToReport[] = [
-                    'employeeNumber' => $userChange['employeeNumber'],
+                    'employeenumber' => $userChange['employeenumber'],
                 ];
             }
         }
-        return $changesToReport;
+        return self::getAsUsers($changesToReport);
     }
 
     public function getAllActiveUsers()
     {
-        return array_map(function($entry) {
-            return $this->translateToIdBrokerFieldNames($entry);
-        }, $this->activeUsers);
+        return self::getAsUsers($this->activeUsers);
     }
 
     public static function getIdBrokerFieldNames()
     {
         // For simplicity's sake, just use the field names from Insite.
         return InsiteIdStore::getIdBrokerFieldNames();
+    }
+
+    public function getIdStoreName(): string
+    {
+        return 'the fake ID Store';
     }
 }

@@ -4,6 +4,7 @@ namespace Sil\Idp\IdSync\common\components;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\IdpIdBroker;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
+use Sil\Idp\IdSync\common\models\User;
 use yii\base\Component;
 
 abstract class IdBrokerBase extends Component implements IdBrokerInterface
@@ -30,5 +31,20 @@ abstract class IdBrokerBase extends Component implements IdBrokerInterface
             $adapterName,
             join("\n", array_keys(self::$adapters))
         ), 1491327756);
+    }
+    
+    /**
+     * Convert information about a list of users (each being an array of user
+     * information keyed on ID Broker field names) into a list of User objects.
+     *
+     * @param array[] $idBrokerUserInfoList A list of users' info from ID Broker.
+     * @return User[] A list of objects representing those users' info in a
+     *     standard way.
+     */
+    protected static function getAsUsers($idBrokerUserInfoList)
+    {
+        return array_map(function($entry) {
+            return new User($entry);
+        }, $idBrokerUserInfoList);
     }
 }

@@ -1,8 +1,20 @@
 default:
     suites:
+        google_sheets_integration_features:
+            paths:    [ %paths.base%/../features/id-store-integration.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\GoogleSheetsIntegrationContext ]
+        idp_id_broker_integration_features:
+            paths:    [ %paths.base%/../features/idp-id-broker-integration.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\IdpIdBrokerIntegrationContext ]
+        insite_integration_features:
+            paths:    [ %paths.base%/../features/id-store-integration.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\InsiteIntegrationContext ]
         sync_features:
             paths:    [ %paths.base%/../features/sync.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\SyncContext ]
+        user_features:
+            paths:    [ %paths.base%/../features/user.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\UserContext ]
         webhook_features:
             paths:    [ %paths.base%/../features/webhook.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\WebhookContext ]
