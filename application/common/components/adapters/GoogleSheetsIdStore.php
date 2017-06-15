@@ -68,13 +68,22 @@ class GoogleSheetsIdStore extends IdStoreBase
     
     protected function initGoogleClient()
     {
-        $jsonCreds = Json::decode($this->jsonAuthString);
-        $googleClient = new \Google_Client();
-        $googleClient->setApplicationName($this->applicationName);
-        $googleClient->setScopes($this->scopes);
-        $googleClient->setAuthConfig($jsonCreds);
-        $googleClient->setAccessType('offline');
-        $this->sheets = new \Google_Service_Sheets($googleClient);
+        try {
+            $jsonCreds = Json::decode($this->jsonAuthString);
+            $googleClient = new \Google_Client();
+            $googleClient->setApplicationName($this->applicationName);
+            $googleClient->setScopes($this->scopes);
+            $googleClient->setAuthConfig($jsonCreds);
+            $googleClient->setAccessType('offline');
+            $this->sheets = new \Google_Service_Sheets($googleClient);
+        } catch(\Exception $e) {
+            \Yii::error(sprintf(
+                'Failed to decode. Base64: %s',
+                var_export($this->base64JsonAuthString, true)
+            ));
+            \Yii::error($this->jsonAuthString);
+            throw $e;
+        }
     }
     
     /**
