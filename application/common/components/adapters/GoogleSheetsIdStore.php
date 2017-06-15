@@ -14,6 +14,12 @@ class GoogleSheetsIdStore extends IdStoreBase
     public $applicationName = null;
     
     /**
+     * @var null|string The JSON authentication credentials from Google as a
+     *     base64 encoded string.
+     */
+    public $base64JsonAuthString = null;
+    
+    /**
      * @var null|string The JSON authentication credentials from Google.
      */
     public $jsonAuthString = null;
@@ -40,6 +46,9 @@ class GoogleSheetsIdStore extends IdStoreBase
      */
     public function init()
     {
+        if ( ! empty($this->base64JsonAuthString)) {
+            $this->jsonAuthString = base64_decode($this->base64JsonAuthString);
+        }
         $requiredProperties = [
             'applicationName',
             'jsonAuthString',
