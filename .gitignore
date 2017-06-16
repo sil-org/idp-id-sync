@@ -12,3 +12,6 @@ local.env
 application/vendor/
 
 *.aes
+
+# Credentials for calls to Google.
+google-auth.json
