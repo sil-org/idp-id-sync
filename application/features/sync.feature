@@ -112,17 +112,19 @@ Feature: Synchronizing records
 
   Scenario: Deactivate a user in ID Broker
     Given ONLY the following users are active in the ID Store:
-        | employeenumber | displayname  | username   |
-        | 10002          | Person Two   | person_two |
+        | employeenumber | displayname  | username     |
+        | 10002          | Person Two   | person_two   |
       And ONLY the following users exist in the ID Broker:
-        | employee_id    | display_name | username   | active |
-        | 10001          | Person One   | person_one | yes    |
-        | 10002          | Person Two   | person_two | yes    |
+        | employee_id    | display_name | username     | active |
+        | 10001          | Person One   | person_one   | yes    |
+        | 10002          | Person Two   | person_two   | yes    |
+        | 10003          | Person Three | person_three | no     |
     When I sync all the users from the ID Store to the ID Broker
     Then ONLY the following users should exist in the ID Broker:
-        | employee_id    | display_name | username   | active |
-        | 10001          | Person One   | person_one | no     |
-        | 10002          | Person Two   | person_two | yes    |
+        | employee_id    | display_name | username     | active |
+        | 10001          | Person One   | person_one   | no     |
+        | 10002          | Person Two   | person_two   | yes    |
+        | 10003          | Person Three | person_three | no     |
 
   # Incremental batch synchronization scenarios:
 
