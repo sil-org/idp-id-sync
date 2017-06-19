@@ -14,6 +14,7 @@ class IdStoreIntegrationContextBase implements Context
     /** @var IdStoreInterface */
     protected $idStore;
     
+    protected $activeEmployeeId;
     protected $result;
     
     public function __construct()
@@ -26,7 +27,10 @@ class IdStoreIntegrationContextBase implements Context
      */
     public function iShouldGetBackInformationAboutThatUser()
     {
-        Assert::assertNotNull($this->result);
+        Assert::assertNotNull($this->result, sprintf(
+            'Did not find user %s. Are you sure that they exist and are active?',
+            var_export($this->activeEmployeeId, true)
+        ));
         Assert::assertInstanceOf(User::class, $this->result);
     }
     

@@ -30,7 +30,7 @@ class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
      */
     public function iAskTheIdStoreForASpecificActiveUser()
     {
-        $employeeId = Env::requireEnv('TEST_GOOGLE_SHEETS_EMPLOYEE_ID');
-        $this->result = $this->idStore->getActiveUser($employeeId);
+        $this->activeEmployeeId = Env::requireEnv('TEST_GOOGLE_SHEETS_EMPLOYEE_ID');
+        $this->result = $this->idStore->getActiveUser($this->activeEmployeeId);
     }
 }
