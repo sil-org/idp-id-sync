@@ -153,6 +153,16 @@ class Synchronizer
         }
     }
     
+    public static function countActiveUsers($usersInfo, $activeFieldName)
+    {
+        return array_reduce($usersInfo, function($carry, $userInfo) use ($activeFieldName) {
+            if (strcasecmp($userInfo[$activeFieldName], 'yes') === 0) {
+                return $carry + 1;
+            }
+            return $carry;
+        });
+    }
+    
     /**
      * Deactivate the specified user in the ID Broker.
      *
@@ -232,8 +242,15 @@ class Synchronizer
     /**
      * Do a full synchronization, requesting all users from the ID Store and
      * updating all records in the ID Broker.
+     *
+     * @param int $maxDeactivationsPercent The percentage (0.0 - 1.0) of active
+     *     users in ID Broker that it's okay to deactivate at a time. When used
+     *     to calculate the actual number that can be deactivated during this
+     *     run, the result is rounded up (so that we can always deactivate at
+     *     least 1 user, assuming this value is > 0.0).
+     * @throws Exception
      */
-    public function syncAll()
+    public function syncAll($maxDeactivationsPercent = 0.15)
     {
         $this->logger->info('Syncing all users...');
         
@@ -242,6 +259,11 @@ class Synchronizer
             'employee_id',
             'active',
         ]);
+        
+        $numActiveUsersInBroker = self::countActiveUsers(
+            $idBrokerUserInfoByEmployeeId,
+            'active'
+        );
         
         $usersToAdd = [];
         $usersToUpdateAndActivate = [];
@@ -289,7 +311,19 @@ class Synchronizer
             }
         }
         
-        /** @todo Add a safety check here to avoid deactivating too many users. */
+        $deactivationSafetyThreshold = ceil($numActiveUsersInBroker * $maxDeactivationsPercent);
+        if (count($employeeIdsToDeactivate) > $deactivationSafetyThreshold) {
+            $errorMessage = sprintf(
+                'This sync was aborted because it would have deactivated %s of '
+                . 'the %s active users found in ID Broker, which is above our '
+                . 'safety threshold of %s%%.',
+                count($employeeIdsToDeactivate),
+                $numActiveUsersInBroker,
+                ($maxDeactivationsPercent * 100)
+            );
+            $this->logger->error($errorMessage);
+            throw new Exception($errorMessage, 1499971625);
+        }
         
         $this->createUsers($usersToAdd);
         $this->activateAndUpdateUsers($usersToUpdateAndActivate);
