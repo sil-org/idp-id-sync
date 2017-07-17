@@ -316,9 +316,10 @@ class Synchronizer
             $errorMessage = sprintf(
                 'This sync was aborted because it would have deactivated %s of '
                 . 'the %s active users found in ID Broker, which is above our '
-                . 'safety threshold of %s%%.',
+                . 'safety threshold of %s (%s%%).',
                 count($employeeIdsToDeactivate),
                 $numActiveUsersInBroker,
+                $deactivationSafetyThreshold,
                 ($maxDeactivationsPercent * 100)
             );
             $this->logger->error($errorMessage);
