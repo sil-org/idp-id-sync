@@ -184,16 +184,27 @@ Feature: Synchronizing records
         | 10002          | Original 2     | person_two   | p2@example.com | yes    |
         | 10003          | Changed 3      | person_three | p3@example.com | yes    |
 
-  Scenario: Aborting a sync if too many users will be deactivated
-    Given 10 users are active in the ID Broker
-      And only 5 users are active in the ID Store
-      And the cutoff for deactivations is 10%
+  Scenario Outline: Preventing too many user-deactivations at a time
+    Given <brokerHas> users are active in the ID Broker
+      And only <storeOnlyHas> users are active in the ID Store
+      And the cutoff for deactivations is <cutoffPercent>%
     When I sync all the users from the ID Store to the ID Broker
-    Then an exception SHOULD have been thrown
+    Then an exception <exceptionOrNot> have been thrown
 
-  Scenario: Not aborting a sync when the users to be deactivated is below the threshold
-    Given 10 users are active in the ID Broker
-      And only 5 users are active in the ID Store
-      And the cutoff for deactivations is 60%
-    When I sync all the users from the ID Store to the ID Broker
-    Then an exception should NOT have been thrown
+    Examples:
+      | brokerHas | storeOnlyHas | cutoffPercent | exceptionOrNot |
+      |  10       |  10          |  15           |  should NOT    |
+      |  10       |   9          |  15           |  should NOT    |
+      |  10       |   8          |  15           |  should NOT    |
+      |  10       |   7          |  15           |  SHOULD        |
+      |  10       |   6          |  15           |  SHOULD        |
+      |  10       |   5          |  15           |  SHOULD        |
+      |  10       |   4          |  15           |  SHOULD        |
+      |  10       |   3          |  15           |  SHOULD        |
+      |  10       |   2          |  15           |  SHOULD        |
+      |  10       |   1          |  15           |  SHOULD        |
+      |  10       |   0          |  15           |  SHOULD        |
+      |  10       |   5          |  60           |  should NOT    |
+      |  10       |   4          |  60           |  should NOT    |
+      |  10       |   3          |  60           |  SHOULD        |
+      |  10       |   2          |  60           |  SHOULD        |
