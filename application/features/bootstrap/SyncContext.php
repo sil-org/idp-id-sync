@@ -433,7 +433,10 @@ class SyncContext implements Context
      */
     public function anExceptionShouldHaveBeenThrown()
     {
-        Assert::assertNotNull($this->exceptionThrown);
+        Assert::assertNotNull(
+            $this->exceptionThrown,
+            "An exception should have been thrown, but wasn't"
+        );
     }
 
     /**
