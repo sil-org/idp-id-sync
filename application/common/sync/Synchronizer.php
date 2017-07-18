@@ -2,6 +2,7 @@
 namespace Sil\Idp\IdSync\common\sync;
 
 use Exception;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
@@ -243,16 +244,39 @@ class Synchronizer
      * Do a full synchronization, requesting all users from the ID Store and
      * updating all records in the ID Broker.
      *
-     * @param int $maxDeactivationsPercent The percentage (0.0 - 1.0) of active
-     *     users in ID Broker that it's okay to deactivate at a time. When used
-     *     to calculate the actual number that can be deactivated during this
-     *     run, the result is rounded up (so that we can always deactivate at
-     *     least 1 user, assuming this value is > 0.0).
+     * @param float|null $maxDeactivationsPercent (Optional:) The percentage
+     *     (0.0 - 1.0) of active users in ID Broker that it's okay to deactivate
+     *     at a time. When used to calculate the actual number that can be
+     *     deactivated during this run, the result is rounded up (so that we can
+     *     always deactivate at least 1 user, assuming this value is > 0.0). If
+     *     no value is given, a default value will be used.
      * @throws Exception
      */
-    public function syncAll($maxDeactivationsPercent = 0.15)
+    public function syncAll($maxDeactivationsPercent = null)
     {
         $this->logger->info('Syncing all users...');
+        
+        if ($maxDeactivationsPercent === null) {
+            $maxDeactivationsPercent = 0.15;
+        }
+        
+        if ($maxDeactivationsPercent < 0
+            || $maxDeactivationsPercent > 1
+            || !is_numeric($maxDeactivationsPercent)) {
+            
+            $errorMessage = sprintf(
+                'The safety cutoff for what percentage of active users may be '
+                . 'deactivated at a time must be a number from 0.0 to 1.0 (not '
+                . '%s).',
+                var_export($maxDeactivationsPercent, true)
+            );
+            $this->logger->error($errorMessage);
+            throw new InvalidArgumentException($errorMessage, 1500322937);
+        }
+        
+        $this->logger->info('Max deactivations percent: {value}', [
+            'value' => var_export($maxDeactivationsPercent, true),
+        ]);
         
         $idStoreUsers = $this->idStore->getAllActiveUsers();
         $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
