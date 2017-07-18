@@ -440,11 +440,11 @@ class SyncContext implements Context
     }
 
     /**
-     * @Given the cutoff for deactivations is :number%
+     * @Given the cutoff for deactivations is :number
      */
     public function theCutoffForDeactivationsIs($number)
     {
-        $this->tempMaxDeactivationsPercent = $number / 100;
+        $this->tempMaxDeactivationsPercent = $number;
     }
 
     /**
