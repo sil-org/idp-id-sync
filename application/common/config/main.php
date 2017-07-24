@@ -74,5 +74,6 @@ return [
             'emailFrom' => Env::get('MAILER_USERNAME'),
             'organizationName' => $idpName,
         ],
+        'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
     ],
 ];

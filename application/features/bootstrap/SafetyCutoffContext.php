@@ -38,7 +38,8 @@ class SafetyCutoffContext implements Context
     /** @var NotifierInterface */
     protected $notifier;
     
-    private $tempMaxDeactivationsPercent = null;
+    /** @var float|null */
+    private $safetyCutoff = null;
     
     /**
      * @Then an exception SHOULD have been thrown
@@ -70,17 +71,9 @@ class SafetyCutoffContext implements Context
             $this->idStore,
             $this->idBroker,
             $this->logger,
-            $this->notifier
+            $this->notifier,
+            $this->safetyCutoff
         );
-    }
-    
-    /**
-     * @param array $activeUsers
-     * @return FakeIdStore
-     */
-    protected function getFakeIdStore(array $activeUsers = [])
-    {
-        return new FakeIdStore($activeUsers);
     }
     
     /**
@@ -90,22 +83,10 @@ class SafetyCutoffContext implements Context
     {
         try {
             $synchronizer = $this->createSynchronizer();
-            if ($this->tempMaxDeactivationsPercent !== null) {
-                $synchronizer->syncAll($this->tempMaxDeactivationsPercent);
-            } else {
-                $synchronizer->syncAll();
-            }
+            $synchronizer->syncAll();
         } catch (Exception $e) {
             $this->exceptionThrown = $e;
         }
-    }
-    
-    /**
-     * @Given the cutoff for deactivations is :number
-     */
-    public function theCutoffForDeactivationsIs($number)
-    {
-        $this->tempMaxDeactivationsPercent = $number;
     }
     
     /**
@@ -131,37 +112,41 @@ class SafetyCutoffContext implements Context
     }
     
     /**
-     * @Given (only) :number users are active in the ID Store
+     * @Given running a full sync would deactivate :numToDeactivate users
      */
-    public function usersAreActiveInTheIdStore($number)
+    public function runningAFullSyncWouldDeactivateUsers($numToDeactivate)
     {
+        Assert::assertNotEmpty(
+            $this->idBroker,
+            'Set up the ID Broker before using this step.'
+        );
+        
+        $usersFromBroker = $this->idBroker->listUsers();
+        
+        $numInBroker = count($usersFromBroker);
+        $numToHaveInStore = $numInBroker - $numToDeactivate;
+        
         $activeIdStoreUsers = [];
-        for ($i = 1; $i <= $number; $i++) {
-            $tempEmployeeId = 10000 + $i;
-            $activeIdStoreUsers[$tempEmployeeId] = [
-                'employeenumber' => (string)$tempEmployeeId,
-                'displayname' => 'Person ' . $i,
-                'username' => 'person_' . $i,
-                'firstname' => 'Person',
-                'lastname' => (string)$i,
-                'email' => 'person_' . $i . '@example.com',
+        for ($i = 0; $i < $numToHaveInStore; $i++) {
+            /* @var $user User */
+            $user = $usersFromBroker[$i];
+            $activeIdStoreUsers[$user->employeeId] = [
+                'employeenumber' => (string)$user->employeeId,
+                'displayname' => $user->displayName,
+                'username' => $user->username,
+                'firstname' => $user->firstName,
+                'lastname' => $user->lastName,
+                'email' => $user->email,
             ];
         }
-        $this->idStore = $this->getFakeIdStore($activeIdStoreUsers);
+        $this->idStore = new FakeIdStore($activeIdStoreUsers);
     }
-    
+
     /**
-     * @Given :number users are active in the ID Store and are inactive in the ID Broker
+     * @Given the safety cutoff is :value
      */
-    public function usersAreActiveInTheIdStoreAndAreInactiveInTheIdBroker($number)
+    public function theSafetyCutoffIs($value)
     {
-        $this->usersAreActiveInTheIdStore($number);
-        
-        $idBrokerUsers = [];
-        foreach ($this->idStore->getAllActiveUsers() as $user) {
-            $user->active = 'no';
-            $idBrokerUsers[$user->employeeId] = $user->toArray();
-        }
-        $this->idBroker = new FakeIdBroker($idBrokerUsers);
+        $this->safetyCutoff = $value;
     }
 }

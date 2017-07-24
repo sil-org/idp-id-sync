@@ -15,6 +15,9 @@ use yii\helpers\ArrayHelper;
 
 class Synchronizer
 {
+    /** @var float */
+    const SAFETY_CUTOFF_DEFAULT = 0.15;
+    
     public $dateTimeFormat = 'n/j/y g:ia T';
     
     /** @var IdBrokerInterface */
@@ -29,6 +32,9 @@ class Synchronizer
     /** @var NotifierInterface */
     private $notifier;
     
+    /** @var float */
+    private $safetyCutoff;
+    
     /**
      * Create a new Synchronizer object.
      *
@@ -38,17 +44,33 @@ class Synchronizer
      *     log data to.
      * @param NotifierInterface|null $notifier (Optional:) An object for sending
      *     notifications.
+     * @param float|null $safetyCutoff (Optional:) The cutoff for what fraction
+     *     of the active users in ID Broker may be changed by a single
+     *     operation (e.g. limiting how many accounts can be deactivated in a
+     *     single syncAll() run). When used to calculate the actual number of
+     *     changes that can be made for a given sync, the resulting value is
+     *     rounded up (so that we can always make at least 1 change, assuming
+     *     this value is > 0.0 and there are any active users in ID Broker). If
+     *     no value is given, a default value will be used.
      */
     public function __construct(
         IdStoreInterface $idStore,
         IdBrokerInterface $idBroker,
         LoggerInterface $logger = null,
-        NotifierInterface $notifier = null
+        NotifierInterface $notifier = null,
+        $safetyCutoff = null
     ) {
         $this->idStore = $idStore;
         $this->idBroker = $idBroker;
         $this->logger = $logger ?? new NullLogger();
         $this->notifier = $notifier ?? new NullNotifier();
+        $this->safetyCutoff = $safetyCutoff ?? self::SAFETY_CUTOFF_DEFAULT;
+        
+        $this->logger->info('Safety cutoff: {value}', [
+            'value' => var_export($this->safetyCutoff, true),
+        ]);
+        
+        $this->assertValidSafetyCutoff($this->safetyCutoff);
     }
     
     /**
@@ -95,6 +117,18 @@ class Synchronizer
             'attempted' => count($usersToUpdateAndActivate),
             'succeeded' => $numUsersUpdated,
         ]);
+    }
+    
+    protected function assertValidSafetyCutoff($value)
+    {
+        if ( ! self::isValidSafetyCutoff($value)) {
+            $errorMessage = sprintf(
+                'The safety cutoff must be a number from 0.0 to 1.0 (not %s).',
+                var_export($value, true)
+            );
+            $this->logger->error($errorMessage);
+            throw new InvalidArgumentException($errorMessage, 1500322937);
+        }
     }
     
     /**
@@ -240,43 +274,20 @@ class Synchronizer
         return $usersByEmployeeId;
     }
     
+    public static function isValidSafetyCutoff($value)
+    {
+        return is_numeric($value) && ($value >= 0.0) && ($value <= 1.0);
+    }
+    
     /**
      * Do a full synchronization, requesting all users from the ID Store and
      * updating all records in the ID Broker.
      *
-     * @param float|null $maxDeactivationsPercent (Optional:) The percentage
-     *     (0.0 - 1.0) of active users in ID Broker that it's okay to deactivate
-     *     at a time. When used to calculate the actual number that can be
-     *     deactivated during this run, the result is rounded up (so that we can
-     *     always deactivate at least 1 user, assuming this value is > 0.0). If
-     *     no value is given, a default value will be used.
      * @throws Exception
      */
-    public function syncAll($maxDeactivationsPercent = null)
+    public function syncAll()
     {
         $this->logger->info('Syncing all users...');
-        
-        if ($maxDeactivationsPercent === null) {
-            $maxDeactivationsPercent = 0.15;
-        }
-        
-        if ($maxDeactivationsPercent < 0
-            || $maxDeactivationsPercent > 1
-            || !is_numeric($maxDeactivationsPercent)) {
-            
-            $errorMessage = sprintf(
-                'The safety cutoff for what percentage of active users may be '
-                . 'deactivated at a time must be a number from 0.0 to 1.0 (not '
-                . '%s).',
-                var_export($maxDeactivationsPercent, true)
-            );
-            $this->logger->error($errorMessage);
-            throw new InvalidArgumentException($errorMessage, 1500322937);
-        }
-        
-        $this->logger->info('Max deactivations percent: {value}', [
-            'value' => var_export($maxDeactivationsPercent, true),
-        ]);
         
         $idStoreUsers = $this->idStore->getAllActiveUsers();
         $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
@@ -335,16 +346,17 @@ class Synchronizer
             }
         }
         
-        $deactivationSafetyThreshold = ceil($numActiveUsersInBroker * $maxDeactivationsPercent);
-        if (count($employeeIdsToDeactivate) > $deactivationSafetyThreshold) {
+        $numChangesAllowed = ceil($numActiveUsersInBroker * $this->safetyCutoff);
+        
+        if (count($employeeIdsToDeactivate) > $numChangesAllowed) {
             $errorMessage = sprintf(
                 'This sync was aborted because it would have deactivated %s of '
                 . 'the %s active users found in ID Broker, which is above our '
                 . 'safety threshold of %s (%s%%).',
                 count($employeeIdsToDeactivate),
                 $numActiveUsersInBroker,
-                $deactivationSafetyThreshold,
-                ($maxDeactivationsPercent * 100)
+                $numChangesAllowed,
+                ($this->safetyCutoff * 100)
             );
             $this->logger->error($errorMessage);
             throw new Exception($errorMessage, 1499971625);
