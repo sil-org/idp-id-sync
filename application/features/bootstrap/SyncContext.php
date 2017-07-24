@@ -40,8 +40,6 @@ class SyncContext implements Context
     
     private $tempEmployeeId;
     
-    private $tempMaxDeactivationsPercent = null;
-    
     private $tempUserChanges = [];
     
     public function __construct()
@@ -232,11 +230,7 @@ class SyncContext implements Context
     {
         try {
             $synchronizer = $this->createSynchronizer();
-            if ($this->tempMaxDeactivationsPercent !== null) {
-                $synchronizer->syncAll($this->tempMaxDeactivationsPercent);
-            } else {
-                $synchronizer->syncAll();
-            }
+            $synchronizer->syncAll();
         } catch (Exception $e) {
             $this->exceptionThrown = $e;
         }
@@ -327,28 +321,6 @@ class SyncContext implements Context
     }
 
     /**
-     * @Given :number users are active in the ID Broker
-     */
-    public function usersAreActiveInTheIdBroker($number)
-    {
-        $idBrokerUsers = [];
-        for ($i = 1; $i <= $number; $i++) {
-            $tempEmployeeId = 10000 + $i;
-            $idBrokerUsers[$tempEmployeeId] = [
-                User::EMPLOYEE_ID => (string)$tempEmployeeId,
-                User::DISPLAY_NAME => 'Person ' . $i,
-                User::USERNAME => 'person_' . $i,
-                User::FIRST_NAME => 'Person',
-                User::LAST_NAME => (string)$i,
-                User::EMAIL => 'person_' . $i . '@example.com',
-                User::ACTIVE => 'yes',
-            ];
-        }
-        
-        $this->idBroker = new FakeIdBroker($idBrokerUsers);
-    }
-
-    /**
      * @Given (only) :number users are active in the ID Store
      */
     public function usersAreActiveInTheIdStore($number)
@@ -427,26 +399,7 @@ class SyncContext implements Context
         }
         $this->idBroker = new FakeIdBroker($idBrokerUsers);
     }
-
-    /**
-     * @Then an exception SHOULD have been thrown
-     */
-    public function anExceptionShouldHaveBeenThrown()
-    {
-        Assert::assertNotNull(
-            $this->exceptionThrown,
-            "An exception should have been thrown, but wasn't"
-        );
-    }
-
-    /**
-     * @Given the cutoff for deactivations is :number
-     */
-    public function theCutoffForDeactivationsIs($number)
-    {
-        $this->tempMaxDeactivationsPercent = $number;
-    }
-
+    
     /**
      * @Then an exception should NOT have been thrown
      */
