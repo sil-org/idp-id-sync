@@ -41,6 +41,9 @@ class SafetyCutoffContext implements Context
     /** @var float|null */
     private $safetyCutoff = null;
     
+    /** @var int */
+    private $tempTimestamp;
+    
     public function __construct()
     {
         $this->logger = new Psr3ConsoleLogger();
@@ -197,5 +200,95 @@ class SafetyCutoffContext implements Context
         }
         
         $this->idStore = new FakeIdStore($activeIdStoreUsers);
+    }
+
+    /**
+     * @When I run an incremental sync
+     */
+    public function iRunAnIncrementalSync()
+    {
+        try {
+            $synchronizer = $this->createSynchronizer();
+            $synchronizer->syncUsersChangedSince($this->tempTimestamp);
+        } catch (Exception $e) {
+            $this->exceptionThrown = $e;
+        }
+    }
+
+    /**
+     * @Given an incremental sync would add :numToAdd, update :numToUpdate, and deactivate :numToDeactivate users
+     */
+    public function anIncrementalSyncWouldAddUpdateAndDeactivateUsers(
+        $numToAdd,
+        $numToUpdate,
+        $numToDeactivate
+    ) {
+        Assert::assertNotEmpty(
+            $this->idBroker,
+            'Set up the ID Broker before using this step.'
+        );
+        
+        $usersFromBroker = $this->idBroker->listUsers();
+        $numInBroker = count($usersFromBroker);
+        
+        $activeIdStoreUsers = [];
+        $idStoreUserChanges = [];
+        $this->tempTimestamp = 1500000000; // Arbitrary time for tests.
+        
+        // Add $numToAdd new users to ID Store (that aren't in ID Broker),
+        // ensuring Employee ID's won't collide.
+        for ($i = 0; $i < $numToAdd; $i++) {
+            $tempEmployeeId = 30000 + $i;
+            $activeIdStoreUsers[$tempEmployeeId] = [
+                'employeenumber' => (string)$tempEmployeeId,
+                'displayname' => 'Person ' . $i,
+                'username' => 'person_' . $i,
+                'firstname' => 'Person',
+                'lastname' => (string)$i,
+                'email' => 'person_' . $i . '@example.com',
+            ];
+            $idStoreUserChanges[] = [
+                'changedat' => $this->tempTimestamp + $i,
+                'employeenumber' => (string)$tempEmployeeId,
+            ];
+        }
+        
+        // Set up for Store to SOME of the users that are in Broker.
+        $numInBrokerToHaveInStore = $numInBroker - $numToDeactivate;
+        for ($i = 0; $i < $numInBroker; $i++) {
+            
+            /* @var $user User */
+            $user = $usersFromBroker[$i];
+            
+            // Make a note that the first $numToUpdate were changed recently
+            // enough to be included in our incremental sync.
+            if ($i < $numToUpdate) {
+                $idStoreUserChanges[] = [
+                    'changedat' => $this->tempTimestamp + $i,
+                    'employeenumber' => (string)$user->employeeId,
+                ];
+            }
+            
+            // Exclude the last $numToDeactivate from Store, and make a note
+            // that those were changed recently enough to be included in our
+            // incremental sync.
+            if ($i < $numInBrokerToHaveInStore) {
+                $activeIdStoreUsers[$user->employeeId] = [
+                    'employeenumber' => (string)$user->employeeId,
+                    'displayname' => $user->displayName,
+                    'username' => $user->username,
+                    'firstname' => $user->firstName,
+                    'lastname' => $user->lastName,
+                    'email' => $user->email,
+                ];
+            } else {
+                $idStoreUserChanges[] = [
+                    'changedat' => $this->tempTimestamp + $i,
+                    'employeenumber' => (string)$user->employeeId,
+                ];
+            }
+        }
+        
+        $this->idStore = new FakeIdStore($activeIdStoreUsers, $idStoreUserChanges);
     }
 }
