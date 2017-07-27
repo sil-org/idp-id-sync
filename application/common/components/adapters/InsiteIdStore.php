@@ -35,6 +35,8 @@ class InsiteIdStore extends IdStoreBase
             }
         }
         
+        $this->baseUrl = rtrim($this->baseUrl, '/');
+        
         parent::init();
     }
     
