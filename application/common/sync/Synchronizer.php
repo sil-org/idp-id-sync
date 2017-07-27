@@ -224,7 +224,7 @@ class Synchronizer
         }
     }
     
-    public static function countActiveUsers($usersInfo, $activeFieldName)
+    public static function countActiveUsers($usersInfo, $activeFieldName = 'active')
     {
         return array_reduce($usersInfo, function($carry, $userInfo) use ($activeFieldName) {
             if (strcasecmp($userInfo[$activeFieldName], 'yes') === 0) {
@@ -318,6 +318,25 @@ class Synchronizer
         return $usersByEmployeeId;
     }
     
+    protected function getNumActiveUsersInBroker($idBrokerUsersInfo = null)
+    {
+        if ($idBrokerUsersInfo === null) {
+            $idBrokerUsersInfo = $this->getAllIdBrokerUsersByEmployeeId([
+                'employee_id',
+                'active',
+            ]);
+        }
+        return self::countActiveUsers($idBrokerUsersInfo);
+    }
+    
+    protected function getNumChangesAllowed($numActiveUsersInBroker)
+    {
+        return max(
+            ceil($numActiveUsersInBroker * $this->safetyCutoff),
+            self::MIN_NUM_CHANGES_ALLOWED
+        );
+    }
+    
     public static function isValidSafetyCutoff($value)
     {
         return is_numeric($value) && ($value >= 0.0) && ($value <= 1.0);
@@ -339,9 +358,8 @@ class Synchronizer
             'active',
         ]);
         
-        $numActiveUsersInBroker = self::countActiveUsers(
-            $idBrokerUserInfoByEmployeeId,
-            'active'
+        $numActiveUsersInBroker = $this->getNumActiveUsersInBroker(
+            $idBrokerUserInfoByEmployeeId
         );
         
         $usersToAdd = [];
@@ -390,10 +408,7 @@ class Synchronizer
             }
         }
         
-        $numChangesAllowed = max(
-            ceil($numActiveUsersInBroker * $this->safetyCutoff),
-            self::MIN_NUM_CHANGES_ALLOWED
-        );
+        $numChangesAllowed = $this->getNumChangesAllowed($numActiveUsersInBroker);
         
         if (count($usersToAdd) > $numChangesAllowed) {
             $this->abortSync(
@@ -579,6 +594,20 @@ class Synchronizer
         foreach ($changedUsers as $changedUser) {
             $employeeIds[] = $changedUser->employeeId;
         }
+        
+        $numActiveUsersInBroker = $this->getNumActiveUsersInBroker();
+        $numChangesAllowed = $this->getNumChangesAllowed($numActiveUsersInBroker);
+        
+        if (count($employeeIds) > $numChangesAllowed) {
+            $this->abortSync(
+                'change',
+                count($employeeIds),
+                $numChangesAllowed,
+                $numActiveUsersInBroker,
+                1501177946
+            );
+        }
+        
         $this->syncUsers($employeeIds);
         
         $this->logger->info(sprintf(
