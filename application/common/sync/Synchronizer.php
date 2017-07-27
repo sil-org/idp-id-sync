@@ -75,6 +75,41 @@ class Synchronizer
     }
     
     /**
+     * Abort the sync (and log an error message) due to surpassing the safety
+     * cutoff.
+     *
+     * @param string $changeType The type of change (e.g. 'create', 'update', or
+     *     'deactivate').
+     * @param int $numChanges The number of changes of that type that would have
+     *     been attempted.
+     * @param int $numChangesAllowed The number of changes allowed.
+     * @param int $numActiveUsersInBroker The number of active users currently
+     *     in ID Broker.
+     * @param int $errorCode The error code.
+     * @throws Exception
+     */
+    protected function abortSync(
+        $changeType,
+        $numChanges,
+        $numChangesAllowed,
+        $numActiveUsersInBroker,
+        $errorCode
+    ) {
+        $errorMessage = sprintf(
+            'This sync was aborted because it would have tried to %s %s users '
+            . 'in ID Broker, which is above our safety threshold of %s '
+            . '(%s%% of the %s active users currently in ID Broker).',
+            $changeType,
+            $numChanges,
+            $numChangesAllowed,
+            ($this->safetyCutoff * 100),
+            $numActiveUsersInBroker
+        );
+        $this->logger->error($errorMessage);
+        throw new Exception($errorMessage, $errorCode);
+    }
+    
+    /**
      * Update the given user in the ID Broker, setting it to be active (unless
      * the given user already provides some other value for 'active').
      *
@@ -353,17 +388,13 @@ class Synchronizer
         );
         
         if (count($employeeIdsToDeactivate) > $numChangesAllowed) {
-            $errorMessage = sprintf(
-                'This sync was aborted because it would have deactivated %s of '
-                . 'the %s active users found in ID Broker, which is above our '
-                . 'safety threshold of %s (%s%%).',
+            $this->abortSync(
+                'deactivate',
                 count($employeeIdsToDeactivate),
-                $numActiveUsersInBroker,
                 $numChangesAllowed,
-                ($this->safetyCutoff * 100)
+                $numActiveUsersInBroker,
+                1499971625
             );
-            $this->logger->error($errorMessage);
-            throw new Exception($errorMessage, 1499971625);
         }
         
         $this->createUsers($usersToAdd);
