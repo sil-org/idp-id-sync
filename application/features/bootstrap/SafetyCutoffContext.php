@@ -184,7 +184,7 @@ class SafetyCutoffContext implements Context
         // Add $numToCreate more users to ID Store.
         $numInBroker = count($usersFromBroker);
         $numToHaveInStore = $numInBroker + $numToCreate;
-        for ($i = $numInBroker; $i < $numToHaveInStore; $i++) {
+        for ($i = $numInBroker; $i <= $numToHaveInStore; $i++) {
             $tempEmployeeId = 10000 + $i;
             $activeIdStoreUsers[$tempEmployeeId] = [
                 'employeenumber' => (string)$tempEmployeeId,
