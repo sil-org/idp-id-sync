@@ -195,7 +195,7 @@ class Synchronizer
                 return $carry + 1;
             }
             return $carry;
-        });
+        }, 0);
     }
     
     /**
