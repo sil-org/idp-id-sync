@@ -16,6 +16,7 @@ use yii\helpers\ArrayHelper;
 class Synchronizer
 {
     /** @var float */
+    const MIN_NUM_CHANGES_ALLOWED = 10;
     const SAFETY_CUTOFF_DEFAULT = 0.15;
     
     public $dateTimeFormat = 'n/j/y g:ia T';
@@ -346,7 +347,10 @@ class Synchronizer
             }
         }
         
-        $numChangesAllowed = ceil($numActiveUsersInBroker * $this->safetyCutoff);
+        $numChangesAllowed = max(
+            ceil($numActiveUsersInBroker * $this->safetyCutoff),
+            self::MIN_NUM_CHANGES_ALLOWED
+        );
         
         if (count($employeeIdsToDeactivate) > $numChangesAllowed) {
             $errorMessage = sprintf(
