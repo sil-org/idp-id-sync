@@ -387,6 +387,16 @@ class Synchronizer
             self::MIN_NUM_CHANGES_ALLOWED
         );
         
+        if (count($usersToAdd) > $numChangesAllowed) {
+            $this->abortSync(
+                'create',
+                count($usersToAdd),
+                $numChangesAllowed,
+                $numActiveUsersInBroker,
+                1501165932
+            );
+        }
+        
         if (count($employeeIdsToDeactivate) > $numChangesAllowed) {
             $this->abortSync(
                 'deactivate',
