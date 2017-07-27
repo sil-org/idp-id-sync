@@ -41,6 +41,12 @@ class SafetyCutoffContext implements Context
     /** @var float|null */
     private $safetyCutoff = null;
     
+    public function __construct()
+    {
+        $this->logger = new Psr3ConsoleLogger();
+        $this->notifier = new ConsoleNotifier();
+    }
+    
     /**
      * @Then an exception SHOULD have been thrown
      */
