@@ -397,6 +397,14 @@ class Synchronizer
             );
         }
         
+        /**
+         * NOTE: If we begin intelligently comparing users found in both places
+         * and only updating those that need it, then we could limit updates to
+         * the safety cutoff as well. For now, we try to update all users found
+         * to exist in both places, so for a full sync that will almost always
+         * be above the safety cutoff.
+         */
+        
         if (count($employeeIdsToDeactivate) > $numChangesAllowed) {
             $this->abortSync(
                 'deactivate',
