@@ -10,21 +10,23 @@ Feature: Preventing too many changes at once to protect against iffy data.
 
     Examples:
       | activeInBroker | numToDeactivate | safetyCutoff | exceptionOrNot |
-      |       10       |      0          |     0.15     |  should NOT    |
-      |       10       |      1          |     0.15     |  should NOT    |
-      |       10       |      2          |     0.15     |  should NOT    |
-      |       10       |      3          |     0.15     |  SHOULD        |
-      |       10       |      4          |     0.15     |  SHOULD        |
-      |       10       |      5          |     0.15     |  SHOULD        |
-      |       10       |      6          |     0.15     |  SHOULD        |
-      |       10       |      7          |     0.15     |  SHOULD        |
-      |       10       |      8          |     0.15     |  SHOULD        |
-      |       10       |      9          |     0.15     |  SHOULD        |
-      |       10       |     10          |     0.15     |  SHOULD        |
-      |       10       |      5          |     0.60     |  should NOT    |
-      |       10       |      6          |     0.60     |  should NOT    |
-      |       10       |      7          |     0.60     |  SHOULD        |
-      |       10       |      8          |     0.60     |  SHOULD        |
+      |      100       |      0          |     0.15     |  should NOT    |
+      |      100       |     10          |     0.15     |  should NOT    |
+      |      100       |     15          |     0.15     |  should NOT    |
+      |      100       |     16          |     0.15     |  SHOULD        |
+      |      100       |     20          |     0.15     |  SHOULD        |
+      |      100       |     30          |     0.15     |  SHOULD        |
+      |      100       |     40          |     0.15     |  SHOULD        |
+      |      100       |     50          |     0.15     |  SHOULD        |
+      |      100       |     60          |     0.15     |  SHOULD        |
+      |      100       |     70          |     0.15     |  SHOULD        |
+      |      100       |     80          |     0.15     |  SHOULD        |
+      |      100       |     90          |     0.15     |  SHOULD        |
+      |      100       |    100          |     0.15     |  SHOULD        |
+      |      100       |     59          |     0.60     |  should NOT    |
+      |      100       |     60          |     0.60     |  should NOT    |
+      |      100       |     61          |     0.60     |  SHOULD        |
+      |      100       |     62          |     0.60     |  SHOULD        |
       |        2       |      0          |    -1        |  SHOULD        |
       |        2       |      0          |     0        |  should NOT    |
       |        2       |      0          |     1        |  should NOT    |
@@ -42,15 +44,17 @@ Feature: Preventing too many changes at once to protect against iffy data.
 
     Examples:
       | activeInBroker | numToCreate | safetyCutoff | exceptionOrNot |
-      |       10       |      0      |     0.15     |  should NOT    |
-      |       10       |      1      |     0.15     |  should NOT    |
-      |       10       |      2      |     0.15     |  should NOT    |
-      |       10       |      3      |     0.15     |  SHOULD        |
-      |       10       |      4      |     0.15     |  SHOULD        |
-      |       10       |      5      |     0.15     |  SHOULD        |
-      |       10       |      6      |     0.15     |  SHOULD        |
-      |       10       |      7      |     0.15     |  SHOULD        |
-      |       10       |      8      |     0.15     |  SHOULD        |
-      |       10       |      9      |     0.15     |  SHOULD        |
-      |       10       |     10      |     0.15     |  SHOULD        |
+      |      100       |      0      |     0.15     |  should NOT    |
+      |      100       |     10      |     0.15     |  should NOT    |
+      |      100       |     15      |     0.15     |  should NOT    |
+      |      100       |     16      |     0.15     |  SHOULD        |
+      |      100       |     20      |     0.15     |  SHOULD        |
+      |      100       |     30      |     0.15     |  SHOULD        |
+      |      100       |     40      |     0.15     |  SHOULD        |
+      |      100       |     50      |     0.15     |  SHOULD        |
+      |      100       |     60      |     0.15     |  SHOULD        |
+      |      100       |     70      |     0.15     |  SHOULD        |
+      |      100       |     80      |     0.15     |  SHOULD        |
+      |      100       |     90      |     0.15     |  SHOULD        |
+      |      100       |    100      |     0.15     |  SHOULD        |
 
