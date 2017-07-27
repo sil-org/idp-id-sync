@@ -1,12 +1,11 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
-use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Context\Context;
+use Behat\Gherkin\Node\TableNode;
 use Exception;
 use PHPUnit\Framework\Assert;
 use Psr\Log\LoggerInterface;
-use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
@@ -14,6 +13,7 @@ use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
+use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Psr3Adapters\Psr3ConsoleLogger;
 use yii\helpers\Json;
 
