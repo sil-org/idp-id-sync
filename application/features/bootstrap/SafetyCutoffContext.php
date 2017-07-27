@@ -149,4 +149,47 @@ class SafetyCutoffContext implements Context
     {
         $this->safetyCutoff = $value;
     }
+
+    /**
+     * @Given running a full sync would create :numToCreate users
+     */
+    public function runningAFullSyncWouldCreateUsers($numToCreate)
+    {
+        Assert::assertNotEmpty(
+            $this->idBroker,
+            'Set up the ID Broker before using this step.'
+        );
+        
+        $usersFromBroker = $this->idBroker->listUsers();
+        $activeIdStoreUsers = [];
+        
+        // Add all users from ID Broker to ID Store.
+        foreach ($usersFromBroker as $user) {
+            $activeIdStoreUsers[$user->employeeId] = [
+                'employeenumber' => (string)$user->employeeId,
+                'displayname' => $user->displayName,
+                'username' => $user->username,
+                'firstname' => $user->firstName,
+                'lastname' => $user->lastName,
+                'email' => $user->email,
+            ];
+        }
+        
+        // Add $numToCreate more users to ID Store.
+        $numInBroker = count($usersFromBroker);
+        $numToHaveInStore = $numInBroker + $numToCreate;
+        for ($i = $numInBroker; $i < $numToHaveInStore; $i++) {
+            $tempEmployeeId = 10000 + $i;
+            $activeIdStoreUsers[$tempEmployeeId] = [
+                'employeenumber' => (string)$tempEmployeeId,
+                'displayname' => 'Person ' . $i,
+                'username' => 'person_' . $i,
+                'firstname' => 'Person',
+                'lastname' => (string)$i,
+                'email' => 'person_' . $i . '@example.com',
+            ];
+        }
+        
+        $this->idStore = new FakeIdStore($activeIdStoreUsers);
+    }
 }
