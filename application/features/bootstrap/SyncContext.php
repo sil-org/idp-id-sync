@@ -1,7 +1,6 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Context\Context;
 use Exception;
