@@ -10,6 +10,7 @@ use yii\swiftmailer\Mailer;
 
 $appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
 $idpName = Env::requireEnv('IDP_NAME');
+$idpDisplayName = Env::get('IDP_DISPLAY_NAME', $idpName);
 
 $idBrokerOptionalConfig = Env::getArrayFromPrefix('ID_BROKER_CONFIG_');
 $idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
@@ -72,7 +73,7 @@ return [
              */
             'emailTo' => Env::get('NOTIFIER_EMAIL_TO'),
             'emailFrom' => Env::get('MAILER_USERNAME'),
-            'organizationName' => $idpName,
+            'organizationName' => $idpDisplayName,
         ],
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
     ],
