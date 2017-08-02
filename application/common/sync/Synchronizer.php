@@ -246,6 +246,7 @@ class Synchronizer
         $usersToAdd = [];
         $usersToUpdateAndActivate = [];
         $employeeIdsToDeactivate = [];
+        $employeeIdsAlreadyInactive = [];
         
         $this->logger->info(sprintf(
             'Found %s ID Store users and %s ID Broker users.',
@@ -283,6 +284,8 @@ class Synchronizer
             // If this user not currently inactive, deactivate them.
             if ($userInfo['active'] !== 'no') {
                 $employeeIdsToDeactivate[] = $employeeId;
+            } else {
+                $employeeIdsAlreadyInactive[] = $employeeId;
             }
         }
         
@@ -291,6 +294,11 @@ class Synchronizer
         $this->createUsers($usersToAdd);
         $this->activateAndUpdateUsers($usersToUpdateAndActivate);
         $this->deactivateUsers($employeeIdsToDeactivate);
+        
+        $this->logger->notice([
+            'action' => 'none (already inactive)',
+            'count' => count($employeeIdsAlreadyInactive),
+        ]);
         
         $this->logger->info('Done attempting to sync all users.');
     }
