@@ -286,9 +286,9 @@ class Synchronizer
      */
     protected function getAllIdBrokerUsersByEmployeeId($fields = null)
     {
-        if ( ! in_array(User::EMPLOYEE_ID, $fields)) {
+        if (is_array($fields) && ! in_array(User::EMPLOYEE_ID, $fields)) {
             throw new InvalidArgumentException(sprintf(
-                'The list of fields must include %s. Given list: %s',
+                'The list of fields, if provided, must include %s. Given list: %s',
                 User::EMPLOYEE_ID,
                 join(', ', $fields)
             ), 1501181580);
