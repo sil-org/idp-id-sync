@@ -1,17 +1,19 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
-use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Context\Context;
+use Behat\Gherkin\Node\TableNode;
+use Exception;
 use PHPUnit\Framework\Assert;
 use Psr\Log\LoggerInterface;
-use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
+use Sil\Idp\IdSync\common\models\User;
+use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Psr3Adapters\Psr3ConsoleLogger;
 use yii\helpers\Json;
 
@@ -20,6 +22,9 @@ use yii\helpers\Json;
  */
 class SyncContext implements Context
 {
+    /** @var Exception */
+    private $exceptionThrown = null;
+    
     /** @var IdBrokerInterface */
     private $idBroker;
     
@@ -99,8 +104,12 @@ class SyncContext implements Context
      */
     public function iGetTheUserInfoFromTheIdStoreAndSendItToTheIdBroker()
     {
-        $synchronizer = $this->createSynchronizer();
-        $synchronizer->syncUser($this->tempEmployeeId);
+        try {
+            $synchronizer = $this->createSynchronizer();
+            $synchronizer->syncUser($this->tempEmployeeId);
+        } catch (Exception $e) {
+            $this->exceptionThrown = $e;
+        }
     }
 
     /**
@@ -151,8 +160,12 @@ class SyncContext implements Context
      */
     public function iLearnTheUserDoesNotExistInTheIdStoreAndITellTheIdBroker()
     {
-        $synchronizer = $this->createSynchronizer();
-        $synchronizer->syncUser($this->tempEmployeeId);
+        try {
+            $synchronizer = $this->createSynchronizer();
+            $synchronizer->syncUser($this->tempEmployeeId);
+        } catch (Exception $e) {
+            $this->exceptionThrown = $e;
+        }
     }
 
     /**
@@ -214,8 +227,12 @@ class SyncContext implements Context
      */
     public function iSyncAllTheUsersFromTheIdStoreToTheIdBroker()
     {
-        $synchronizer = $this->createSynchronizer();
-        $synchronizer->syncAll();
+        try {
+            $synchronizer = $this->createSynchronizer();
+            $synchronizer->syncAll();
+        } catch (Exception $e) {
+            $this->exceptionThrown = $e;
+        }
     }
 
     /**
@@ -294,12 +311,16 @@ class SyncContext implements Context
      */
     public function iAskTheIdStoreForTheListOfUsersChangedSinceAndSyncThem($timestamp)
     {
-        $synchronizer = $this->createSynchronizer();
-        $synchronizer->syncUsersChangedSince($timestamp);
+        try {
+            $synchronizer = $this->createSynchronizer();
+            $synchronizer->syncUsersChangedSince($timestamp);
+        } catch (Exception $e) {
+            $this->exceptionThrown = $e;
+        }
     }
 
     /**
-     * @Given :number users are active in the ID Store
+     * @Given (only) :number users are active in the ID Store
      */
     public function usersAreActiveInTheIdStore($number)
     {
@@ -376,5 +397,18 @@ class SyncContext implements Context
             $idBrokerUsers[$user->employeeId] = $user->toArray();
         }
         $this->idBroker = new FakeIdBroker($idBrokerUsers);
+    }
+    
+    /**
+     * @Then an exception should NOT have been thrown
+     */
+    public function anExceptionShouldNotHaveBeenThrown()
+    {
+        $possibleException = $this->exceptionThrown ?? new Exception();
+        Assert::assertNotInstanceOf(Exception::class, $this->exceptionThrown, sprintf(
+            'Unexpected exception (%s): %s',
+            $possibleException->getCode(),
+            $possibleException->getMessage()
+        ));
     }
 }

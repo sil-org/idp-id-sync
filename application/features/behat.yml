@@ -9,6 +9,9 @@ default:
         insite_integration_features:
             paths:    [ %paths.base%/../features/id-store-integration.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\InsiteIntegrationContext ]
+        safety_cutoff_features:
+            paths:    [ %paths.base%/../features/safetyCutoff.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\SafetyCutoffContext ]
         sync_features:
             paths:    [ %paths.base%/../features/sync.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\SyncContext ]

@@ -46,7 +46,8 @@ Feature: Synchronizing records
         | employee_id    | display_name | username   | active |
         | 10001          | First Last   | first_last | yes    |
     When I sync all the users from the ID Store to the ID Broker
-    Then ONLY the following users should exist in the ID Broker:
+    Then an exception should NOT have been thrown
+      And ONLY the following users should exist in the ID Broker:
         | employee_id    | display_name | username   | active |
         | 10001          | Nickname     | first_last | yes    |
 
@@ -59,7 +60,8 @@ Feature: Synchronizing records
         | employee_id    | display_name | username   | active |
         | 10001          | Person One   | person_one | yes    |
     When I sync all the users from the ID Store to the ID Broker
-    Then ONLY the following users should exist in the ID Broker:
+    Then an exception should NOT have been thrown
+      And ONLY the following users should exist in the ID Broker:
         | employee_id    | display_name | username   | active |
         | 10001          | Person One   | person_one | yes    |
         | 10002          | Person Two   | person_two | yes    |
@@ -69,13 +71,15 @@ Feature: Synchronizing records
       And NO users exist in the ID Broker
       And user 3 in the list from ID Store will be rejected by the ID Broker
     When I sync all the users from the ID Store to the ID Broker
-    Then the ID Broker should now have 4 active users.
+    Then an exception should NOT have been thrown
+      And the ID Broker should now have 4 active users.
 
   Scenario: Handling a sync update error gracefully
     Given 5 users are active in the ID Store and are inactive in the ID Broker
       And user 3 in the list from ID Store will be rejected by the ID Broker
     When I sync all the users from the ID Store to the ID Broker
-    Then the ID Broker should now have 4 active users.
+    Then an exception should NOT have been thrown
+      And the ID Broker should now have 4 active users.
 
   Scenario: Handling sync errors gracefully (in more detail)
     Given ONLY the following users are active in the ID Store:
@@ -89,7 +93,8 @@ Feature: Synchronizing records
         | 10001          | One to Update   | person_one   | p1@example.com | yes    |
         | 10003          | Three to Update | person_three | p3@example.com | yes    |
     When I sync all the users from the ID Store to the ID Broker
-    Then ONLY the following users should exist in the ID Broker:
+    Then an exception should NOT have been thrown
+      And ONLY the following users should exist in the ID Broker:
         | employee_id    | display_name    | username     | email          | active |
         | 10001          | Good Update     | person_one   | p1@example.com | yes    |
         | 10003          | Three to Update | person_three | p3@example.com | yes    |
@@ -105,7 +110,8 @@ Feature: Synchronizing records
         | 10001          | Person One   | person_one | yes    |
         | 10002          | Person Two   | person_two | no     |
     When I sync all the users from the ID Store to the ID Broker
-    Then ONLY the following users should exist in the ID Broker:
+    Then an exception should NOT have been thrown
+      And ONLY the following users should exist in the ID Broker:
         | employee_id    | display_name | username   | active |
         | 10001          | Person One   | person_one | yes    |
         | 10002          | Person Two   | person_two | yes    |
@@ -120,7 +126,8 @@ Feature: Synchronizing records
         | 10002          | Person Two   | person_two   | yes    |
         | 10003          | Person Three | person_three | no     |
     When I sync all the users from the ID Store to the ID Broker
-    Then ONLY the following users should exist in the ID Broker:
+    Then an exception should NOT have been thrown
+      And ONLY the following users should exist in the ID Broker:
         | employee_id    | display_name | username     | active |
         | 10001          | Person One   | person_one   | no     |
         | 10002          | Person Two   | person_two   | yes    |

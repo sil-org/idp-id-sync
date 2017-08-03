@@ -49,6 +49,14 @@ trait SyncProvider
             );
         }
         
-        return new Synchronizer($idStore, $idBroker, $logger, $notifier);
+        $syncSafetyCutoff = Yii::$app->params['syncSafetyCutoff'];
+        
+        return new Synchronizer(
+            $idStore,
+            $idBroker,
+            $logger,
+            $notifier,
+            $syncSafetyCutoff
+        );
     }
 }
