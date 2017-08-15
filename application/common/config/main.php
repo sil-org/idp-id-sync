@@ -72,20 +72,6 @@ return [
             ],
         ],
         
-        'mailer' => [
-            'class' => Mailer::class,
-            'htmlLayout' => '@common/mail/layouts/html.php',
-            'useFileTransport' => Env::get('MAILER_USEFILES', false),
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'host' => Env::get('MAILER_HOST'),
-                'username' => Env::get('MAILER_USERNAME'),
-                'password' => Env::get('MAILER_PASSWORD'),
-                'port' => '465',
-                'encryption' => 'ssl',
-            ],
-        ],
-        
         'notifier' => $notifierConfig,
     ],
     'params' => [
