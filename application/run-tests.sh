@@ -13,10 +13,10 @@ apachectl start
 # If that failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
-# Make sure the database is ready, then wait a little bit longer so that apach
+# Make sure the database is ready, then wait a little bit longer so that apache
 # (in "broker") has time to come up.
 whenavail brokerdb 3306 60 echo Waited for brokerdb
-sleep 10
+sleep 15
 
 # Run the feature tests (skipping integration tests)
 ./vendor/bin/behat --config=features/behat.yml --tags '~@integration'
