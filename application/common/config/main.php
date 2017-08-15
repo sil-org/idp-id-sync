@@ -2,6 +2,7 @@
 
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
+use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
 use Sil\JsonSyslog\JsonSyslogTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
@@ -69,17 +70,17 @@ return [
                 'encryption' => 'ssl',
             ],
         ],
-    ],
-    'params' => [
+        
+        /* Configure the nofifier, used to send notifications to HR (such as
+         * when users lack an email address):  */
         'notifier' => [
-            /*
-             * To send notifications emails (such as to HR when users lack an
-             * email address), provide the following fields.
-             */
+            'class' => EmailServiceNotifier::class,
             'emailServiceConfig' => $emailServiceConfig,
             'emailTo' => Env::get('NOTIFIER_EMAIL_TO'),
             'organizationName' => $idpDisplayName,
         ],
+    ],
+    'params' => [
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
     ],
 ];

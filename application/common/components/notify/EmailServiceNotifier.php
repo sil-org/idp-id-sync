@@ -1,41 +1,59 @@
 <?php
 namespace Sil\Idp\IdSync\common\components\notify;
 
+use InvalidArgumentException;
 use Sil\EmailService\Client\EmailServiceClient;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
+use yii\base\Component;
 
 /**
  * NOTE: If you add public methods to this class, first add them to the
  *       NotifierInterface.
  */
-class EmailServiceNotifier implements NotifierInterface
+class EmailServiceNotifier extends Component implements NotifierInterface
 {
-    /** @var array */
-    protected $emailServiceConfig;
-    
-    /** @var string */
-    protected $organizationName;
-    
-    /** @var string */
-    protected $toEmailAddress;
+    /**
+     * The array of configuration values for the email service client.
+     * @var array
+     */
+    public $emailServiceConfig;
     
     /**
-     * Constructor.
-     *
-     * @param string $toEmailAddress What address to send the email to.
-     * @param string $organizationName The name of the organization.
-     * @param array $emailServiceConfig The array of configuration values for
-     *     the email service client.
+     * What address to send the email to.
+     * @var string 
      */
-    public function __construct(
-        string $toEmailAddress,
-        string $organizationName,
-        array $emailServiceConfig
-    ) {
-        $this->toEmailAddress = $toEmailAddress;
-        $this->organizationName = $organizationName;
-        $this->emailServiceConfig = $emailServiceConfig;
+    public $emailTo;
+    
+    /**
+     * The name of the organization.
+     * @var string 
+     */
+    public $organizationName;
+    
+    public function init()
+    {
+        $this->assertConfigIsValid();
+        parent::init();
+    }
+    
+    protected function assertConfigIsValid()
+    {
+        $requiredParams = [
+            'accessToken',
+            'assertValidIp',
+            'baseUrl',
+            'validIpRanges',
+        ];
+        
+        foreach ($requiredParams as $param) {
+            if ( ! isset($this->emailServiceConfig[$param])) {
+                throw new InvalidArgumentException(
+                    'Missing ' . $param . ' value (for EmailServiceNotifier).',
+                    1502820156
+                );
+            }
+        }
     }
     
     /**
@@ -72,7 +90,7 @@ class EmailServiceNotifier implements NotifierInterface
         
         $numUsers = count($users);
         $this->getEmailServiceClient()->email([
-            'to_address' => $this->toEmailAddress,
+            'to_address' => $this->emailTo,
             'subject' => sprintf(
                 'Email address missing for %s %s user%s',
                 $numUsers,
