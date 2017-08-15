@@ -74,8 +74,9 @@ class EmailServiceNotifier implements NotifierInterface
         $this->getEmailServiceClient()->email([
             'to_address' => $this->toEmailAddress,
             'subject' => sprintf(
-                'Email address missing for %s user%s',
+                'Email address missing for %s %s user%s',
                 $numUsers,
+                $this->organizationName,
                 ($numUsers === 1 ? '' : 's')
             ),
             'html_body' => $htmlBody,
