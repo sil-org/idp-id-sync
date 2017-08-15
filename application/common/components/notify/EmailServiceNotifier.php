@@ -44,7 +44,7 @@ class EmailServiceNotifier implements NotifierInterface
     protected function getEmailServiceClient()
     {
         $config = $this->emailServiceConfig;
-        return $this->emailServiceClient = new EmailServiceClient(
+        return new EmailServiceClient(
             $config['baseUrl'],
             $config['accessToken'],
             [
