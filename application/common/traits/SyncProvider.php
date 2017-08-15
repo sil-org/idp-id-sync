@@ -1,7 +1,7 @@
 <?php
 namespace Sil\Idp\IdSync\common\traits;
 
-use Sil\Idp\IdSync\common\components\notify\EmailNotifier;
+use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
@@ -30,22 +30,18 @@ trait SyncProvider
         
         $notifierParams = Yii::$app->params['notifier'];
         $emailTo = $notifierParams['emailTo'];
-        $emailFrom = $notifierParams['emailFrom'];
-        if (empty($emailTo) || empty($emailFrom)) {
+        if (empty($emailTo)) {
             $logger->warning(sprintf(
-                'Missing either the to (%s) or from (%s) email address, so '
-                . 'notification emails will not be sent.',
-                var_export($emailTo, true),
-                var_export($emailFrom, true)
+                'Missing the to (%s) email address, so HR notification emails '
+                . 'will not be sent.',
+                var_export($emailTo, true)
             ));
             $notifier = null;
         } else {
-            $notifier = new EmailNotifier(
-                Yii::$app->mailer,
+            $notifier = new EmailServiceNotifier(
                 $emailTo,
-                $emailFrom,
                 $notifierParams['organizationName'],
-                $idStore->getIdStoreName()
+                $notifierParams['emailServiceConfig']
             );
         }
         
