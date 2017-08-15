@@ -15,6 +15,11 @@ $idpDisplayName = Env::get('IDP_DISPLAY_NAME', $idpName);
 $idBrokerOptionalConfig = Env::getArrayFromPrefix('ID_BROKER_CONFIG_');
 $idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
 
+$emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
+
+// Re-retrieve the validIpRanges as an array.
+$emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
+
 return [
     'id' => $idpName,
     'bootstrap' => ['log'],
@@ -68,11 +73,11 @@ return [
     'params' => [
         'notifier' => [
             /*
-             * To send notifications emails (such as to HR when a user lacks an
-             * email address), provide both a 'to' and a 'from' email address.
+             * To send notifications emails (such as to HR when users lack an
+             * email address), provide the following fields.
              */
+            'emailServiceConfig' => $emailServiceConfig,
             'emailTo' => Env::get('NOTIFIER_EMAIL_TO'),
-            'emailFrom' => Env::get('MAILER_USERNAME'),
             'organizationName' => $idpDisplayName,
         ],
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
