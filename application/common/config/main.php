@@ -3,6 +3,7 @@
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
+use Sil\Idp\IdSync\common\components\notify\NullNotifier;
 use Sil\JsonSyslog\JsonSyslogTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
@@ -20,6 +21,20 @@ $emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
 
 // Re-retrieve the validIpRanges as an array.
 $emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
+
+$notifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
+if (empty($notifierEmailTo)) {
+    $notifierConfig = ['class' => NullNotifier::class];
+} else {
+    /* Configure the notifier, used to send notifications to HR (such as
+     * when users lack an email address):  */
+    $notifierConfig = [
+        'class' => EmailServiceNotifier::class,
+        'emailServiceConfig' => $emailServiceConfig,
+        'emailTo' => $notifierEmailTo,
+        'organizationName' => $idpDisplayName,
+    ];
+}
 
 return [
     'id' => $idpName,
@@ -71,14 +86,7 @@ return [
             ],
         ],
         
-        /* Configure the nofifier, used to send notifications to HR (such as
-         * when users lack an email address):  */
-        'notifier' => [
-            'class' => EmailServiceNotifier::class,
-            'emailServiceConfig' => $emailServiceConfig,
-            'emailTo' => Env::get('NOTIFIER_EMAIL_TO'),
-            'organizationName' => $idpDisplayName,
-        ],
+        'notifier' => $notifierConfig,
     ],
     'params' => [
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
