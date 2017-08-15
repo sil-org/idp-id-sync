@@ -1,9 +1,6 @@
 <?php
 use yii\helpers\Html;
 
-/* @var $this \yii\web\View The view component instance. */
-/* @var $message \yii\mail\BaseMessage Newly created mail message. */
-/* @var $idStoreName string */
 /* @var $organizationName string */
 /* @var $users User[] */
 
