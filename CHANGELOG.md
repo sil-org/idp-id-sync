@@ -28,10 +28,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   double slash (`//`) from resulting in incorrect API responses.
 
 ## [0.3.0] - 2017-06-16
+### Changed
+- Switch to pulling in Google auth JSON from a file (for Google Sheets adapter
+  for ID Store).
 
 ## [0.2.0] - 2017-06-15
+### Added
+- Add Insite adapter for ID Store.
+- Push/tag docker image for every branch (not just `master`).
+- Add cron job that runs full- and incremental-syncs at regular intervals.
+- Add `User` model for better internal handling of user info.
+- Log more events encountered during a synchronization, including aggregated
+  stats.
+- Better log/report errors from incremental-/full-sync.
+- Add Google Sheets adapter for ID Store.
+
+### Changed
+- Change IdStoreInterface's `getActiveUsersChangedSince()` to
+  `getUsersChangedSince()`, since the list of changed users can include
+  removed (deactivated) users.
+- Refactor for new IdBrokerClient method signatures.
+- Change IdStoreInterface to return `User` objects, not simply arrays.
+- Rename env. variables for ID Store and ID Broker adapters.
+
+### Fixed
+- Handle sync errors gracefully, and continue with sync if possible.
+- Fix handling of non-boolean values for `locked`, including "no" and "false"
+  (case-insensitive).
+- Better communicate when required env. variables are missing.
+- Enable sending HR a notification email when ID Store users lack an email
+  address.
 
 ## [0.1.0] - 2017-04-10
+### Added
+- First release.
 
 [Unreleased]: https://github.com/silinternational/idp-id-sync/compare/0.5.0...develop
 [0.5.0]: https://github.com/silinternational/idp-id-sync/compare/0.4.0...0.5.0
