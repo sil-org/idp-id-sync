@@ -4,11 +4,12 @@
 /* @var $users User[] */
 
 $numUsers = count($users);
+$isOnlyOne = ($numUsers === 1);
 ?>
-Missing Email
--------------
+Missing Email <?= $isOnlyOne ? 'Address' : 'Addresses' ?>
+-----------------------
 
-The following <?= ($numUsers === 1 ? 'user does' : $numUsers . ' users do') ?> 
+The following <?= $isOnlyOne ? 'user does' : $numUsers . ' users do' ?> 
 not have an email address. Without this, they will be unable to log in to 
 certain <?= $organizationName ?> websites.
 

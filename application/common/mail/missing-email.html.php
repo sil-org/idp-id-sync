@@ -5,11 +5,12 @@ use yii\helpers\Html;
 /* @var $users User[] */
 
 $numUsers = count($users);
+$isOnlyOne = ($numUsers === 1);
 ?>
-<h2>Missing Email</h2>
+<h2>Missing Email <?= $isOnlyOne ? 'Address' : 'Addresses' ?></h2>
 <p>
   The following 
-  <?= Html::encode($numUsers === 1 ? 'user does' : $numUsers . ' users do') ?> 
+  <?= Html::encode($isOnlyOne ? 'user does' : $numUsers . ' users do') ?> 
   not have an email address. Without this, they will be unable to log in to 
   certain <?= Html::encode($organizationName) ?> websites.
 </p>
