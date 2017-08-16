@@ -77,14 +77,18 @@ class EmailServiceNotifier extends Component implements NotifierInterface
      */
     public function sendMissingEmailNotice(array $users)
     {
-        $htmlBody = \Yii::$app->view->render('@common/mail/missing-email.html.php', [
+        $templateVars = [
             'organizationName' => $this->organizationName,
             'users' => $users,
-        ]);
-        $textBody = \Yii::$app->view->render('@common/mail/missing-email.text.php', [
-            'organizationName' => $this->organizationName,
-            'users' => $users,
-        ]);
+        ];
+        $htmlBody = \Yii::$app->view->render(
+            '@common/mail/missing-email.html.php',
+            $templateVars
+        );
+        $textBody = \Yii::$app->view->render(
+            '@common/mail/missing-email.text.php',
+            $templateVars
+        );
         
         $numUsers = count($users);
         $this->getEmailServiceClient()->email([
