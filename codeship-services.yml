@@ -17,7 +17,7 @@ app:
         TEST_ID_SYNC_BASE_URL: http://localhost
 
 broker:
-    image: silintl/idp-id-broker:develop
+    image: silintl/idp-id-broker:latest
     environment:
         APP_ENV: test
         API_ACCESS_KEYS: codeship-sync-to-broker-11111111
