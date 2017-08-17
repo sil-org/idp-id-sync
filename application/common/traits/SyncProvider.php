@@ -1,9 +1,10 @@
 <?php
 namespace Sil\Idp\IdSync\common\traits;
 
-use Sil\Idp\IdSync\common\components\notify\EmailNotifier;
+use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
+use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Psr3Adapters\Psr3Yii2Logger;
 use Yii;
@@ -26,29 +27,10 @@ trait SyncProvider
         /* @var $idBroker IdBrokerInterface */
         $idBroker = Yii::$app->idBroker;
         
+        /* @var $notifier NotifierInterface */
+        $notifier = Yii::$app->notifier;
+        
         $logger = new Psr3Yii2Logger();
-        
-        $notifierParams = Yii::$app->params['notifier'];
-        $emailTo = $notifierParams['emailTo'];
-        $emailFrom = $notifierParams['emailFrom'];
-        if (empty($emailTo) || empty($emailFrom)) {
-            $logger->warning(sprintf(
-                'Missing either the to (%s) or from (%s) email address, so '
-                . 'notification emails will not be sent.',
-                var_export($emailTo, true),
-                var_export($emailFrom, true)
-            ));
-            $notifier = null;
-        } else {
-            $notifier = new EmailNotifier(
-                Yii::$app->mailer,
-                $emailTo,
-                $emailFrom,
-                $notifierParams['organizationName'],
-                $idStore->getIdStoreName()
-            );
-        }
-        
         $syncSafetyCutoff = Yii::$app->params['syncSafetyCutoff'];
         
         return new Synchronizer(

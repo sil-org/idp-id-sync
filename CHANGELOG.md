@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Have site/system-status confirm that the Notifier has whatever config values
+  it will need.
+
+### Changed
+- Require new env. vars for Email Service if a `NOTIFIER_EMAIL_TO` is provided.
+- Switch from using EmailNotifier to EmailServiceNotifier for sending
+  notification emails to HR.
+- Switch from using `silinternational/yii2-jsonsyslog` for JsonSyslogTarget to
+  using the version in `silinternational/yii2-json-log-targets`.
+- Render both an HTML and a text version of the HR notification email.
 
 ## [0.5.0] - 2017-08-09
 ### Added

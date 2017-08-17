@@ -1,7 +1,9 @@
 <?php
 namespace Sil\Idp\IdSync\frontend\controllers;
 
+use Exception;
 use Sil\Idp\IdSync\frontend\components\BaseRestController;
+use yii\web\ServerErrorHttpException;
 use yii\web\NotFoundHttpException;
 
 class SiteController extends BaseRestController
@@ -20,9 +22,15 @@ class SiteController extends BaseRestController
 
     public function actionSystemStatus()
     {
-        
-        /** @todo Check system status. Return 200 OK if okay. */
-        
+        try {
+            \Yii::$app->notifier;
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage());
+            throw new ServerErrorHttpException(
+                'Check notifier configuration.',
+                1502822830
+            );
+        }        
     }
 
     public function actionUndefinedRequest()
