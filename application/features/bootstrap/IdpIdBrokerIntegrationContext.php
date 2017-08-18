@@ -29,11 +29,13 @@ class IdpIdBrokerIntegrationContext implements Context
     {
         require_once __DIR__ . '/../../vendor/yiisoft/yii2/Yii.php';
         
-        $this->idBroker = new IdpIdBroker([
-            'baseUrl' => 'http://broker', // For tests. Matches docker container name.
-            'accessToken' => Env::requireEnv('ID_BROKER_CONFIG_accessToken'),
-            'trustedIpRanges' => Env::getArray('ID_BROKER_CONFIG_trustedIpRanges'),
-        ]);
+        $idBrokerConfig = Env::getArrayFromPrefix('ID_BROKER_CONFIG_');
+        $idBrokerConfig['trustedIpRanges'] = Env::getArray('ID_BROKER_CONFIG_trustedIpRanges');
+        
+        // For tests. Matches docker container name.
+        $idBrokerConfig['baseUrl'] = 'http://broker';
+        
+        $this->idBroker = new IdpIdBroker($idBrokerConfig);
         
         $this->testUserData = $this->generateDataForNewTestUser();
     }
