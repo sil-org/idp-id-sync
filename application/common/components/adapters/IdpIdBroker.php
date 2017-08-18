@@ -9,6 +9,9 @@ use Sil\Idp\IdSync\common\models\User;
 
 class IdpIdBroker extends IdBrokerBase
 {
+    public $assertValidIp;
+    public $trustedIpRanges;
+    
     /** @var IdBrokerClient */
     protected $client;
     
@@ -20,7 +23,10 @@ class IdpIdBroker extends IdBrokerBase
         if (empty($this->baseUrl)) {
             throw new InvalidArgumentException('A base URL is required.');
         }
-        $this->client = new IdBrokerClient($this->baseUrl, $this->accessToken);
+        $this->client = new IdBrokerClient($this->baseUrl, $this->accessToken, [
+            IdBrokerClient::ASSERT_VALID_BROKER_IP_CONFIG => $this->assertValidIp,
+            IdBrokerClient::TRUSTED_IPS_CONFIG => $this->trustedIpRanges,
+        ]);
         parent::init();
     }
     
