@@ -63,6 +63,11 @@ class FakeIdBroker extends IdBrokerBase
         return new User($userInfo);
     }
 
+    public function getSiteStatus(): string
+    {
+        throw new NotSupportedException();
+    }
+
     public function listUsers($fields = null)
     {
         $results = [];

@@ -121,6 +121,11 @@ class IdpIdBroker extends IdBrokerBase
         }
         return new User($userInfo);
     }
+
+    public function getSiteStatus(): string
+    {
+        return $this->getClient()->getSiteStatus();
+    }
     
     /**
      * Get a list of all users.
