@@ -9,9 +9,6 @@ use Sil\Idp\IdSync\common\models\User;
 
 class IdpIdBroker extends IdBrokerBase
 {
-    public $assertValidIp;
-    public $trustedIpRanges;
-    
     /** @var IdBrokerClient */
     protected $client;
     

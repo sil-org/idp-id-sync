@@ -13,7 +13,9 @@ abstract class IdBrokerBase extends Component implements IdBrokerInterface
     const ADAPTER_IDP = 'idp';
     
     public $accessToken;
+    public $assertValidIp;
     public $baseUrl;
+    public $trustedIpRanges;
     
     protected static $adapters = [
         self::ADAPTER_FAKE => FakeIdBroker::class,
