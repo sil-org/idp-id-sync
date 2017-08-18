@@ -1495,16 +1495,16 @@
         },
         {
             "name": "silinternational/yii2-json-log-targets",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/silinternational/yii2-json-log-targets.git",
-                "reference": "58d4867160d9c3efce93830a9a803ffe25a5d177"
+                "reference": "c30726ea6ea3efc5fe32698fe717f7b1592bd60a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silinternational/yii2-json-log-targets/zipball/58d4867160d9c3efce93830a9a803ffe25a5d177",
-                "reference": "58d4867160d9c3efce93830a9a803ffe25a5d177",
+                "url": "https://api.github.com/repos/silinternational/yii2-json-log-targets/zipball/c30726ea6ea3efc5fe32698fe717f7b1592bd60a",
+                "reference": "c30726ea6ea3efc5fe32698fe717f7b1592bd60a",
                 "shasum": ""
             },
             "require": {
@@ -1537,7 +1537,7 @@
                 "target",
                 "yii2"
             ],
-            "time": "2017-08-11T15:10:24+00:00"
+            "time": "2017-08-18T15:41:37+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
