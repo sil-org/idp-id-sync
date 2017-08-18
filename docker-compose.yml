@@ -52,6 +52,7 @@ services:
             - ./local.env
         environment:
             ID_BROKER_CONFIG_accessToken: local-sync-123
+            ID_BROKER_CONFIG_assertValidIp: "false"
         command: ["true"]
         ports: 
             - "22:22"
