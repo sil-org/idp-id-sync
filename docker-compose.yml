@@ -44,7 +44,7 @@ services:
             MYSQL_PASSWORD: broker
 
     cli:
-        image: silintl/php7:latest
+        build: ./
         volumes_from:
             - data
         working_dir: /data
