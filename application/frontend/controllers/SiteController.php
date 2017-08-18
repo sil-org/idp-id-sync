@@ -2,8 +2,10 @@
 namespace Sil\Idp\IdSync\frontend\controllers;
 
 use Exception;
+use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
+use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\frontend\components\BaseRestController;
-use yii\web\ServerErrorHttpException;
+use yii\web\ServerErrorHttpException as Exception500;
 use yii\web\NotFoundHttpException;
 
 class SiteController extends BaseRestController
@@ -22,15 +24,38 @@ class SiteController extends BaseRestController
 
     public function actionSystemStatus()
     {
+        /* @var $webApp \yii\web\Application */
+        $webApp = \Yii::$app;
+        
         try {
-            \Yii::$app->notifier;
+            /* @var $notifier NotifierInterface */
+            $notifier = $webApp->get('notifier');
         } catch (Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(
-                'Check notifier configuration.',
-                1502822830
-            );
-        }        
+            throw new Exception500("Check notifier component's configuration.");
+        }
+        
+        try {
+            $notifier->getSiteStatus();
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage());
+            throw new Exception500('Problem with notifier. Is email service down?');
+        }
+        
+        try {
+            /* @var $idBroker IdBrokerInterface */
+            $idBroker = $webApp->get('idBroker');
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage());
+            throw new Exception500("Check idBroker component's configuration.");
+        }
+        
+        try {
+            $idBroker->getSiteStatus();
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage());
+            throw new Exception500('Problem with ID Broker service.');
+        }
     }
 
     public function actionUndefinedRequest()
