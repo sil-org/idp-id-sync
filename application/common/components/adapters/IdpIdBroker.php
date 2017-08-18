@@ -9,7 +9,8 @@ use Sil\Idp\IdSync\common\models\User;
 
 class IdpIdBroker extends IdBrokerBase
 {
-    protected $client = null;
+    /** @var IdBrokerClient */
+    protected $client;
     
     public function init()
     {
@@ -19,6 +20,7 @@ class IdpIdBroker extends IdBrokerBase
         if (empty($this->baseUrl)) {
             throw new InvalidArgumentException('A base URL is required.');
         }
+        $this->client = new IdBrokerClient($this->baseUrl, $this->accessToken);
         parent::init();
     }
     
@@ -94,9 +96,6 @@ class IdpIdBroker extends IdBrokerBase
      */
     protected function getClient()
     {
-        if ($this->client === null) {
-            $this->client = new IdBrokerClient($this->baseUrl, $this->accessToken);
-        }
         return $this->client;
     }
     
