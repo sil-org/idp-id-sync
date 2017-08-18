@@ -32,6 +32,14 @@ class ConsoleNotifier implements NotifierInterface
     /**
      * {@inheritdoc}
      */
+    public function getSiteStatus(): string
+    {
+        return 'No external service status to check.';
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public function sendMissingEmailNotice(array $users)
     {
         echo sprintf(
