@@ -15,6 +15,7 @@ $idpName = Env::requireEnv('IDP_NAME');
 $idpDisplayName = Env::get('IDP_DISPLAY_NAME', $idpName);
 
 $idBrokerOptionalConfig = Env::getArrayFromPrefix('ID_BROKER_CONFIG_');
+$idBrokerOptionalConfig['trustedIpRanges'] = Env::getArray('ID_BROKER_CONFIG_trustedIpRanges');
 $idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
 
 $emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');

@@ -44,7 +44,7 @@ services:
             MYSQL_PASSWORD: broker
 
     cli:
-        image: silintl/php7:latest
+        build: ./
         volumes_from:
             - data
         working_dir: /data
@@ -52,6 +52,7 @@ services:
             - ./local.env
         environment:
             ID_BROKER_CONFIG_accessToken: local-sync-123
+            ID_BROKER_CONFIG_assertValidIp: "false"
         command: ["true"]
         ports: 
             - "22:22"

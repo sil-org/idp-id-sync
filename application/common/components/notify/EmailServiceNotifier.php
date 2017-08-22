@@ -75,6 +75,14 @@ class EmailServiceNotifier extends Component implements NotifierInterface
     /**
      * {@inheritdoc}
      */
+    public function getSiteStatus(): string
+    {
+        return $this->getEmailServiceClient()->getSiteStatus();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public function sendMissingEmailNotice(array $users)
     {
         $templateVars = [

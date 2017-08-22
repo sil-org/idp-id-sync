@@ -1,6 +1,7 @@
 <?php
 namespace Sil\Idp\IdSync\common\interfaces;
 
+use Exception;
 use Sil\Idp\IdSync\common\models\User;
 
 interface IdBrokerInterface
@@ -42,6 +43,14 @@ interface IdBrokerInterface
      * @throws Exception
      */
     public function deactivateUser(string $employeeId);
+    
+    /**
+     * Ping the /site/status URL.
+     *
+     * @return string "OK".
+     * @throws Exception
+     */
+    public function getSiteStatus();
     
     /**
      * Get information about the specified user.
