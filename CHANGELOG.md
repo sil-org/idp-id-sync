@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [0.6.0] - 2017-08-22
 ### Added
 - Have site/system-status confirm that the Notifier has whatever config values
   it will need.
@@ -74,7 +76,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/0.5.0...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/0.6.0...develop
+[0.6.0]: https://github.com/silinternational/idp-id-sync/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/silinternational/idp-id-sync/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/silinternational/idp-id-sync/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/silinternational/idp-id-sync/compare/0.2.0...0.3.0
