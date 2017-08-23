@@ -19,6 +19,10 @@ services:
         image: silintl/idp-id-broker:develop
         environment:
             API_ACCESS_KEYS: local-sync-123
+            EMAIL_SERVICE_accessToken: dummy
+            EMAIL_SERVICE_assertValidIp: "false"
+            EMAIL_SERVICE_baseUrl: http://email
+            EMAIL_SERVICE_validIpRanges: 10.20.40.0/24
             IDP_NAME: local
             MYSQL_ROOT_PASSWORD: rootpass
             MYSQL_HOST: brokerdb
@@ -40,7 +44,7 @@ services:
             MYSQL_PASSWORD: broker
 
     cli:
-        image: silintl/php7:latest
+        build: ./
         volumes_from:
             - data
         working_dir: /data
@@ -48,6 +52,7 @@ services:
             - ./local.env
         environment:
             ID_BROKER_CONFIG_accessToken: local-sync-123
+            ID_BROKER_CONFIG_assertValidIp: "false"
         command: ["true"]
         ports: 
             - "22:22"

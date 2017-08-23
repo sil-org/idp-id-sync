@@ -9,6 +9,14 @@ use Sil\Idp\IdSync\common\models\User;
  */
 class NullNotifier implements NotifierInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getSiteStatus(): string
+    {
+        return 'NullNotifier, so no status to check.';
+    }
+    
     public function sendMissingEmailNotice(array $users)
     {
         // noop

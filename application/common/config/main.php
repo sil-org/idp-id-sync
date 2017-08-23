@@ -2,7 +2,9 @@
 
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
-use Sil\JsonSyslog\JsonSyslogTarget;
+use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
+use Sil\Idp\IdSync\common\components\notify\NullNotifier;
+use Sil\JsonLog\target\JsonSyslogTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -13,7 +15,27 @@ $idpName = Env::requireEnv('IDP_NAME');
 $idpDisplayName = Env::get('IDP_DISPLAY_NAME', $idpName);
 
 $idBrokerOptionalConfig = Env::getArrayFromPrefix('ID_BROKER_CONFIG_');
+$idBrokerOptionalConfig['trustedIpRanges'] = Env::getArray('ID_BROKER_CONFIG_trustedIpRanges');
 $idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
+
+$emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
+
+// Re-retrieve the validIpRanges as an array.
+$emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
+
+$notifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
+if (empty($notifierEmailTo)) {
+    $notifierConfig = ['class' => NullNotifier::class];
+} else {
+    /* Configure the notifier, used to send notifications to HR (such as
+     * when users lack an email address):  */
+    $notifierConfig = [
+        'class' => EmailServiceNotifier::class,
+        'emailServiceConfig' => $emailServiceConfig,
+        'emailTo' => $notifierEmailTo,
+        'organizationName' => $idpDisplayName,
+    ];
+}
 
 return [
     'id' => $idpName,
@@ -51,30 +73,9 @@ return [
             ],
         ],
         
-        'mailer' => [
-            'class' => Mailer::class,
-            'htmlLayout' => '@common/mail/layouts/html.php',
-            'useFileTransport' => Env::get('MAILER_USEFILES', false),
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'host' => Env::get('MAILER_HOST'),
-                'username' => Env::get('MAILER_USERNAME'),
-                'password' => Env::get('MAILER_PASSWORD'),
-                'port' => '465',
-                'encryption' => 'ssl',
-            ],
-        ],
+        'notifier' => $notifierConfig,
     ],
     'params' => [
-        'notifier' => [
-            /*
-             * To send notifications emails (such as to HR when a user lacks an
-             * email address), provide both a 'to' and a 'from' email address.
-             */
-            'emailTo' => Env::get('NOTIFIER_EMAIL_TO'),
-            'emailFrom' => Env::get('MAILER_USERNAME'),
-            'organizationName' => $idpDisplayName,
-        ],
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
     ],
 ];
