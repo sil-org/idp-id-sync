@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [0.6.0] - 2017-08-22
+## [0.6.0] - 2017-08-23
 ### Added
 - Have site/system-status confirm that the Notifier has whatever config values
   it will need.
