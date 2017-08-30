@@ -9,6 +9,7 @@ use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
+$alertsEmail = Env::get('ALERTS_EMAIL');
 $appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
 $idpName = Env::requireEnv('IDP_NAME');
 $idpDisplayName = Env::get('IDP_DISPLAY_NAME', $idpName);
@@ -62,6 +63,35 @@ return [
                     // Disable logging of _SERVER, _POST, etc.
                     'logVars' => [],
                     
+                    'prefix' => function ($message) use ($appEnv, $idpName) {
+                        return Json::encode([
+                            'app_env' => $appEnv,
+                            'idp_name' => $idpName,
+                        ]);
+                    },
+                ],
+                [
+                    'class' => EmailServiceTarget::class,
+                    'categories' => ['application'], // stick to messages from this app, not all of Yii's built-in messaging.
+                    'enabled' => !empty($alertsEmail),
+                    'except' => [
+                        'yii\web\HttpException:400',
+                        'yii\web\HttpException:401',
+                        'yii\web\HttpException:404',
+                        'yii\web\HttpException:409',
+                        'yii\web\HttpException:422',
+                        'Sil\EmailService\Client\EmailServiceClientException',
+                    ],
+                    'levels' => ['error'],
+                    'logVars' => [], // Disable logging of _SERVER, _POST, etc.
+                    'message' => [
+                        'to' => $alertsEmail,
+                        'subject' => 'ERROR - ' . $idpName . ' ID Sync [' . $appEnv .']',
+                    ],
+                    'baseUrl' => $emailServiceConfig['baseUrl'],
+                    'accessToken' => $emailServiceConfig['accessToken'],
+                    'assertValidIp' => $emailServiceConfig['assertValidIp'],
+                    'validIpRanges' => $emailServiceConfig['validIpRanges'],
                     'prefix' => function ($message) use ($appEnv, $idpName) {
                         return Json::encode([
                             'app_env' => $appEnv,
