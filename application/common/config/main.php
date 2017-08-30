@@ -86,7 +86,7 @@ return [
                     'levels' => ['error'],
                     'logVars' => [], // Disable logging of _SERVER, _POST, etc.
                     'message' => [
-                        'to' => $alertsEmail,
+                        'to' => $alertsEmail ?? '(disabled)',
                         'subject' => 'ERROR - ' . $idpName . ' ID Sync [' . $appEnv .']',
                     ],
                     'baseUrl' => $emailServiceConfig['baseUrl'],
