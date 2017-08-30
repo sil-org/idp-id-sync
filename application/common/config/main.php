@@ -62,7 +62,7 @@ return [
                     // Disable logging of _SERVER, _POST, etc.
                     'logVars' => [],
                     
-                    'prefix' => function($message) use ($appEnv, $idpName) {
+                    'prefix' => function ($message) use ($appEnv, $idpName) {
                         return Json::encode([
                             'app_env' => $appEnv,
                             'idp_name' => $idpName,
