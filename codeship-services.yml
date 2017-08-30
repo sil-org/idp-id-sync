@@ -9,6 +9,10 @@ app:
     working_dir: /data
     environment:
         APP_ENV: test
+        EMAIL_SERVICE_accessToken: dummy
+        EMAIL_SERVICE_assertValidIp: "false"
+        EMAIL_SERVICE_baseUrl: http://email
+        EMAIL_SERVICE_validIpRanges: 192.168.0.0/16
         ID_BROKER_ADAPTER: fake
         ID_BROKER_CONFIG_accessToken: codeship-sync-to-broker-11111111
         ID_STORE_ADAPTER: fake
