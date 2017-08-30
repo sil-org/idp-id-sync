@@ -22,8 +22,8 @@ $emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
 // Re-retrieve the validIpRanges as an array.
 $emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
 
-$notifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
-if (empty($notifierEmailTo)) {
+$hrNotifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
+if (empty($hrNotifierEmailTo)) {
     $notifierConfig = ['class' => NullNotifier::class];
 } else {
     /* Configure the notifier, used to send notifications to HR (such as
@@ -31,7 +31,7 @@ if (empty($notifierEmailTo)) {
     $notifierConfig = [
         'class' => EmailServiceNotifier::class,
         'emailServiceConfig' => $emailServiceConfig,
-        'emailTo' => $notifierEmailTo,
+        'emailTo' => $hrNotifierEmailTo,
         'organizationName' => $idpDisplayName,
     ];
 }
