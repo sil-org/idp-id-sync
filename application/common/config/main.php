@@ -73,7 +73,7 @@ return [
                 ],
                 [
                     'class' => EmailServiceTarget::class,
-                    'categories' => ['application'], // stick to messages from this app, not all of Yii's built-in messaging.
+                    'categories' => ['application'],
                     'enabled' => !empty($alertsEmail),
                     'except' => [
                         'yii\web\HttpException:400',
