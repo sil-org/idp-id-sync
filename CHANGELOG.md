@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [0.6.0] - 2017-08-22
+## [1.0.0] - 2017-08-31
+### Added
+- EmailServiceTarget (Yii log target), emailing error-level log messages to the
+  email address in an `ALERTS_EMAIL` environment variable, if provided.
+
+## [0.6.0] - 2017-08-23
 ### Added
 - Have site/system-status confirm that the Notifier has whatever config values
   it will need.

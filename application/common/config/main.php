@@ -4,12 +4,13 @@ use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
 use Sil\Idp\IdSync\common\components\notify\NullNotifier;
+use Sil\JsonLog\target\EmailServiceTarget;
 use Sil\JsonLog\target\JsonSyslogTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
-use yii\swiftmailer\Mailer;
 
+$alertsEmail = Env::get('ALERTS_EMAIL');
 $appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
 $idpName = Env::requireEnv('IDP_NAME');
 $idpDisplayName = Env::get('IDP_DISPLAY_NAME', $idpName);
@@ -23,8 +24,8 @@ $emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
 // Re-retrieve the validIpRanges as an array.
 $emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
 
-$notifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
-if (empty($notifierEmailTo)) {
+$hrNotifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
+if (empty($hrNotifierEmailTo)) {
     $notifierConfig = ['class' => NullNotifier::class];
 } else {
     /* Configure the notifier, used to send notifications to HR (such as
@@ -32,7 +33,7 @@ if (empty($notifierEmailTo)) {
     $notifierConfig = [
         'class' => EmailServiceNotifier::class,
         'emailServiceConfig' => $emailServiceConfig,
-        'emailTo' => $notifierEmailTo,
+        'emailTo' => $hrNotifierEmailTo,
         'organizationName' => $idpDisplayName,
     ];
 }
@@ -63,7 +64,36 @@ return [
                     // Disable logging of _SERVER, _POST, etc.
                     'logVars' => [],
                     
-                    'prefix' => function($message) use ($appEnv, $idpName) {
+                    'prefix' => function ($message) use ($appEnv, $idpName) {
+                        return Json::encode([
+                            'app_env' => $appEnv,
+                            'idp_name' => $idpName,
+                        ]);
+                    },
+                ],
+                [
+                    'class' => EmailServiceTarget::class,
+                    'categories' => ['application'],
+                    'enabled' => !empty($alertsEmail),
+                    'except' => [
+                        'yii\web\HttpException:400',
+                        'yii\web\HttpException:401',
+                        'yii\web\HttpException:404',
+                        'yii\web\HttpException:409',
+                        'yii\web\HttpException:422',
+                        'Sil\EmailService\Client\EmailServiceClientException',
+                    ],
+                    'levels' => ['error'],
+                    'logVars' => [], // Disable logging of _SERVER, _POST, etc.
+                    'message' => [
+                        'to' => $alertsEmail ?? '(disabled)',
+                        'subject' => 'ERROR - ' . $idpName . ' ID Sync [' . $appEnv .']',
+                    ],
+                    'baseUrl' => $emailServiceConfig['baseUrl'],
+                    'accessToken' => $emailServiceConfig['accessToken'],
+                    'assertValidIp' => $emailServiceConfig['assertValidIp'],
+                    'validIpRanges' => $emailServiceConfig['validIpRanges'],
+                    'prefix' => function ($message) use ($appEnv, $idpName) {
                         return Json::encode([
                             'app_env' => $appEnv,
                             'idp_name' => $idpName,
