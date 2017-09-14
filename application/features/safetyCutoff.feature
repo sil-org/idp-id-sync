@@ -32,7 +32,7 @@ Feature: Preventing too many changes at once to protect against iffy data.
       |        2       |      0          |     1        |  should NOT    |
       |        2       |      0          |     0.99     |  should NOT    |
       |        2       |      0          |     1.00     |  should NOT    |
-      |        2       |      0          |     1.01     |  SHOULD        |
+      |        2       |      0          |     1.01     |  should NOT    |
       |        2       |      0          |     abcd     |  SHOULD        |
 
   Scenario Outline: Preventing too many user-creations in a full sync
