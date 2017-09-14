@@ -339,7 +339,7 @@ class Synchronizer
     
     public static function isValidSafetyCutoff($value)
     {
-        return is_numeric($value) && ($value >= 0.0) && ($value <= 1.0);
+        return is_numeric($value) && ($value >= 0.0);
     }
     
     /**
