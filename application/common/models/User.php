@@ -12,6 +12,7 @@ class User
     const FIRST_NAME = 'first_name';
     const LAST_NAME = 'last_name';
     const LOCKED = 'locked';
+    const REQUIRE_MFA = 'require_mfa';
     const USERNAME = 'username';
     
     /** @var string */
@@ -38,6 +39,9 @@ class User
     /** @var string|null */
     public $locked;
     
+    /** @var string|null */
+    public $requireMfa;
+    
     /**
      * Create a new User model from the given user info, which must be an
      * associative array with keys matching this class's constants and which
@@ -59,6 +63,7 @@ class User
         $this->email = $userInfo[self::EMAIL] ?? null;
         $this->active = $userInfo[self::ACTIVE] ?? null;
         $this->setLocked($userInfo[self::LOCKED] ?? null);
+        $this->requireMfa = $userInfo[self::REQUIRE_MFA] ?? null;
     }
     
     public function __toString()
@@ -101,6 +106,7 @@ class User
             self::EMAIL => $this->email,
             self::ACTIVE => $this->active,
             self::LOCKED => $this->locked,
+            self::REQUIRE_MFA => $this->requireMfa,
         ];
 
         foreach ($possibleFields as $fieldName => $value) {
