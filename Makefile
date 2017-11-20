@@ -37,7 +37,7 @@ depsupdate:
 # NOTE: When running tests locally, make sure you don't exclude the integration
 #       tests (which we do when testing on Codeship).
 test: deps app broker
-	sleep 11 && make behat
+	sleep 15 && make behat
 
 testci: deps app broker
 	docker-compose run --rm cli bash -c "./run-tests.sh"
