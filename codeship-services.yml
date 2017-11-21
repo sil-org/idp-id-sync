@@ -42,8 +42,6 @@ broker:
 
 brokercron:
     image: silintl/idp-id-broker:latest
-    env_file:
-        - ./local.broker.env
     environment:
         API_ACCESS_KEYS: local-sync-123
         EMAIL_SERVICE_accessToken: dummy
