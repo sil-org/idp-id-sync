@@ -63,7 +63,7 @@ class User
         $this->email = $userInfo[self::EMAIL] ?? null;
         $this->active = $userInfo[self::ACTIVE] ?? null;
         $this->setLocked($userInfo[self::LOCKED] ?? null);
-        $this->requireMfa = $userInfo[self::REQUIRE_MFA] ?? null;
+        $this->setRequireMfa($userInfo[self::REQUIRE_MFA] ?? null);
     }
     
     public function __toString()
@@ -79,10 +79,25 @@ class User
         
         $lowercasedInput = strtolower(trim($input));
         
-        if (in_array($lowercasedInput, [false, 'false', 'no'])) {
+        if (in_array($lowercasedInput, [false, 'false', 'no'], true)) {
             $this->locked = 'no';
         } else {
             $this->locked = 'yes';
+        }
+    }
+    
+    public function setRequireMfa($input)
+    {
+        if ($input === null) {
+            return;
+        }
+        
+        $lowercasedInput = strtolower(trim($input));
+        
+        if (in_array($lowercasedInput, [true, 'true', 'yes'], true)) {
+            $this->requireMfa = 'yes';
+        } else {
+            $this->requireMfa = 'no';
         }
     }
     
