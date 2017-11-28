@@ -29,6 +29,7 @@ broker:
         EMAIL_SERVICE_assertValidIp: "false"
         EMAIL_SERVICE_baseUrl: http://email
         EMAIL_SERVICE_validIpRanges: 192.168.0.0/16
+        EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
         IDP_NAME: local
         MYSQL_ROOT_PASSWORD: rootpass
         MYSQL_HOST: brokerdb
@@ -48,6 +49,7 @@ brokercron:
         EMAIL_SERVICE_assertValidIp: "false"
         EMAIL_SERVICE_baseUrl: http://email
         EMAIL_SERVICE_validIpRanges: 10.20.40.0/24
+        EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
         IDP_NAME: local
         MYSQL_ROOT_PASSWORD: rootpass
         MYSQL_HOST: brokerdb
