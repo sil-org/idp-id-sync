@@ -71,19 +71,26 @@ class User
         return \json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
     
+    protected function isAffirmative($value)
+    {
+        if ($value === null) {
+            return false;
+        } elseif (is_bool($value)) {
+            return $value;
+        }
+        
+        $lowercasedValue = strtolower(trim($value));
+        
+        return in_array($lowercasedValue, ['true', 'yes'], true);
+    }
+    
     public function setLocked($input)
     {
         if ($input === null) {
             return;
         }
         
-        $lowercasedInput = strtolower(trim($input));
-        
-        if (in_array($lowercasedInput, [false, 'false', 'no'], true)) {
-            $this->locked = 'no';
-        } else {
-            $this->locked = 'yes';
-        }
+        $this->locked = $this->isAffirmative($input) ? 'yes' : 'no';
     }
     
     public function setRequireMfa($input)
@@ -92,13 +99,7 @@ class User
             return;
         }
         
-        $lowercasedInput = strtolower(trim($input));
-        
-        if (in_array($lowercasedInput, [true, 'true', 'yes'], true)) {
-            $this->requireMfa = 'yes';
-        } else {
-            $this->requireMfa = 'no';
-        }
+        $this->requireMfa = $this->isAffirmative($input) ? 'yes' : 'no';
     }
     
     /**
