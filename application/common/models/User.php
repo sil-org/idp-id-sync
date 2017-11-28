@@ -63,12 +63,25 @@ class User
         $this->email = $userInfo[self::EMAIL] ?? null;
         $this->active = $userInfo[self::ACTIVE] ?? null;
         $this->setLocked($userInfo[self::LOCKED] ?? null);
-        $this->requireMfa = $userInfo[self::REQUIRE_MFA] ?? null;
+        $this->setRequireMfa($userInfo[self::REQUIRE_MFA] ?? null);
     }
     
     public function __toString()
     {
         return \json_encode($this->toArray(), JSON_PRETTY_PRINT);
+    }
+    
+    protected function isAffirmative($value)
+    {
+        if ($value === null) {
+            return false;
+        } elseif (is_bool($value)) {
+            return $value;
+        }
+        
+        $lowercasedValue = strtolower(trim($value));
+        
+        return in_array($lowercasedValue, ['true', 'yes'], true);
     }
     
     public function setLocked($input)
@@ -77,13 +90,16 @@ class User
             return;
         }
         
-        $lowercasedInput = strtolower(trim($input));
-        
-        if (in_array($lowercasedInput, [false, 'false', 'no'])) {
-            $this->locked = 'no';
-        } else {
-            $this->locked = 'yes';
+        $this->locked = $this->isAffirmative($input) ? 'yes' : 'no';
+    }
+    
+    public function setRequireMfa($input)
+    {
+        if ($input === null) {
+            return;
         }
+        
+        $this->requireMfa = $this->isAffirmative($input) ? 'yes' : 'no';
     }
     
     /**
