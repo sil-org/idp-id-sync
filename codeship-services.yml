@@ -36,8 +36,27 @@ broker:
         MYSQL_USER: broker
         MYSQL_PASSWORD: broker
     links:
+        - brokercron
         - brokerdb
     command: whenavail brokerdb 3306 60 ./run.sh
+
+brokercron:
+    image: silintl/idp-id-broker:latest
+    environment:
+        API_ACCESS_KEYS: local-sync-123
+        EMAIL_SERVICE_accessToken: dummy
+        EMAIL_SERVICE_assertValidIp: "false"
+        EMAIL_SERVICE_baseUrl: http://email
+        EMAIL_SERVICE_validIpRanges: 10.20.40.0/24
+        IDP_NAME: local
+        MYSQL_ROOT_PASSWORD: rootpass
+        MYSQL_HOST: brokerdb
+        MYSQL_DATABASE: broker
+        MYSQL_USER: broker
+        MYSQL_PASSWORD: broker
+    links:
+        - brokerdb
+    command: whenavail brokerdb 3306 60 ./run-cron.sh
 
 brokerdb:
     image: silintl/mariadb:latest
