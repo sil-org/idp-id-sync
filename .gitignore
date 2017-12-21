@@ -16,3 +16,6 @@ application/vendor/
 
 # Credentials for calls to Google.
 google-auth.json
+
+# PHP-CS-Fixer cache file.
+.php_cs.cache
