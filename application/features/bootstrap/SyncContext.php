@@ -250,7 +250,7 @@ class SyncContext implements Context
         Assert::assertJsonStringEqualsJsonString(
             Json::encode($table, JSON_PRETTY_PRINT),
             Json::encode(
-                array_map(function($user) {
+                array_map(function ($user) {
                     return $user->toArray();
                 }, $actualUsers),
                 JSON_PRETTY_PRINT
@@ -346,7 +346,7 @@ class SyncContext implements Context
     {
         /* @var $idStore FakeIdStore */
         $idStore = $this->idStore;
-        if ( ! $idStore instanceof FakeIdStore) {
+        if (! $idStore instanceof FakeIdStore) {
             Assert::fail('This test requires a FakeIdStore adapter.');
         }
         $employeeId = 10000 + $number;
@@ -360,7 +360,7 @@ class SyncContext implements Context
      */
     public function theIdBrokerShouldNowHaveActiveUsers($number)
     {
-        if ( ! is_numeric($number)) {
+        if (! is_numeric($number)) {
             Assert::fail('Not given a number.');
         }
         $numActiveUsers = 0;
@@ -370,7 +370,7 @@ class SyncContext implements Context
                 $numActiveUsers += 1;
             }
         }
-        Assert::assertSame((int)$number,  $numActiveUsers, sprintf(
+        Assert::assertSame((int)$number, $numActiveUsers, sprintf(
             'Did not expect all of these users to be active: [%s]',
             join(", ", $idBrokerUsers)
         ));

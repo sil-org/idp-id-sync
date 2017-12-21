@@ -32,7 +32,7 @@ interface IdStoreInterface
     /**
      * Get a list of users who have had qualifying changes (name, email, locked,
      * activated, added) since the given Unix timestamp.
-     * 
+     *
      * @param int $unixTimestamp The date/time, as a Unix timestamp.
      * @return User[] A list of Users.
      */

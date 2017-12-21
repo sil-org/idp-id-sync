@@ -46,7 +46,7 @@ class GoogleSheetsIdStore extends IdStoreBase
      */
     public function init()
     {
-        if ( ! empty($this->jsonAuthFilePath)) {
+        if (! empty($this->jsonAuthFilePath)) {
             if (file_exists($this->jsonAuthFilePath)) {
                 $this->jsonAuthString = \file_get_contents($this->jsonAuthFilePath);
             } else {
@@ -95,7 +95,7 @@ class GoogleSheetsIdStore extends IdStoreBase
     public function getActiveUser(string $employeeId)
     {
         $allUsers = $this->getAllActiveUsers();
-        foreach($allUsers as $user) {
+        foreach ($allUsers as $user) {
             if ((string)$user->employeeId === (string)$employeeId) {
                 return $user;
             }
@@ -114,13 +114,13 @@ class GoogleSheetsIdStore extends IdStoreBase
         
         $allActiveUsersInfo = array_filter(
             $allUsersInfo,
-            function($user) {
+            function ($user) {
                 return ($user[User::ACTIVE] === 'yes');
             }
         );
         
         return array_map(
-            function($entry) {
+            function ($entry) {
                 // Unset 'active', since ID Stores only return active users.
                 unset($entry[User::ACTIVE]);
                 
@@ -143,7 +143,7 @@ class GoogleSheetsIdStore extends IdStoreBase
         $howMany = 100;
         
         $hasAllUsers = false;
-        while ( ! $hasAllUsers) {
+        while (! $hasAllUsers) {
             $batch = $this->getUsersInfoFromSpreadsheet($start, $howMany);
             $allUsersInfo = array_merge($allUsersInfo, $batch);
             $start += $howMany;
@@ -205,7 +205,7 @@ class GoogleSheetsIdStore extends IdStoreBase
         int $startRow = 2,
         int $howMany = 100
     ) {
-        if ( ! $this->sheets instanceof \Google_Service_Sheets) {
+        if (! $this->sheets instanceof \Google_Service_Sheets) {
             $this->initGoogleClient();
         }
         

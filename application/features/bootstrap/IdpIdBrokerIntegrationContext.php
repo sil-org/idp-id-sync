@@ -223,7 +223,7 @@ class IdpIdBrokerIntegrationContext implements Context
      */
     public function atLeastUsersExist($number)
     {
-        if ( ! is_numeric($number)) {
+        if (! is_numeric($number)) {
             Assert::fail('Not given a number.');
         }
         for ($i = 0; $i < $number; $i++) {
@@ -247,7 +247,7 @@ class IdpIdBrokerIntegrationContext implements Context
      */
     public function iShouldReceiveAListOfAtLeastUsers($number)
     {
-        if ( ! is_numeric($number)) {
+        if (! is_numeric($number)) {
             Assert::fail('Not given a number.');
         }
         Assert::assertGreaterThanOrEqual((int)$number, $this->result);

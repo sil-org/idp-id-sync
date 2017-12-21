@@ -91,7 +91,7 @@ class InsiteIdStore extends IdStoreBase
     public function getUsersChangedSince(int $unixTimestamp): array
     {
         $result = $this->getFromIdStore('/changes/' . $unixTimestamp);
-        if ( ! is_array($result)) {
+        if (! is_array($result)) {
             throw new Exception(sprintf(
                 'Unexpected result when getting users changed since %s (%s): %s',
                 var_export($unixTimestamp, true),
@@ -105,7 +105,7 @@ class InsiteIdStore extends IdStoreBase
     public function getAllActiveUsers(): array
     {
         $result = $this->getFromIdStore('/all/');
-        if ( ! is_array($result)) {
+        if (! is_array($result)) {
             throw new Exception(sprintf(
                 'Unexpected result when getting all active users: %s',
                 var_export($result, true)
@@ -165,7 +165,6 @@ class InsiteIdStore extends IdStoreBase
                 $response->getBody()
             ), 1492113596);
         }
-        
     }
     
     /**
