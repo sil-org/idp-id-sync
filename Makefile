@@ -34,7 +34,7 @@ deps:
 depsupdate:
 	docker-compose run --rm cli composer update --no-scripts
 
-fixphp:
+psr2:
 	docker-compose run --rm cli bash -c "vendor/bin/php-cs-fixer fix ."
 
 # NOTE: When running tests locally, make sure you don't exclude the integration
