@@ -1,3 +1,7 @@
+- name: psr2check
+  service: app
+  command: vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no .
+
 - name: test
   service: app
   command: /data/run-tests.sh
