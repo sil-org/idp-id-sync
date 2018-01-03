@@ -45,7 +45,7 @@ abstract class IdBrokerBase extends Component implements IdBrokerInterface
      */
     protected static function getAsUsers($idBrokerUserInfoList)
     {
-        return array_map(function($entry) {
+        return array_map(function ($entry) {
             return new User($entry);
         }, $idBrokerUserInfoList);
     }

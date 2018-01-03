@@ -25,7 +25,7 @@ class ConsoleNotifier implements NotifierInterface
                 $outputLine .= sprintf(' (%s)', $user->username);
             }
             $outputLines[] = $outputLine;
-        }        
+        }
         return join("\n", $outputLines) . "\n";
     }
     

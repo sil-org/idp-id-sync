@@ -54,7 +54,7 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
      */
     protected static function getAsUsers($idStoreUserInfoList)
     {
-        return array_map(function($entry) {
+        return array_map(function ($entry) {
             return self::getAsUser($entry);
         }, $idStoreUserInfoList);
     }
