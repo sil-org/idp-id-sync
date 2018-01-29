@@ -157,7 +157,7 @@ class Synchronizer
     
     protected function assertValidSafetyCutoff($value)
     {
-        if ( ! self::isValidSafetyCutoff($value)) {
+        if (! self::isValidSafetyCutoff($value)) {
             $errorMessage = sprintf(
                 'The safety cutoff must be a number from 0.0 to 1.0 (not %s).',
                 var_export($value, true)
@@ -219,14 +219,14 @@ class Synchronizer
             'succeeded' => $numUsersAdded,
         ]);
         
-        if ( ! empty($usersWithoutEmail)) {
+        if (! empty($usersWithoutEmail)) {
             $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
         }
     }
     
     public static function countActiveUsers($usersInfo, $activeFieldName = 'active')
     {
-        return array_reduce($usersInfo, function($carry, $userInfo) use ($activeFieldName) {
+        return array_reduce($usersInfo, function ($carry, $userInfo) use ($activeFieldName) {
             if (strcasecmp($userInfo[$activeFieldName], 'yes') === 0) {
                 return $carry + 1;
             }
@@ -565,7 +565,7 @@ class Synchronizer
             }
         }
         
-        if ( ! empty($usersWithoutEmail)) {
+        if (! empty($usersWithoutEmail)) {
             $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
         }
         

@@ -21,13 +21,13 @@ class EmailServiceNotifier extends Component implements NotifierInterface
     
     /**
      * What address to send the email to.
-     * @var string 
+     * @var string
      */
     public $emailTo;
     
     /**
      * The name of the organization.
-     * @var string 
+     * @var string
      */
     public $organizationName;
     
@@ -47,7 +47,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
         ];
         
         foreach ($requiredParams as $param) {
-            if ( ! isset($this->emailServiceConfig[$param])) {
+            if (! isset($this->emailServiceConfig[$param])) {
                 throw new InvalidArgumentException(
                     'Missing ' . $param . ' value (for EmailServiceNotifier).',
                     1502820156

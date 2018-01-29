@@ -59,7 +59,7 @@ class IdStoreIntegrationContextBase implements Context
      */
     public function iAskTheIdStoreForAllUsersChangedSinceASpecificPointInTime()
     {
-        $this->result = $this->idStore->getUsersChangedSince(1489764017);
+        $this->result = $this->idStore->getUsersChangedSince(strtotime('-2 months'));
     }
     
     /**

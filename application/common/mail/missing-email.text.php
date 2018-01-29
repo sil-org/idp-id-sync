@@ -21,4 +21,4 @@ foreach ($users as $user) {
         echo sprintf(' (%s)', $user->username);
     }
     echo "\n";
-}        
+}
