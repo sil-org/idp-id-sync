@@ -6,6 +6,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2018-07-18
+### Added
+- Sync spouse and manager emails
+
+## [1.1.3] - 2018-05-18
+### Added
+- Add support for `COOKIE_VALIDATION_KEY` env. var (to satisfy Yii)
+
+### Fixed
+- Update Yii to 2.0.15.1
+
+## [1.1.2] - 2017-11-28
+### Fixed
+- Small bugfixes
+- Fix PSR-2 formatting (and automate checking against PSR-2)
+
+## [1.1.1] - 2017-11-28
+### Fixed
+- Handle "true"/"false" strings for require_mfa.
+
+## [1.1.0] - 2017-11-28
+### Added
+- Also sync require_mfa
+
+### Fixed
+- Only dump env to /etc/environment for cron
+
+## [1.0.1] - 2017-09-15
+### Fixed
+- Allow safety cutoffs above 100% (1.00).
+
 ## [1.0.0] - 2017-08-31
 ### Added
 - EmailServiceTarget (Yii log target), emailing error-level log messages to the
@@ -77,11 +108,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Enable sending HR a notification email when ID Store users lack an email
   address.
 
-## [0.1.0] - 2017-04-10
+## 0.1.0 - 2017-04-10
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/0.6.0...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/1.2.0...develop
+[1.2.0]: https://github.com/silinternational/idp-id-sync/compare/1.1.3...1.2.0
+[1.1.3]: https://github.com/silinternational/idp-id-sync/compare/1.1.2...1.1.3
+[1.1.2]: https://github.com/silinternational/idp-id-sync/compare/1.1.1...1.1.2
+[1.1.1]: https://github.com/silinternational/idp-id-sync/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/silinternational/idp-id-sync/compare/1.0.1...1.1.0
+[1.0.1]: https://github.com/silinternational/idp-id-sync/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/silinternational/idp-id-sync/compare/0.6.0...1.0.0
 [0.6.0]: https://github.com/silinternational/idp-id-sync/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/silinternational/idp-id-sync/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/silinternational/idp-id-sync/compare/0.3.0...0.4.0

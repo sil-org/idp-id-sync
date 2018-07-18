@@ -12,7 +12,9 @@ class User
     const FIRST_NAME = 'first_name';
     const LAST_NAME = 'last_name';
     const LOCKED = 'locked';
+    const MANAGER_EMAIL = 'manager_email';
     const REQUIRE_MFA = 'require_mfa';
+    const SPOUSE_EMAIL = 'spouse_email';
     const USERNAME = 'username';
     
     /** @var string */
@@ -40,7 +42,13 @@ class User
     public $locked;
     
     /** @var string|null */
+    public $managerEmail;
+    
+    /** @var string|null */
     public $requireMfa;
+    
+    /** @var string|null */
+    public $spouseEmail;
     
     /**
      * Create a new User model from the given user info, which must be an
@@ -63,7 +71,9 @@ class User
         $this->email = $userInfo[self::EMAIL] ?? null;
         $this->active = $userInfo[self::ACTIVE] ?? null;
         $this->setLocked($userInfo[self::LOCKED] ?? null);
+        $this->managerEmail = $userInfo[self::MANAGER_EMAIL] ?? null;
         $this->setRequireMfa($userInfo[self::REQUIRE_MFA] ?? null);
+        $this->spouseEmail = $userInfo[self::SPOUSE_EMAIL] ?? null;
     }
     
     public function __toString()
@@ -122,7 +132,9 @@ class User
             self::EMAIL => $this->email,
             self::ACTIVE => $this->active,
             self::LOCKED => $this->locked,
+            self::MANAGER_EMAIL => $this->managerEmail,
             self::REQUIRE_MFA => $this->requireMfa,
+            self::SPOUSE_EMAIL => $this->spouseEmail,
         ];
 
         foreach ($possibleFields as $fieldName => $value) {

@@ -167,6 +167,8 @@ class GoogleSheetsIdStore extends IdStoreBase
             'username' => User::USERNAME,
             'locked' => User::LOCKED,
             'require_mfa' => User::REQUIRE_MFA,
+            'manager_email' => User::MANAGER_EMAIL,
+            'spouse_email' => User::SPOUSE_EMAIL,
             // No 'active' needed, since all ID Store records returned are active.
         ];
     }
@@ -211,7 +213,7 @@ class GoogleSheetsIdStore extends IdStoreBase
         
         $users = [];
         $currentRow = $startRow;
-        $range = sprintf('Users!A%s:J%s', $startRow, $startRow + $howMany - 1);
+        $range = sprintf('Users!A%s:L%s', $startRow, $startRow + $howMany - 1);
         $rows = $this->sheets->spreadsheets_values->get($this->spreadsheetId, $range, ['majorDimension' => 'ROWS']);
         if (isset($rows['values'])) {
             foreach ($rows['values'] as $user) {
@@ -221,6 +223,11 @@ class GoogleSheetsIdStore extends IdStoreBase
                 if (empty($user[0])) {
                     break;
                 }
+                
+                // NOTE:
+                // Trailing empty cells are not returned by Google Sheets.
+                // Intermediate empty cells come back as empty strings, so an
+                // empty column could be absent or "". Handle both situations.
                 
                 $users[] = [
                     User::EMPLOYEE_ID => $user[0],
@@ -232,6 +239,8 @@ class GoogleSheetsIdStore extends IdStoreBase
                     User::ACTIVE => $user[6] ?? 'yes',
                     User::LOCKED => $user[7] ?? 'no',
                     User::REQUIRE_MFA => $user[9] ?? 'no',
+                    User::MANAGER_EMAIL => $this->getValueIfNonEmpty($user, 10),
+                    User::SPOUSE_EMAIL => $this->getValueIfNonEmpty($user, 11),
                 ];
                 
                 /*
@@ -255,5 +264,21 @@ class GoogleSheetsIdStore extends IdStoreBase
         }
         
         return $users;
+    }
+    
+    /**
+     * Get the value in the array at the specified index (or key). If empty,
+     * return null.
+     *
+     * @param array $array The array to get the value from.
+     * @param int|string $index The index (or key) whose value is desired.
+     * @return mixed|null The resulting non-empty value, or null.
+     */
+    public function getValueIfNonEmpty($array, $index)
+    {
+        if (empty($array[$index])) {
+            return null;
+        }
+        return $array[$index];
     }
 }

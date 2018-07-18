@@ -25,6 +25,7 @@ services:
             EMAIL_SERVICE_assertValidIp: "false"
             EMAIL_SERVICE_baseUrl: http://email
             EMAIL_SERVICE_validIpRanges: 10.20.40.0/24
+            EMAIL_SIGNATURE: Dummy Signature for Local Development
             EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
             IDP_NAME: local
             MYSQL_ROOT_PASSWORD: rootpass
@@ -32,6 +33,9 @@ services:
             MYSQL_DATABASE: broker
             MYSQL_USER: broker
             MYSQL_PASSWORD: broker
+            PASSWORD_FORGOT_URL: https://www.example.com/forgot
+            PASSWORD_PROFILE_URL: https://www.example.com/profile
+            SUPPORT_EMAIL: support@example.com
         ports:
             - "8081:80"
         command: whenavail brokerdb 3306 60 ./run.sh
