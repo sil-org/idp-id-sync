@@ -442,4 +442,35 @@ class SyncContext implements Context
         $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
         Assert::assertEmpty($userFromIdBroker->spouseEmail);
     }
+    
+    /**
+     * @Given the user has a manager email address in the ID Broker
+     * @throws Exception
+     */
+    public function theUserHasAManagerEmailAddressInTheIdBroker()
+    {
+        $this->idBroker->updateUser([
+            'employee_id' => $this->tempEmployeeId,
+            User::MANAGER_EMAIL => 'manager@example.com',
+        ]);
+    }
+
+    /**
+     * @Given the user does not have a manager email address in the ID Store
+     */
+    public function theUserDoesNotHaveAManagerEmailAddressInTheIdStore()
+    {
+        $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        Assert::assertEmpty($userFromIdStore->managerEmail);
+    }
+    
+    /**
+     * @Then the user should not have a manager email address in the ID Broker
+     * @throws Exception
+     */
+    public function theUserShouldNotHaveAManagerEmailAddressInTheIdBroker()
+    {
+        $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
+        Assert::assertEmpty($userFromIdBroker->managerEmail);
+    }
 }
