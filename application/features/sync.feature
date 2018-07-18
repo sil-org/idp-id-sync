@@ -36,6 +36,15 @@ Feature: Synchronizing records
     Then the user should exist in the ID Broker
       And the user info in the ID Broker and the ID Store should match
 
+  Scenario: User has a spouse email address in ID Broker but not in ID Store
+    Given a specific user exists in the ID Store
+      And the user exists in the ID Broker
+      And the user has a spouse email address in the ID Broker
+      But the user does not have a spouse email address in the ID Store
+    When I get the user info from the ID Store and send it to the ID Broker
+    Then the user should exist in the ID Broker
+      And the user should not have a spouse email address in the ID Broker
+
   # Full batch synchronization scenarios:
 
   Scenario: Update a user in the ID Broker

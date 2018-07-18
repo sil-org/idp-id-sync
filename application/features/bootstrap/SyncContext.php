@@ -411,4 +411,35 @@ class SyncContext implements Context
             $possibleException->getMessage()
         ));
     }
+    
+    /**
+     * @Given the user has a spouse email address in the ID Broker
+     * @throws Exception
+     */
+    public function theUserHasASpouseEmailAddressInTheIdBroker()
+    {
+        $this->idBroker->updateUser([
+            'employee_id' => $this->tempEmployeeId,
+            User::SPOUSE_EMAIL => 'spouse@example.com',
+        ]);
+    }
+
+    /**
+     * @Given the user does not have a spouse email address in the ID Store
+     */
+    public function theUserDoesNotHaveASpouseEmailAddressInTheIdStore()
+    {
+        $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
+        Assert::assertEmpty($userFromIdStore->spouseEmail);
+    }
+    
+    /**
+     * @Then the user should not have a spouse email address in the ID Broker
+     * @throws Exception
+     */
+    public function theUserShouldNotHaveASpouseEmailAddressInTheIdBroker()
+    {
+        $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
+        Assert::assertEmpty($userFromIdBroker->spouseEmail);
+    }
 }
