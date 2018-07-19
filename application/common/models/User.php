@@ -18,37 +18,37 @@ class User
     const USERNAME = 'username';
     
     /** @var string */
-    public $employeeId;
+    private $employeeId;
     
     /** @var string|null */
-    public $firstName;
+    private $firstName;
     
     /** @var string|null */
-    public $lastName;
+    private $lastName;
     
     /** @var string|null */
-    public $displayName;
+    private $displayName;
     
     /** @var string|null */
-    public $username;
+    private $username;
     
     /** @var string|null */
-    public $email;
+    private $email;
     
     /** @var string|null */
-    public $active;
+    private $active;
     
     /** @var string|null */
-    public $locked;
+    private $locked;
     
     /** @var string|null */
-    public $managerEmail;
+    private $managerEmail;
     
     /** @var string|null */
-    public $requireMfa;
+    private $requireMfa;
     
     /** @var string|null */
-    public $spouseEmail;
+    private $spouseEmail;
     
     /**
      * Create a new User model from the given user info, which must be an
@@ -76,6 +76,94 @@ class User
         $this->spouseEmail = $userInfo[self::SPOUSE_EMAIL] ?? null;
     }
     
+    /**
+     * @return string
+     */
+    public function getEmployeeId()
+    {
+        return $this->employeeId;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getDisplayName()
+    {
+        return $this->displayName;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getManagerEmail()
+    {
+        return $this->managerEmail;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getRequireMfa()
+    {
+        return $this->requireMfa;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getSpouseEmail()
+    {
+        return $this->spouseEmail;
+    }
+    
     public function __toString()
     {
         return \json_encode($this->toArray(), JSON_PRETTY_PRINT);
@@ -92,6 +180,11 @@ class User
         $lowercasedValue = strtolower(trim($value));
         
         return in_array($lowercasedValue, ['true', 'yes'], true);
+    }
+    
+    public function setActive(string $active)
+    {
+        $this->active = $active;
     }
     
     public function setLocked($input)

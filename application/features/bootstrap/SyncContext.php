@@ -95,7 +95,7 @@ class SyncContext implements Context
         $user = $this->idStore->getActiveUser($this->tempEmployeeId);
         
         $this->idBroker = new FakeIdBroker([
-            $user->employeeId => $user->toArray(),
+            $this->tempEmployeeId => $user->toArray(),
         ]);
     }
 
@@ -174,7 +174,7 @@ class SyncContext implements Context
     public function theUserShouldBeInactiveInTheIdBroker()
     {
         $idBrokerUser = $this->idBroker->getUser($this->tempEmployeeId);
-        Assert::assertSame('no', $idBrokerUser->active);
+        Assert::assertSame('no', $idBrokerUser->getActive());
     }
 
     /**
@@ -192,8 +192,8 @@ class SyncContext implements Context
     {
         $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
         $this->idBroker->updateUser([
-            'employee_id' => $userFromIdStore->employeeId,
-            'display_name' => $userFromIdStore->displayName . ' Jr.',
+            'employee_id' => $userFromIdStore->getEmployeeId(),
+            'display_name' => $userFromIdStore->getDisplayName() . ' Jr.',
         ]);
     }
 
@@ -366,7 +366,7 @@ class SyncContext implements Context
         $numActiveUsers = 0;
         $idBrokerUsers = $this->idBroker->listUsers();
         foreach ($idBrokerUsers as $user) {
-            if ($user->active === 'yes') {
+            if ($user->getActive() === 'yes') {
                 $numActiveUsers += 1;
             }
         }
@@ -393,8 +393,8 @@ class SyncContext implements Context
         
         $idBrokerUsers = [];
         foreach ($this->idStore->getAllActiveUsers() as $user) {
-            $user->active = 'no';
-            $idBrokerUsers[$user->employeeId] = $user->toArray();
+            $user->setActive('no');
+            $idBrokerUsers[$user->getEmployeeId()] = $user->toArray();
         }
         $this->idBroker = new FakeIdBroker($idBrokerUsers);
     }
@@ -430,7 +430,7 @@ class SyncContext implements Context
     public function theUserDoesNotHaveASpouseEmailAddressInTheIdStore()
     {
         $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
-        Assert::assertEmpty($userFromIdStore->spouseEmail);
+        Assert::assertEmpty($userFromIdStore->getSpouseEmail());
     }
     
     /**
@@ -440,7 +440,7 @@ class SyncContext implements Context
     public function theUserShouldNotHaveASpouseEmailAddressInTheIdBroker()
     {
         $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
-        Assert::assertEmpty($userFromIdBroker->spouseEmail);
+        Assert::assertEmpty($userFromIdBroker->getSpouseEmail());
     }
     
     /**
@@ -461,7 +461,7 @@ class SyncContext implements Context
     public function theUserDoesNotHaveAManagerEmailAddressInTheIdStore()
     {
         $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
-        Assert::assertEmpty($userFromIdStore->managerEmail);
+        Assert::assertEmpty($userFromIdStore->getManagerEmail());
     }
     
     /**
@@ -471,6 +471,6 @@ class SyncContext implements Context
     public function theUserShouldNotHaveAManagerEmailAddressInTheIdBroker()
     {
         $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
-        Assert::assertEmpty($userFromIdBroker->managerEmail);
+        Assert::assertEmpty($userFromIdBroker->getManagerEmail());
     }
 }

@@ -21,6 +21,8 @@ class IdpIdBrokerIntegrationContext implements Context
     protected $newPassword;
     
     protected $testUserData;
+    
+    /** @var User */
     protected $testUpdatedUser;
     
     protected $result;
@@ -79,7 +81,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
         );
-        Assert::assertEquals('no', $user->active);
+        Assert::assertEquals('no', $user->getActive());
     }
 
     /**
@@ -96,7 +98,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
         );
-        Assert::assertEquals('yes', $user->active);
+        Assert::assertEquals('yes', $user->getActive());
     }
 
     /**
@@ -107,7 +109,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
         );
-        Assert::assertEquals('yes', $user->active);
+        Assert::assertEquals('yes', $user->getActive());
     }
 
     /**
@@ -174,7 +176,7 @@ class IdpIdBrokerIntegrationContext implements Context
     {
         $user = $this->idBroker->getUser($this->testUserData['employee_id']);
         Assert::assertNotNull($user);
-        Assert::assertSame($this->testUserData['email'], $user->email);
+        Assert::assertSame($this->testUserData['email'], $user->getEmail());
     }
 
     /**
@@ -205,7 +207,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
         );
-        Assert::assertEquals('no', $user->active);
+        Assert::assertEquals('no', $user->getActive());
     }
 
     /**
@@ -260,7 +262,8 @@ class IdpIdBrokerIntegrationContext implements Context
     {
         foreach ($this->result as $user) {
             Assert::assertInstanceOf(User::class, $user);
-            Assert::assertNotEmpty($user->employeeId);
+            /* @var $user User */
+            Assert::assertNotEmpty($user->getEmployeeId());
         }
     }
 
@@ -315,7 +318,7 @@ class IdpIdBrokerIntegrationContext implements Context
         ]);
         Assert::assertNotEquals(
             $this->testUserData['display_name'],
-            $this->testUpdatedUser->displayName
+            $this->testUpdatedUser->getDisplayName()
         );
     }
 
@@ -326,8 +329,8 @@ class IdpIdBrokerIntegrationContext implements Context
     {
         $user = $this->idBroker->getUser($this->testUserData['employee_id']);
         Assert::assertSame(
-            $this->testUpdatedUser->displayName,
-            $user->displayName
+            $this->testUpdatedUser->getDisplayName(),
+            $user->getDisplayName()
         );
     }
 }
