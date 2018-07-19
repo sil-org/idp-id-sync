@@ -118,7 +118,7 @@ class Synchronizer
     protected function activateAndUpdateUser(User $user)
     {
         $this->idBroker->updateUser(
-            ArrayHelper::merge(['active' => 'yes'], $user->toArray())
+            ArrayHelper::merge($user->toArray(), ['active' => 'yes'])
         );
         $this->logger->info('Updated/activated user: ' . $user->employeeId);
     }
