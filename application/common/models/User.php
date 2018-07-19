@@ -208,16 +208,19 @@ class User
     /**
      * Get this User object's data as an associative array.
      *
-     * NOTE: Only fields with non-null values will be included in the array.
+     * NOTE: This function USED TO only include fields with non-null values. It
+     * now no longer takes the value of a field into account when deciding what
+     * to include.
      *
+     * @param string[] $desiredFields (Optional:) The list of fields that should
+     *     be included in the result. If not provided, all fields will be
+     *     included.
      * @return array
      */
-    public function toArray()
+    public function toArray($desiredFields = [])
     {
-        $userInfo = [];
-        $userInfo[self::EMPLOYEE_ID] = $this->employeeId;
-        
-        $possibleFields = [
+        $availableFields = [
+            self::EMPLOYEE_ID => $this->employeeId,
             self::FIRST_NAME => $this->firstName,
             self::LAST_NAME => $this->lastName,
             self::DISPLAY_NAME => $this->displayName,
@@ -229,10 +232,15 @@ class User
             self::REQUIRE_MFA => $this->requireMfa,
             self::SPOUSE_EMAIL => $this->spouseEmail,
         ];
-
-        foreach ($possibleFields as $fieldName => $value) {
-            if ($value !== null) {
-                $userInfo[$fieldName] = $value;
+        
+        if (empty($desiredFields)) {
+            $userInfo = $availableFields;
+        } else {
+            $userInfo = [];
+            foreach ($availableFields as $fieldName => $fieldValue) {
+                if (in_array($fieldName, $desiredFields, true)) {
+                    $userInfo[$fieldName] = $fieldValue;
+                }
             }
         }
         
