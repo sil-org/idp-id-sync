@@ -1,5 +1,7 @@
 <?php
 
+use Sil\Idp\IdSync\common\models\User;
+
 /* @var $organizationName string */
 /* @var $users User[] */
 
@@ -16,9 +18,9 @@ certain <?= $organizationName ?> websites.
 <?php
 $counter = 0;
 foreach ($users as $user) {
-    echo sprintf('%s. Employee ID %s', ++$counter, $user->employeeId);
-    if ($user->username !== null) {
-        echo sprintf(' (%s)', $user->username);
+    echo sprintf('%s. Employee ID %s', ++$counter, $user->getEmployeeId());
+    if ($user->getUsername() !== null) {
+        echo sprintf(' (%s)', $user->getUsername());
     }
     echo "\n";
 }
