@@ -28,7 +28,7 @@ class SyncContext implements Context
     /** @var IdBrokerInterface */
     private $idBroker;
     
-    /** @var IdStoreInterface */
+    /** @var FakeIdStore */
     private $idStore;
     
     /** @var LoggerInterface */
@@ -429,8 +429,9 @@ class SyncContext implements Context
      */
     public function theUserDoesNotHaveASpouseEmailAddressInTheIdStore()
     {
-        $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
-        Assert::assertEmpty($userFromIdStore->getSpouseEmail());
+        $this->idStore->changeFakeRecord($this->tempEmployeeId, [
+            'spouseemail' => null,
+        ]);
     }
     
     /**
@@ -460,8 +461,9 @@ class SyncContext implements Context
      */
     public function theUserDoesNotHaveAManagerEmailAddressInTheIdStore()
     {
-        $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
-        Assert::assertEmpty($userFromIdStore->getManagerEmail());
+        $this->idStore->changeFakeRecord($this->tempEmployeeId, [
+            'supervisoremail' => null,
+        ]);
     }
     
     /**
