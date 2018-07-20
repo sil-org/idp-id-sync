@@ -110,8 +110,7 @@ class Synchronizer
     }
     
     /**
-     * Update the given user in the ID Broker, setting it to be active (unless
-     * the given user already provides some other value for 'active').
+     * Update the given user in the ID Broker, setting it to be active.
      *
      * @param User $user The user's information.
      */
@@ -124,8 +123,7 @@ class Synchronizer
     }
     
     /**
-     * Update the given Users in the ID Broker, setting them to be active
-     * (unless the User already provides some other value for 'active').
+     * Update the given Users in the ID Broker, setting them to be active.
      *
      * @param User[] $usersToUpdateAndActivate The user's information.
      */
