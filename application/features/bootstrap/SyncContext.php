@@ -423,7 +423,7 @@ class SyncContext implements Context
     public function theUserHasASpouseEmailAddressInTheIdBroker()
     {
         $this->idBroker->updateUser([
-            'employee_id' => $this->tempEmployeeId,
+            User::EMPLOYEE_ID => $this->tempEmployeeId,
             User::SPOUSE_EMAIL => 'spouse@example.com',
         ]);
     }
@@ -455,7 +455,7 @@ class SyncContext implements Context
     public function theUserHasAManagerEmailAddressInTheIdBroker()
     {
         $this->idBroker->updateUser([
-            'employee_id' => $this->tempEmployeeId,
+            User::EMPLOYEE_ID => $this->tempEmployeeId,
             User::MANAGER_EMAIL => 'manager@example.com',
         ]);
     }
