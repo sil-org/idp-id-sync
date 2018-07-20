@@ -178,12 +178,7 @@ class User
         return in_array($lowercasedValue, ['true', 'yes'], true);
     }
     
-    public function setActive(string $active)
-    {
-        $this->values[self::ACTIVE] = $active;
-    }
-    
-    public function setLocked($input)
+    protected function setLocked($input)
     {
         if ($input === null) {
             return;
@@ -192,7 +187,7 @@ class User
         $this->values[self::LOCKED] = $this->isAffirmative($input) ? 'yes' : 'no';
     }
     
-    public function setRequireMfa($input)
+    protected function setRequireMfa($input)
     {
         if ($input === null) {
             return;

@@ -397,8 +397,9 @@ class SyncContext implements Context
         
         $idBrokerUsers = [];
         foreach ($this->idStore->getAllActiveUsers() as $user) {
-            $user->setActive('no');
-            $idBrokerUsers[$user->getEmployeeId()] = $user->toArray();
+            $userInfo = $user->toArray();
+            $userInfo[User::ACTIVE] = 'no';
+            $idBrokerUsers[$user->getEmployeeId()] = $userInfo;
         }
         $this->idBroker = new FakeIdBroker($idBrokerUsers);
     }
