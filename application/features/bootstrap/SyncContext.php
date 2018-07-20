@@ -207,7 +207,7 @@ class SyncContext implements Context
             // Ensure all required fields have a value.
             $row['email'] = $row['email'] ?? $row['username'] . '@example.com';
             
-            // Note: These should use the ID Store field names.
+            // Note: This should use the ID Store field name.
             $idStoreActiveUsers[$row['employeenumber']] = $row;
         }
         $this->idStore = $this->getFakeIdStore($idStoreActiveUsers);
