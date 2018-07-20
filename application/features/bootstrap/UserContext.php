@@ -62,7 +62,7 @@ class UserContext implements Context
      */
     public function theValueShouldBeNull($field)
     {
-        Assert::assertArrayNotHasKey($field, $this->result);
+        Assert::assertNull($this->result[$field]);
     }
 
     /**
