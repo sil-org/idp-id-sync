@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Sync all values provided by ID Store to ID Broker (even null values). This
+  lets fields like `spouse_email` be emptied in ID Broker if they are emptied in
+  ID Store.
+
+### Fixed
+- `Synchronizer->activateAndUpdateUser()` now forces `active` to be `yes` rather
+  than allowing ID Store to provide a different `active` value to ID Broker when
+  **activating** and updating a user.
 
 ## [1.2.0] - 2018-07-18
 ### Added
