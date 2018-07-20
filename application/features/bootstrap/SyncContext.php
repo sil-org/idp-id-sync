@@ -204,7 +204,10 @@ class SyncContext implements Context
     {
         $idStoreActiveUsers = [];
         foreach ($table as $row) {
-            // Note: This should use the ID Store field name.
+            // Ensure all required fields have a value.
+            $row['email'] = $row['email'] ?? $row['username'] . '@example.com';
+            
+            // Note: These should use the ID Store field names.
             $idStoreActiveUsers[$row['employeenumber']] = $row;
         }
         $this->idStore = $this->getFakeIdStore($idStoreActiveUsers);
@@ -254,7 +257,8 @@ class SyncContext implements Context
                     return $user->toArray();
                 }, $actualUsers),
                 JSON_PRETTY_PRINT
-            )
+            ),
+            "---\nTo debug this, see if any errors were logged (above) in the test output.\n---"
         );
     }
     
