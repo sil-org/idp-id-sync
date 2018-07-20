@@ -3,7 +3,6 @@ namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
-use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\ArrayHelper;
 
 class FakeIdStore extends IdStoreBase
