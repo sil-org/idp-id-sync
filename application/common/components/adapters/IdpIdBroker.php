@@ -1,6 +1,7 @@
 <?php
 namespace Sil\Idp\IdSync\common\components\adapters;
 
+use Exception;
 use InvalidArgumentException;
 use Sil\Idp\IdBroker\Client\IdBrokerClient;
 use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;

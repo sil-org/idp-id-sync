@@ -1,7 +1,6 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
 use Sil\Idp\IdSync\common\models\User;
@@ -62,7 +61,7 @@ class UserContext implements Context
      */
     public function theValueShouldBeNull($field)
     {
-        Assert::assertArrayNotHasKey($field, $this->result);
+        Assert::assertNull($this->result[$field]);
     }
 
     /**
@@ -87,5 +86,33 @@ class UserContext implements Context
     public function iCreateAUserWithAValueOfNull($field)
     {
         $this->user = $this->createUserWith($field, null);
+    }
+    
+    /**
+     * @Given I create a User with a :field value of :value and an Employee ID
+     */
+    public function iCreateAUserWithAFieldValueOfValueAndAnEmployeeId($field, $value)
+    {
+        $this->user = new User([
+            $field => $value,
+            User::EMPLOYEE_ID => '12345',
+        ]);
+    }
+    
+    /**
+     * @Then the result should ONLY contain :field and an Employee ID
+     */
+    public function theResultShouldOnlyContainFieldAndAnEmployeeId($field)
+    {
+        Assert::assertArrayHasKey($field, $this->result);
+        unset($this->result[$field]);
+        
+        Assert::assertArrayHasKey(User::EMPLOYEE_ID, $this->result);
+        unset($this->result[User::EMPLOYEE_ID]);
+        
+        Assert::assertCount(0, $this->result, sprintf(
+            "The array unexpectedly contained the following entries: \n%s",
+            var_export($this->result, true)
+        ));
     }
 }

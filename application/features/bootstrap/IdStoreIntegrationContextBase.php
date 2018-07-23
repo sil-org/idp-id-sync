@@ -49,6 +49,7 @@ class IdStoreIntegrationContextBase implements Context
     {
         Assert::assertNotNull($this->result);
         Assert::assertNotEmpty($this->result);
+        Assert::assertTrue(is_array($this->result));
         foreach ($this->result as $user) {
             Assert::assertInstanceOf(User::class, $user);
         }
@@ -69,6 +70,7 @@ class IdStoreIntegrationContextBase implements Context
     {
         Assert::assertNotNull($this->result);
         Assert::assertNotEmpty($this->result);
+        Assert::assertTrue(is_array($this->result));
         foreach ($this->result as $user) {
             Assert::assertInstanceOf(User::class, $user);
         }

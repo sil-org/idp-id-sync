@@ -1,4 +1,5 @@
 <?php
+use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\Html;
 
 /* @var $organizationName string */
@@ -17,9 +18,9 @@ $isOnlyOne = ($numUsers === 1);
 <ol>
   <?php foreach ($users as $user): ?>
     <li>
-      Employee ID <?= Html::encode($user->employeeId) ?>
-      <?php if ($user->username !== null): ?>
-        (<?= Html::encode($user->username) ?>)
+      Employee ID <?= Html::encode($user->getEmployeeId()) ?>
+      <?php if ($user->getUsername() !== null): ?>
+        (<?= Html::encode($user->getUsername()) ?>)
       <?php endif; ?>
     </li>
   <?php endforeach; ?>
