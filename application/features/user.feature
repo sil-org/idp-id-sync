@@ -32,3 +32,34 @@ Feature: Standardizing user info
       | require_mfa | 'TRUE'  | 'yes'  |
       | require_mfa | true    | 'yes'  |
       | require_mfa | null    | null   |
+
+  Scenario Outline: When getting User info, include (only) the provided fields
+    Given I create a User with a <field> value of <input> and an Employee ID
+    When I get the info from that User
+    Then the result should ONLY contain <field> and an Employee ID
+
+    Examples:
+      | field         | input                    |
+      | active        | 'yes'                    |
+      | active        | 'no'                     |
+      | active        | null                     |
+      | display_name  | 'First Last'             |
+      | display_name  | null                     |
+      | email         | 'first_last@example.com' |
+      | email         | null                     |
+      | first_name    | 'First'                  |
+      | first_name    | null                     |
+      | last_name     | 'Last'                   |
+      | last_name     | null                     |
+      | locked        | 'yes'                    |
+      | locked        | 'no'                     |
+      | locked        | null                     |
+      | manager_email | 'manager@example.com'    |
+      | manager_email | null                     |
+      | require_mfa   | 'yes'                    |
+      | require_mfa   | 'no'                     |
+      | require_mfa   | null                     |
+      | spouse_email  | 'spouse@example.com'     |
+      | spouse_email  | null                     |
+      | username      | 'first_last'             |
+      | username      | null                     |

@@ -7,17 +7,44 @@ use yii\helpers\ArrayHelper;
 
 class FakeIdStore extends IdStoreBase
 {
-    private $activeUsers;
+    private $activeUsers = [];
     private $userChanges = [];
     
+    /**
+     * @param array $activeUsersSparseInfo - An array (indexed by employee id)
+     *     of info about ACTIVE users (which may each include only a subset of
+     *     possible ID Store fields).
+     * @param array[] $userChanges Information about which users were changed
+     *     when. Each entry is an array with a 'changedat' and an 'employeeid'.
+     * @param array $config
+     */
     public function __construct(
-        array $activeUsers = [],
+        array $activeUsersSparseInfo = [],
         array $userChanges = [],
         array $config = []
     ) {
-        $this->activeUsers = $activeUsers;
+        foreach ($activeUsersSparseInfo as $employeeId => $sparseUserInfo) {
+            $this->addUserFromSparseInfo($employeeId, $sparseUserInfo);
+        }
         $this->userChanges = $userChanges;
         parent::__construct($config);
+    }
+    
+    /**
+     * Take the (potentially incomplete) user info and add null values for all
+     * missing fields, then add the result to our list of active users in this
+     * (fake) ID Store.
+     *
+     * @param string $employeeId
+     * @param array $sparseUserInfo
+     */
+    private function addUserFromSparseInfo(string $employeeId, array $sparseUserInfo)
+    {
+        $userInfo = [];
+        foreach (array_keys(self::getIdBrokerFieldNames()) as $idStoreFieldName) {
+            $userInfo[$idStoreFieldName] = $sparseUserInfo[$idStoreFieldName] ?? null;
+        }
+        $this->activeUsers[$employeeId] = $userInfo;
     }
     
     /**

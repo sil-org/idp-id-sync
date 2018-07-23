@@ -10,7 +10,6 @@ use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
-use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
@@ -28,7 +27,7 @@ class SyncContext implements Context
     /** @var IdBrokerInterface */
     private $idBroker;
     
-    /** @var IdStoreInterface */
+    /** @var FakeIdStore */
     private $idStore;
     
     /** @var LoggerInterface */
@@ -95,7 +94,7 @@ class SyncContext implements Context
         $user = $this->idStore->getActiveUser($this->tempEmployeeId);
         
         $this->idBroker = new FakeIdBroker([
-            $user->employeeId => $user->toArray(),
+            $this->tempEmployeeId => $user->toArray(),
         ]);
     }
 
@@ -174,7 +173,7 @@ class SyncContext implements Context
     public function theUserShouldBeInactiveInTheIdBroker()
     {
         $idBrokerUser = $this->idBroker->getUser($this->tempEmployeeId);
-        Assert::assertSame('no', $idBrokerUser->active);
+        Assert::assertSame('no', $idBrokerUser->getActive());
     }
 
     /**
@@ -192,8 +191,8 @@ class SyncContext implements Context
     {
         $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
         $this->idBroker->updateUser([
-            'employee_id' => $userFromIdStore->employeeId,
-            'display_name' => $userFromIdStore->displayName . ' Jr.',
+            'employee_id' => $userFromIdStore->getEmployeeId(),
+            'display_name' => $userFromIdStore->getDisplayName() . ' Jr.',
         ]);
     }
 
@@ -204,6 +203,9 @@ class SyncContext implements Context
     {
         $idStoreActiveUsers = [];
         foreach ($table as $row) {
+            // Ensure all required fields have a value.
+            $row['email'] = $row['email'] ?? $row['username'] . '@example.com';
+            
             // Note: This should use the ID Store field name.
             $idStoreActiveUsers[$row['employeenumber']] = $row;
         }
@@ -254,7 +256,8 @@ class SyncContext implements Context
                     return $user->toArray();
                 }, $actualUsers),
                 JSON_PRETTY_PRINT
-            )
+            ),
+            "---\nTo debug this, see if any errors were logged (above) in the test output.\n---"
         );
     }
     
@@ -366,7 +369,7 @@ class SyncContext implements Context
         $numActiveUsers = 0;
         $idBrokerUsers = $this->idBroker->listUsers();
         foreach ($idBrokerUsers as $user) {
-            if ($user->active === 'yes') {
+            if ($user->getActive() === 'yes') {
                 $numActiveUsers += 1;
             }
         }
@@ -393,8 +396,9 @@ class SyncContext implements Context
         
         $idBrokerUsers = [];
         foreach ($this->idStore->getAllActiveUsers() as $user) {
-            $user->active = 'no';
-            $idBrokerUsers[$user->employeeId] = $user->toArray();
+            $userInfo = $user->toArray();
+            $userInfo[User::ACTIVE] = 'no';
+            $idBrokerUsers[$user->getEmployeeId()] = $userInfo;
         }
         $this->idBroker = new FakeIdBroker($idBrokerUsers);
     }
@@ -410,5 +414,69 @@ class SyncContext implements Context
             $possibleException->getCode(),
             $possibleException->getMessage()
         ));
+    }
+    
+    /**
+     * @Given the user has a spouse email address in the ID Broker
+     * @throws Exception
+     */
+    public function theUserHasASpouseEmailAddressInTheIdBroker()
+    {
+        $this->idBroker->updateUser([
+            User::EMPLOYEE_ID => $this->tempEmployeeId,
+            User::SPOUSE_EMAIL => 'spouse@example.com',
+        ]);
+    }
+
+    /**
+     * @Given the user does not have a spouse email address in the ID Store
+     */
+    public function theUserDoesNotHaveASpouseEmailAddressInTheIdStore()
+    {
+        $this->idStore->changeFakeRecord($this->tempEmployeeId, [
+            'spouseemail' => null,
+        ]);
+    }
+    
+    /**
+     * @Then the user should not have a spouse email address in the ID Broker
+     * @throws Exception
+     */
+    public function theUserShouldNotHaveASpouseEmailAddressInTheIdBroker()
+    {
+        $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
+        Assert::assertEmpty($userFromIdBroker->getSpouseEmail());
+    }
+    
+    /**
+     * @Given the user has a manager email address in the ID Broker
+     * @throws Exception
+     */
+    public function theUserHasAManagerEmailAddressInTheIdBroker()
+    {
+        $this->idBroker->updateUser([
+            User::EMPLOYEE_ID => $this->tempEmployeeId,
+            User::MANAGER_EMAIL => 'manager@example.com',
+        ]);
+    }
+
+    /**
+     * @Given the user does not have a manager email address in the ID Store
+     */
+    public function theUserDoesNotHaveAManagerEmailAddressInTheIdStore()
+    {
+        $this->idStore->changeFakeRecord($this->tempEmployeeId, [
+            'supervisoremail' => null,
+        ]);
+    }
+    
+    /**
+     * @Then the user should not have a manager email address in the ID Broker
+     * @throws Exception
+     */
+    public function theUserShouldNotHaveAManagerEmailAddressInTheIdBroker()
+    {
+        $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
+        Assert::assertEmpty($userFromIdBroker->getManagerEmail());
     }
 }

@@ -139,13 +139,13 @@ class SafetyCutoffContext implements Context
         for ($i = 0; $i < $numToHaveInStore; $i++) {
             /* @var $user User */
             $user = $usersFromBroker[$i];
-            $activeIdStoreUsers[$user->employeeId] = [
-                'employeenumber' => (string)$user->employeeId,
-                'displayname' => $user->displayName,
-                'username' => $user->username,
-                'firstname' => $user->firstName,
-                'lastname' => $user->lastName,
-                'email' => $user->email,
+            $activeIdStoreUsers[$user->getEmployeeId()] = [
+                'employeenumber' => (string)$user->getEmployeeId(),
+                'displayname' => $user->getDisplayName(),
+                'username' => $user->getUsername(),
+                'firstname' => $user->getFirstName(),
+                'lastname' => $user->getLastName(),
+                'email' => $user->getEmail(),
             ];
         }
         $this->idStore = new FakeIdStore($activeIdStoreUsers);
@@ -174,13 +174,13 @@ class SafetyCutoffContext implements Context
         
         // Add all users from ID Broker to ID Store.
         foreach ($usersFromBroker as $user) {
-            $activeIdStoreUsers[$user->employeeId] = [
-                'employeenumber' => (string)$user->employeeId,
-                'displayname' => $user->displayName,
-                'username' => $user->username,
-                'firstname' => $user->firstName,
-                'lastname' => $user->lastName,
-                'email' => $user->email,
+            $activeIdStoreUsers[$user->getEmployeeId()] = [
+                'employeenumber' => (string)$user->getEmployeeId(),
+                'displayname' => $user->getDisplayName(),
+                'username' => $user->getUsername(),
+                'firstname' => $user->getFirstName(),
+                'lastname' => $user->getLastName(),
+                'email' => $user->getEmail(),
             ];
         }
         
@@ -265,7 +265,7 @@ class SafetyCutoffContext implements Context
             if ($i < $numToUpdate) {
                 $idStoreUserChanges[] = [
                     'changedat' => $this->tempTimestamp + $i,
-                    'employeenumber' => (string)$user->employeeId,
+                    'employeenumber' => (string)$user->getEmployeeId(),
                 ];
             }
             
@@ -273,18 +273,18 @@ class SafetyCutoffContext implements Context
             // that those were changed recently enough to be included in our
             // incremental sync.
             if ($i < $numInBrokerToHaveInStore) {
-                $activeIdStoreUsers[$user->employeeId] = [
-                    'employeenumber' => (string)$user->employeeId,
-                    'displayname' => $user->displayName,
-                    'username' => $user->username,
-                    'firstname' => $user->firstName,
-                    'lastname' => $user->lastName,
-                    'email' => $user->email,
+                $activeIdStoreUsers[$user->getEmployeeId()] = [
+                    'employeenumber' => (string)$user->getEmployeeId(),
+                    'displayname' => $user->getDisplayName(),
+                    'username' => $user->getUsername(),
+                    'firstname' => $user->getFirstName(),
+                    'lastname' => $user->getLastName(),
+                    'email' => $user->getEmail(),
                 ];
             } else {
                 $idStoreUserChanges[] = [
                     'changedat' => $this->tempTimestamp + $i,
-                    'employeenumber' => (string)$user->employeeId,
+                    'employeenumber' => (string)$user->getEmployeeId(),
                 ];
             }
         }

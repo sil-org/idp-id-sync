@@ -17,38 +17,12 @@ class User
     const SPOUSE_EMAIL = 'spouse_email';
     const USERNAME = 'username';
     
-    /** @var string */
-    public $employeeId;
-    
-    /** @var string|null */
-    public $firstName;
-    
-    /** @var string|null */
-    public $lastName;
-    
-    /** @var string|null */
-    public $displayName;
-    
-    /** @var string|null */
-    public $username;
-    
-    /** @var string|null */
-    public $email;
-    
-    /** @var string|null */
-    public $active;
-    
-    /** @var string|null */
-    public $locked;
-    
-    /** @var string|null */
-    public $managerEmail;
-    
-    /** @var string|null */
-    public $requireMfa;
-    
-    /** @var string|null */
-    public $spouseEmail;
+    /**
+     * The values (indexed by field name) for the fields which have been set.
+     *
+     * @var array<string,mixed>
+     */
+    private $values = [];
     
     /**
      * Create a new User model from the given user info, which must be an
@@ -63,17 +37,127 @@ class User
             throw new InvalidArgumentException('Employee ID cannot be empty.', 1493733219);
         }
         
-        $this->employeeId = (string)$userInfo[self::EMPLOYEE_ID];
-        $this->firstName = $userInfo[self::FIRST_NAME] ?? null;
-        $this->lastName = $userInfo[self::LAST_NAME] ?? null;
-        $this->displayName = $userInfo[self::DISPLAY_NAME] ?? null;
-        $this->username = $userInfo[self::USERNAME] ?? null;
-        $this->email = $userInfo[self::EMAIL] ?? null;
-        $this->active = $userInfo[self::ACTIVE] ?? null;
+        // Set all of the provided fields, taking whatever value was given.
+        foreach (self::getAllFieldNames() as $fieldName) {
+            if (array_key_exists($fieldName, $userInfo)) {
+                $this->values[$fieldName] = $userInfo[$fieldName];
+            }
+        }
+        
+        // Ensure fields with stricter constraints have valid values.
+        $this->values[self::EMPLOYEE_ID] = (string)$userInfo[self::EMPLOYEE_ID];
         $this->setLocked($userInfo[self::LOCKED] ?? null);
-        $this->managerEmail = $userInfo[self::MANAGER_EMAIL] ?? null;
         $this->setRequireMfa($userInfo[self::REQUIRE_MFA] ?? null);
-        $this->spouseEmail = $userInfo[self::SPOUSE_EMAIL] ?? null;
+    }
+    
+    /**
+     * Get the list of all of the field names supported by this User model.
+     *
+     * @return string[]
+     */
+    public static function getAllFieldNames()
+    {
+        return [
+            self::ACTIVE,
+            self::DISPLAY_NAME,
+            self::EMAIL,
+            self::EMPLOYEE_ID,
+            self::FIRST_NAME,
+            self::LAST_NAME,
+            self::LOCKED,
+            self::MANAGER_EMAIL,
+            self::REQUIRE_MFA,
+            self::SPOUSE_EMAIL,
+            self::USERNAME,
+        ];
+    }
+    
+    /**
+     * @return string
+     */
+    public function getEmployeeId()
+    {
+        return $this->values[self::EMPLOYEE_ID];
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getFirstName()
+    {
+        return $this->values[self::FIRST_NAME] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getLastName()
+    {
+        return $this->values[self::LAST_NAME] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getDisplayName()
+    {
+        return $this->values[self::DISPLAY_NAME] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getUsername()
+    {
+        return $this->values[self::USERNAME] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getEmail()
+    {
+        return $this->values[self::EMAIL] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getActive()
+    {
+        return $this->values[self::ACTIVE] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getLocked()
+    {
+        return $this->values[self::LOCKED] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getManagerEmail()
+    {
+        return $this->values[self::MANAGER_EMAIL] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getRequireMfa()
+    {
+        return $this->values[self::REQUIRE_MFA] ?? null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getSpouseEmail()
+    {
+        return $this->values[self::SPOUSE_EMAIL] ?? null;
     }
     
     public function __toString()
@@ -94,55 +178,34 @@ class User
         return in_array($lowercasedValue, ['true', 'yes'], true);
     }
     
-    public function setLocked($input)
+    protected function setLocked($input)
     {
         if ($input === null) {
             return;
         }
         
-        $this->locked = $this->isAffirmative($input) ? 'yes' : 'no';
+        $this->values[self::LOCKED] = $this->isAffirmative($input) ? 'yes' : 'no';
     }
     
-    public function setRequireMfa($input)
+    protected function setRequireMfa($input)
     {
         if ($input === null) {
             return;
         }
         
-        $this->requireMfa = $this->isAffirmative($input) ? 'yes' : 'no';
+        $this->values[self::REQUIRE_MFA] = $this->isAffirmative($input) ? 'yes' : 'no';
     }
     
     /**
      * Get this User object's data as an associative array.
      *
-     * NOTE: Only fields with non-null values will be included in the array.
+     * NOTE: This will return all fields that have been explicitly set,
+     * regardless of what value they were set to (even null).
      *
      * @return array
      */
     public function toArray()
     {
-        $userInfo = [];
-        $userInfo[self::EMPLOYEE_ID] = $this->employeeId;
-        
-        $possibleFields = [
-            self::FIRST_NAME => $this->firstName,
-            self::LAST_NAME => $this->lastName,
-            self::DISPLAY_NAME => $this->displayName,
-            self::USERNAME => $this->username,
-            self::EMAIL => $this->email,
-            self::ACTIVE => $this->active,
-            self::LOCKED => $this->locked,
-            self::MANAGER_EMAIL => $this->managerEmail,
-            self::REQUIRE_MFA => $this->requireMfa,
-            self::SPOUSE_EMAIL => $this->spouseEmail,
-        ];
-
-        foreach ($possibleFields as $fieldName => $value) {
-            if ($value !== null) {
-                $userInfo[$fieldName] = $value;
-            }
-        }
-        
-        return $userInfo;
+        return $this->values;
     }
 }

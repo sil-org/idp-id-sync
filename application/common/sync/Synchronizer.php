@@ -110,22 +110,20 @@ class Synchronizer
     }
     
     /**
-     * Update the given user in the ID Broker, setting it to be active (unless
-     * the given user already provides some other value for 'active').
+     * Update the given user in the ID Broker, setting it to be active.
      *
      * @param User $user The user's information.
      */
     protected function activateAndUpdateUser(User $user)
     {
         $this->idBroker->updateUser(
-            ArrayHelper::merge(['active' => 'yes'], $user->toArray())
+            ArrayHelper::merge($user->toArray(), ['active' => 'yes'])
         );
-        $this->logger->info('Updated/activated user: ' . $user->employeeId);
+        $this->logger->info('Updated/activated user: ' . $user->getEmployeeId());
     }
     
     /**
-     * Update the given Users in the ID Broker, setting them to be active
-     * (unless the User already provides some other value for 'active').
+     * Update the given Users in the ID Broker, setting them to be active.
      *
      * @param User[] $usersToUpdateAndActivate The user's information.
      */
@@ -140,7 +138,7 @@ class Synchronizer
                 $this->logger->error(sprintf(
                     'Failed to update/activate user in the ID Broker (Employee ID: %s). '
                     . 'Error %s: %s. [%s]',
-                    var_export($userToUpdateAndActivate->employeeId, true),
+                    var_export($userToUpdateAndActivate->getEmployeeId(), true),
                     $e->getCode(),
                     $e->getMessage(),
                     1494360119
@@ -179,7 +177,7 @@ class Synchronizer
     protected function createUser(User $user)
     {
         $this->idBroker->createUser($user->toArray());
-        $this->logger->info('Created user: ' . $user->employeeId);
+        $this->logger->info('Created user: ' . $user->getEmployeeId());
     }
     
     /**
@@ -198,14 +196,14 @@ class Synchronizer
             } catch (MissingEmailException $e) {
                 $this->logger->warning(sprintf(
                     'A User (Employee ID: %s) lacked an email address.',
-                    $userToAdd->employeeId
+                    $userToAdd->getEmployeeId()
                 ));
                 $usersWithoutEmail[] = $userToAdd;
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
                     'Failed to add user to ID Broker (Employee ID: %s). '
                     . 'Error %s: %s. [%s]',
-                    var_export($userToAdd->employeeId, true),
+                    var_export($userToAdd->getEmployeeId(), true),
                     $e->getCode(),
                     $e->getMessage(),
                     1494360152
@@ -299,7 +297,7 @@ class Synchronizer
         
         foreach ($rawList as $user) {
             /* @var $user User */
-            $employeeId = $user->employeeId;
+            $employeeId = $user->getEmployeeId();
             
             // Prevent duplicates.
             if (array_key_exists($employeeId, $usersByEmployeeId)) {
@@ -311,8 +309,9 @@ class Synchronizer
                 continue;
             }
             
-            $user->employeeId = null;
-            $usersByEmployeeId[$employeeId] = $user->toArray();
+            $userInfo = $user->toArray();
+            unset($userInfo[User::EMPLOYEE_ID]);
+            $usersByEmployeeId[$employeeId] = $userInfo;
         }
         
         return $usersByEmployeeId;
@@ -374,7 +373,7 @@ class Synchronizer
         ));
         
         foreach ($idStoreUsers as $idStoreUser) {
-            $employeeId = $idStoreUser->employeeId;
+            $employeeId = $idStoreUser->getEmployeeId();
             
             if (empty($employeeId)) {
                 $this->logger->warning(sprintf(
@@ -507,7 +506,7 @@ class Synchronizer
             }
         } else {
             if ($isInIdBroker) {
-                $this->deactivateUser($idBrokerUser->employeeId);
+                $this->deactivateUser($idBrokerUser->getEmployeeId());
             } else {
                 $this->logger->error(sprintf(
                     'Cannot find user anywhere: %s. [%s]',
@@ -592,7 +591,7 @@ class Synchronizer
         $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
         $employeeIds = [];
         foreach ($changedUsers as $changedUser) {
-            $employeeIds[] = $changedUser->employeeId;
+            $employeeIds[] = $changedUser->getEmployeeId();
         }
         
         $numActiveUsersInBroker = $this->getNumActiveUsersInBroker();

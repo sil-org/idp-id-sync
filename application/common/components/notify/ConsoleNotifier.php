@@ -20,9 +20,9 @@ class ConsoleNotifier implements NotifierInterface
         $counter = 0;
         $outputLines = [];
         foreach ($users as $user) {
-            $outputLine = sprintf('%s. Employee ID %s', ++$counter, $user->employeeId);
-            if ($user->username !== null) {
-                $outputLine .= sprintf(' (%s)', $user->username);
+            $outputLine = sprintf('%s. Employee ID %s', ++$counter, $user->getEmployeeId());
+            if ($user->getUsername() !== null) {
+                $outputLine .= sprintf(' (%s)', $user->getUsername());
             }
             $outputLines[] = $outputLine;
         }
