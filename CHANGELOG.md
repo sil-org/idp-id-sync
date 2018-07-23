@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.0.0] - 2018-07-23
 ### Changed
 - Sync all values provided by ID Store to ID Broker (even null values). This
   lets fields like `spouse_email` be emptied in ID Broker if they are emptied in
@@ -121,7 +123,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/1.2.0...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/2.0.0...develop
+[2.0.0]: https://github.com/silinternational/idp-id-sync/compare/1.2.0...2.0.0
 [1.2.0]: https://github.com/silinternational/idp-id-sync/compare/1.1.3...1.2.0
 [1.1.3]: https://github.com/silinternational/idp-id-sync/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/silinternational/idp-id-sync/compare/1.1.1...1.1.2
