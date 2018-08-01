@@ -3,6 +3,7 @@ namespace Sil\Idp\IdSync\common\components;
 
 use Sil\Idp\IdSync\common\components\adapters\GoogleSheetsIdStore;
 use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
+use Sil\Idp\IdSync\common\components\adapters\WorkdayIdStore;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\models\User;
@@ -13,11 +14,13 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
     const ADAPTER_FAKE = 'fake';
     const ADAPTER_GOOGLE_SHEETS = 'googlesheets';
     const ADAPTER_INSITE = 'insite';
+    const ADAPTER_WORKDAY = 'workday';
     
     protected static $adapters = [
         self::ADAPTER_FAKE => FakeIdStore::class,
         self::ADAPTER_GOOGLE_SHEETS => GoogleSheetsIdStore::class,
         self::ADAPTER_INSITE => InsiteIdStore::class,
+        self::ADAPTER_WORKDAY => WorkdayIdStore::class,
     ];
     
     public static function getAdapterClassFor($adapterName)
