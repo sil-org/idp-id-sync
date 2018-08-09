@@ -104,7 +104,7 @@ class WorkdayIdStore extends IdStoreBase
             $allActiveUsers = null;
         } elseif (($statusCode >= 200) && ($statusCode <= 299)) {
             $data = Json::decode($response->getBody());
-            $allActiveUsers = $data['items'] ?? null;
+            $allActiveUsers = $data['Report_Entry'] ?? null;
         } else {
             throw new Exception(sprintf(
                 'Unexpected response (%s %s): %s',
