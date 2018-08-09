@@ -70,10 +70,17 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
      */
     abstract public static function getIdBrokerFieldNames();
     
+    /**
+     * Get the ID Broker field name corresponding to the given ID Store field
+     * name. If there is no such ID Broker field, return null.
+     *
+     * @param string $idStoreFieldName
+     * @return string|null
+     */
     protected static function getIdBrokerFieldNameFor(string $idStoreFieldName)
     {
         $idBrokerFieldNames = static::getIdBrokerFieldNames();
-        return $idBrokerFieldNames[$idStoreFieldName];
+        return $idBrokerFieldNames[$idStoreFieldName] ?? null;
     }
     
     /**
@@ -90,7 +97,9 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
         
         foreach ($userFromIdStore as $idStoreFieldName => $value) {
             $idBrokerFieldName = self::getIdBrokerFieldNameFor($idStoreFieldName);
-            $userForIdBroker[$idBrokerFieldName] = $value;
+            if ($idBrokerFieldName !== null) {
+                $userForIdBroker[$idBrokerFieldName] = $value;
+            }
         }
         
         return $userForIdBroker;
