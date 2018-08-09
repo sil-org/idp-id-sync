@@ -76,12 +76,12 @@ class WorkdayIdStore extends IdStoreBase
      * @return User[]
      * @throws Exception
      */
-    public function getUsersChangedSince(int $unixTimestamp): array
+    public function getUsersChangedSince(int $unixTimestamp)
     {
         throw new Exception(__FUNCTION__ . ' not yet implemented');
     }
     
-    public function getAllActiveUsers(): array
+    public function getAllActiveUsers()
     {
         $response = $this->getHttpClient()->get($this->apiUrl, [
             'auth' => [$this->username, $this->password, 'basic'],
