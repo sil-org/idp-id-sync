@@ -47,8 +47,8 @@ class WorkdayIdStore extends IdStoreBase
             'Email' => User::EMAIL,
             'Username' => User::USERNAME,
             'Account_Locked__Disabled_or_Expired' => User::LOCKED,
-            //'' => User::REQUIRE_MFA, /** @todo Insert correct field name */
-            //'' => User::MANAGER_EMAIL, /** @todo Insert correct field name */
+            'requireMfa' => User::REQUIRE_MFA,
+            'Manager_Email' => User::MANAGER_EMAIL,
             'Spouse_Email_Work' => User::SPOUSE_EMAIL,
             // No 'active' needed, since all ID Store records returned are active.
         ];
