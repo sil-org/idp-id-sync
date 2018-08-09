@@ -65,7 +65,7 @@ class WorkdayIdStore extends IdStoreBase
      */
     public function getActiveUser(string $employeeId)
     {
-        throw new \Exception(__FUNCTION__ . ' not yet implemented');
+        throw new Exception(__FUNCTION__ . ' not yet implemented');
     }
     
     /**
@@ -81,6 +81,12 @@ class WorkdayIdStore extends IdStoreBase
         throw new Exception(__FUNCTION__ . ' not yet implemented');
     }
     
+    /**
+     * Get information about each of the (active) users.
+     *
+     * @return User[] A list of Users.
+     * @throws Exception
+     */
     public function getAllActiveUsers()
     {
         $response = $this->getHttpClient()->get($this->apiUrl, [
@@ -92,7 +98,7 @@ class WorkdayIdStore extends IdStoreBase
             ],
             'http_errors' => false,
         ]);
-    
+        
         $statusCode = (int)$response->getStatusCode();
         if ($statusCode === 404) {
             $allActiveUsers = null;
@@ -117,17 +123,6 @@ class WorkdayIdStore extends IdStoreBase
         return self::getAsUsers($allActiveUsers);
     }
     
-//    /**
-//     * Call the ID Store API itself.
-//     *
-//     * @return array|null The resulting data, or null if unavailable (such as
-//     *     with a 404 response, or if the list of results was not returned).
-//     * @throws Exception
-//     */
-//    protected function getFromIdStore()
-//    {
-//    }
-    
     /**
      * Get the HTTP client to use.
      *
@@ -140,7 +135,7 @@ class WorkdayIdStore extends IdStoreBase
         }
         return $this->httpClient;
     }
-
+    
     public function getIdStoreName(): string
     {
         return 'Workday';
