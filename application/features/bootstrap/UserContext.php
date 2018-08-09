@@ -36,6 +36,14 @@ class UserContext implements Context
     }
 
     /**
+     * @Given /^I create a User with a ([^ ]+) value of (\d+)$/
+     */
+    public function iCreateAUserWithAValueOfNumber($field, $number)
+    {
+        $this->user = $this->createUserWith($field, $number);
+    }
+
+    /**
      * @When I get the info from that User
      */
     public function iGetTheInfoFromThatUser()
