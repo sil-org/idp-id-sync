@@ -9,24 +9,28 @@ Feature: Standardizing user info
     Examples:
       | field       | input   | output |
       | locked      | 'no'    | 'no'   |
+      | locked      | '0'     | 'no'   |
       | locked      | 'false' | 'no'   |
       | locked      | 'False' | 'no'   |
       | locked      | 'FALSE' | 'no'   |
       | locked      | false   | 'no'   |
       | locked      | 'other' | 'no'   |
       | locked      | 'yes'   | 'yes'  |
+      | locked      | '1'     | 'yes'  |
       | locked      | 'true'  | 'yes'  |
       | locked      | 'True'  | 'yes'  |
       | locked      | 'TRUE'  | 'yes'  |
       | locked      | true    | 'yes'  |
       | locked      | null    | null   |
       | require_mfa | 'no'    | 'no'   |
+      | require_mfa | '0'     | 'no'   |
       | require_mfa | 'false' | 'no'   |
       | require_mfa | 'False' | 'no'   |
       | require_mfa | 'FALSE' | 'no'   |
       | require_mfa | false   | 'no'   |
       | require_mfa | 'other' | 'no'   |
       | require_mfa | 'yes'   | 'yes'  |
+      | require_mfa | '1'     | 'yes'  |
       | require_mfa | 'true'  | 'yes'  |
       | require_mfa | 'True'  | 'yes'  |
       | require_mfa | 'TRUE'  | 'yes'  |
