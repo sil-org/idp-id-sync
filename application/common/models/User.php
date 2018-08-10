@@ -175,7 +175,7 @@ class User
         
         $lowercasedValue = strtolower(trim($value));
         
-        return in_array($lowercasedValue, ['true', 'yes'], true);
+        return in_array($lowercasedValue, ['true', 'yes', '1'], true);
     }
     
     protected function setLocked($input)

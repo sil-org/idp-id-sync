@@ -21,3 +21,8 @@ default:
         webhook_features:
             paths:    [ %paths.base%/../features/webhook.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\WebhookContext ]
+        workday_integration_features:
+            filters:
+                tags: '@allUsers'
+            paths:    [ %paths.base%/../features/id-store-integration.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\WorkdayIntegrationContext ]

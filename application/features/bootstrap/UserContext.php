@@ -34,6 +34,22 @@ class UserContext implements Context
     {
         $this->user = $this->createUserWith($field, $input);
     }
+    
+    /**
+     * @Given I create a User with a :field value of 0
+     */
+    public function iCreateAUserWithAValueOf0($field)
+    {
+        $this->user = $this->createUserWith($field, 0);
+    }
+
+    /**
+     * @Given I create a User with a :field value of 1
+     */
+    public function iCreateAUserWithAValueOf1($field)
+    {
+        $this->user = $this->createUserWith($field, 1);
+    }
 
     /**
      * @When I get the info from that User

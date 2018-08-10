@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.1.0] - 2018-08-09
+### Added:
+- ID Store adapter for Workday
+
+### Fixed:
+- Treat `'0'` and `0` as `'no'` and treat `'1'` and `1` as `'yes'` (as values
+  for `locked` and `require_mfa`).
+- Ignore unexpected ID Store fields, rather than crashing.
+
 ## [2.0.0] - 2018-07-23
 ### Changed
 - Sync all values provided by ID Store to ID Broker (even null values). This
@@ -123,7 +132,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/2.0.0...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/2.1.0...develop
+[2.1.0]: https://github.com/silinternational/idp-id-sync/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/silinternational/idp-id-sync/compare/1.2.0...2.0.0
 [1.2.0]: https://github.com/silinternational/idp-id-sync/compare/1.1.3...1.2.0
 [1.1.3]: https://github.com/silinternational/idp-id-sync/compare/1.1.2...1.1.3
