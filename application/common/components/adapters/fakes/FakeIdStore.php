@@ -107,9 +107,11 @@ class FakeIdStore extends IdStoreBase
     /**
      * {@inheritdoc}
      */
-    public function updateSyncDateIfSupported(string $employeeId)
+    public function updateSyncDatesIfSupported(array $employeeIds)
     {
-        $this->updatedSyncDateFor[$employeeId] = true;
+        foreach ($employeeIds as $employeeId) {
+            $this->updatedSyncDateFor[$employeeId] = true;
+        }
     }
     
     public function listEmployeeIdsWithUpdatedSyncDate()

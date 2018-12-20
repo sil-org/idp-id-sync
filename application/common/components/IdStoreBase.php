@@ -108,7 +108,7 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
     /**
      * {@inheritdoc}
      */
-    public function updateSyncDateIfSupported(string $employeeId)
+    public function updateSyncDatesIfSupported(array $employeeIds)
     {
         // Does nothing unless overridden in a subclass.
     }

@@ -39,10 +39,10 @@ interface IdStoreInterface
     public function getUsersChangedSince(int $unixTimestamp);
     
     /**
-     * If the ID Store adapter supports updating when a user's record was last
-     * synced, do so. Otherwise, this function call does nothing.
+     * If the ID Store adapter supports updating when specific users' records
+     * were last synced, do so. Otherwise, this function call does nothing.
      *
-     * @param string $employeeId The Employee ID of the user we just synced.
+     * @param string[] $employeeIds The Employee IDs of the users we just synced.
      */
-    public function updateSyncDateIfSupported(string $employeeId);
+    public function updateSyncDatesIfSupported(array $employeeIds);
 }
