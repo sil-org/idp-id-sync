@@ -121,14 +121,16 @@ class GoogleSheetsClient extends Component
         }
         
         $users = [];
-        $currentRow = $startRow;
         $range = sprintf('Users!A%s:L%s', $startRow, $startRow + $howMany - 1);
-        $rows = $this->sheets->spreadsheets_values->get($this->spreadsheetId, $range, ['majorDimension' => 'ROWS']);
+        $rows = $this->sheets->spreadsheets_values->get(
+            $this->spreadsheetId,
+            $range,
+            ['majorDimension' => 'ROWS']
+        );
+        
         if (isset($rows['values'])) {
             foreach ($rows['values'] as $user) {
-                /*
-                 * If first column is empty, consider it as no more records
-                 */
+                // If the first column is empty, take it to mean that there are no more records.
                 if (empty($user[0])) {
                     break;
                 }
@@ -152,24 +154,6 @@ class GoogleSheetsClient extends Component
                     User::MANAGER_EMAIL => $this->getValueIfNonEmpty($user, 10),
                     User::SPOUSE_EMAIL => $this->getValueIfNonEmpty($user, 11),
                 ];
-                
-                /*
-                 * Update last_synced column in spreadsheet
-                 */
-                $updateRange = 'I'.$currentRow;
-                $updateBody = new \Google_Service_Sheets_ValueRange([
-                    'range' => $updateRange,
-                    'majorDimension' => 'ROWS',
-                    'values' => ['values' => date('c')],
-                ]);
-                $this->sheets->spreadsheets_values->update(
-                    $this->spreadsheetId,
-                    $updateRange,
-                    $updateBody,
-                    ['valueInputOption' => 'USER_ENTERED']
-                );
-                
-                $currentRow++;
             }
         }
         
