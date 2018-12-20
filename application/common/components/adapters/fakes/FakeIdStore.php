@@ -8,6 +8,7 @@ use yii\helpers\ArrayHelper;
 class FakeIdStore extends IdStoreBase
 {
     private $activeUsers = [];
+    private $updatedSyncDateFor = [];
     private $userChanges = [];
     
     /**
@@ -96,5 +97,27 @@ class FakeIdStore extends IdStoreBase
     public function getIdStoreName(): string
     {
         return 'the fake ID Store';
+    }
+    
+    public function wasSyncDateUpdatedFor(string $employeeId)
+    {
+        return $this->updatedSyncDateFor[$employeeId] ?? false;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function updateSyncDateIfSupported(string $employeeId)
+    {
+        $this->updatedSyncDateFor[$employeeId] = true;
+    }
+    
+    public function listEmployeeIdsWithUpdatedSyncDate()
+    {
+        $employeeIds = [];
+        foreach (array_keys($this->updatedSyncDateFor) as $employeeId) {
+            $employeeIds[] = (string)$employeeId;
+        }
+        return $employeeIds;
     }
 }

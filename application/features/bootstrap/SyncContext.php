@@ -479,4 +479,65 @@ class SyncContext implements Context
         $userFromIdBroker = $this->idBroker->getUser($this->tempEmployeeId);
         Assert::assertEmpty($userFromIdBroker->getManagerEmail());
     }
+
+    /**
+     * @Then we should have tried to update the ID Store's last-synced date for that user
+     */
+    public function weShouldHaveTriedToUpdateTheIdStoresLastSyncedDateForThatUser()
+    {
+        Assert::assertTrue(
+            $this->idStore->wasSyncDateUpdatedFor($this->tempEmployeeId)
+        );
+    }
+
+    /**
+     * @Then we tried to update the last-synced date in the ID Store for:
+     */
+    public function weTriedToUpdateTheLastSyncedDateInTheIdStoreFor(TableNode $table)
+    {
+        foreach ($table as $row) {
+            Assert::assertTrue(
+                $this->idStore->wasSyncDateUpdatedFor($row['employeenumber']),
+                'Failed to update sync date for ' . $row['employeenumber']
+            );
+        }
+    }
+
+    /**
+     * @Then we tried to update the last-synced date in the ID Store for all :total users EXCEPT user :excluded
+     */
+    public function weTriedToUpdateTheLastSyncedDateInTheIdStoreForAllUsersExceptUser($total, $excluded)
+    {
+        for ($i = 1; $i <= $total; $i++) {
+            $employeeId = 10000 + $i;
+            if ($i == $excluded) {
+                Assert::assertFalse(
+                    $this->idStore->wasSyncDateUpdatedFor($employeeId),
+                    'Incorrectly updated sync date for user ' . $i
+                );
+            } else {
+                Assert::assertTrue(
+                    $this->idStore->wasSyncDateUpdatedFor($employeeId),
+                    'Failed to update sync date for user ' . $i
+                );
+            }
+        }
+    }
+
+    /**
+     * @Then we ONLY tried to update the last-synced date in the ID Store for the following:
+     */
+    public function weOnlyTriedToUpdateTheLastSyncedDateInTheIdStoreForTheFollowing(TableNode $table)
+    {
+        $expected = [];
+        foreach ($table as $row) {
+            $expected[] = $row['employeenumber'];
+        }
+        $actual = $this->idStore->listEmployeeIdsWithUpdatedSyncDate();
+        
+        sort($expected);
+        sort($actual);
+        
+        Assert::assertEquals($expected, $actual);
+    }
 }
