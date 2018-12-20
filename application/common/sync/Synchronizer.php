@@ -120,6 +120,7 @@ class Synchronizer
             ArrayHelper::merge($user->toArray(), ['active' => 'yes'])
         );
         $this->logger->info('Updated/activated user: ' . $user->getEmployeeId());
+        $this->idStore->updateSyncDateIfSupported($user->getEmployeeId());
     }
     
     /**
@@ -178,6 +179,7 @@ class Synchronizer
     {
         $this->idBroker->createUser($user->toArray());
         $this->logger->info('Created user: ' . $user->getEmployeeId());
+        $this->idStore->updateSyncDateIfSupported($user->getEmployeeId());
     }
     
     /**
@@ -241,6 +243,7 @@ class Synchronizer
     {
         $this->idBroker->deactivateUser($employeeId);
         $this->logger->info('Deactivated user: ' . $employeeId);
+        $this->idStore->updateSyncDateIfSupported($employeeId);
     }
     
     /**
@@ -440,6 +443,10 @@ class Synchronizer
         $this->createUsers($usersToAdd);
         $this->activateAndUpdateUsers($usersToUpdateAndActivate);
         $this->deactivateUsers($employeeIdsToDeactivate);
+        
+        foreach ($employeeIdsAlreadyInactive as $employeeIdAlreadyInactive) {
+            $this->idStore->updateSyncDateIfSupported($employeeIdAlreadyInactive);
+        }
         
         $this->logger->notice([
             'action' => 'none (already inactive)',
