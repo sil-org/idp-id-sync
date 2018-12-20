@@ -142,4 +142,12 @@ class GoogleSheetsIdStore extends IdStoreBase
          *       users when trying to do an incremental sync here.  */
         return $this->getAllActiveUsers();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateSyncDatesIfSupported(array $employeeIds)
+    {
+        $this->googleSheetsClient->updateSyncDatesFor($employeeIds);
+    }
 }

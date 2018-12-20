@@ -15,6 +15,7 @@ class IdStoreIntegrationContextBase implements Context
     protected $idStore;
     
     protected $activeEmployeeId;
+    protected $lastSyncedValues = [];
     protected $result;
     
     public function __construct()
@@ -73,6 +74,86 @@ class IdStoreIntegrationContextBase implements Context
         Assert::assertTrue(is_array($this->result));
         foreach ($this->result as $user) {
             Assert::assertInstanceOf(User::class, $user);
+        }
+    }
+    
+    /**
+     * @Given I have a record of each user's last-synced value
+     */
+    public function iHaveARecordOfEachUsersLastSyncedValue()
+    {
+        $this->lastSyncedValues = $this->getLastSyncedValueOfEachUser();
+        Assert::assertNotEmpty($this->lastSyncedValues);
+    }
+    
+    /**
+     * @Given those last-synced values are all in the past
+     */
+    public function thoseLastSyncedValuesAreAllInThePast()
+    {
+        foreach ($this->lastSyncedValues as $lastSyncedValue) {
+            $lastSyncedTimestamp = strtotime($lastSyncedValue);
+            $nowTimestamp = time();
+            Assert::assertNotFalse($lastSyncedTimestamp);
+            Assert::assertLessThan($nowTimestamp, $lastSyncedTimestamp);
+        }
+    }
+    
+    /**
+     * @Then NONE of the users' last-synced values should have changed
+     */
+    public function noneOfTheUsersLastSyncedValuesShouldHaveChanged()
+    {
+        $newLastSyncedValues = $this->getLastSyncedValueOfEachUser();
+        foreach ($this->lastSyncedValues as $employeeId => $oldLastSyncedValue) {
+            Assert::assertEquals(
+                $oldLastSyncedValue,
+                $newLastSyncedValues[$employeeId]
+            );
+        }
+    }
+    
+    /**
+     * Get the last_synced value for each user, indexed on Employee ID.
+     *
+     * @return array<string,string>
+     * @throws \Exception
+     */
+    protected function getLastSyncedValueOfEachUser()
+    {
+        // NOTE: Override this method in the applicable subclasses.
+        
+        throw new \Exception(sprintf(
+            'You have not yet implemented the %s() function on the %s class.',
+            __FUNCTION__,
+            static::class
+        ));
+    }
+    
+    /**
+     * @Then ONLY that user's last-synced value should have changed
+     */
+    public function onlyThatUsersLastSyncedValueShouldHaveChanged()
+    {
+        $newLastSyncedValues = $this->getLastSyncedValueOfEachUser();
+        Assert::assertGreaterThan(
+            1,
+            count($newLastSyncedValues),
+            "To prove that other users' last-synced dates did NOT change, this test requires more than 1 user."
+        );
+        
+        foreach ($newLastSyncedValues as $employeeId => $newLastSyncedValue) {
+            if ($employeeId == $this->activeEmployeeId) {
+                Assert::assertNotEquals(
+                    $this->lastSyncedValues[$employeeId],
+                    $newLastSyncedValues[$employeeId]
+                );
+            } else {
+                Assert::assertEquals(
+                    $this->lastSyncedValues[$employeeId],
+                    $newLastSyncedValues[$employeeId]
+                );
+            }
         }
     }
 }

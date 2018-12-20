@@ -175,4 +175,55 @@ class GoogleSheetsClient extends Component
         }
         return $array[$index];
     }
+    
+    public function updateSyncDatesFor(array $employeeIds)
+    {
+        $employeeIdsAsStrings = array_map(function($employeeId) {
+            return (string)$employeeId;
+        }, $employeeIds);
+        
+        if (! $this->sheets instanceof \Google_Service_Sheets) {
+            $this->initGoogleClient();
+        }
+        
+        $nowAsADateString = date('c');
+        
+        $startAtRow = 2;
+        $howManyAtATime = 100;
+        $safetyLimit = 10000;
+        for (; $startAtRow < $safetyLimit; $startAtRow += $howManyAtATime) {
+            $users = $this->getUsersInfoFromSpreadsheet($startAtRow, $howManyAtATime);
+            if (empty($users)) {
+                break;
+            }
+            
+            $updatedSyncDates = [];
+            
+            for ($rowOffset = 0; $rowOffset < count($users); $rowOffset++) {
+                $user = $users[$rowOffset];
+                
+                if (in_array($user[User::EMPLOYEE_ID], $employeeIdsAsStrings, true)) {
+                    $updatedSyncDates[] = $nowAsADateString;
+                } else {
+                    $updatedSyncDates[] = null; // Null values won't change the existing data.
+                }
+            }
+            
+            $finalRow = $startAtRow + count($users);
+            
+            // Update last_synced column in spreadsheet.
+            $updateRange = sprintf('Users!I%s:I%s', $startAtRow, $finalRow);
+            $updateBody = new \Google_Service_Sheets_ValueRange([
+                'range' => $updateRange,
+                'majorDimension' => 'COLUMNS',
+                'values' => [$updatedSyncDates],
+            ]);
+            $this->sheets->spreadsheets_values->update(
+                $this->spreadsheetId,
+                $updateRange,
+                $updateBody,
+                ['valueInputOption' => 'USER_ENTERED']
+            );
+        }
+    }
 }
