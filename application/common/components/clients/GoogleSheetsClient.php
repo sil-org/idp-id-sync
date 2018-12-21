@@ -209,7 +209,7 @@ class GoogleSheetsClient extends Component
                 }
             }
             
-            $finalRow = $startAtRow + count($users);
+            $finalRow = $startAtRow + count($users) - 1;
             
             // Update last_synced column in spreadsheet.
             $updateRange = sprintf('Users!I%s:I%s', $startAtRow, $finalRow);
