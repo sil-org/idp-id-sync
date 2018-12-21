@@ -28,9 +28,17 @@ Feature: Integration with a live ID Store
     Then NONE of the users' last-synced values should have changed
 
   @integration @canUpdateLastSynced
-  Scenario: Updating last-synced when we tell the ID Store to do so
+  Scenario: Updating last-synced for a specific user
     Given I can make authenticated calls to the ID Store
       And I have a record of each user's last-synced value
       And those last-synced values are all in the past or empty
     When I update the last-synced value for a specific active user
     Then ONLY that user's last-synced value should have changed
+
+  @integration @canUpdateLastSynced
+  Scenario: Updating last-synced for all users
+    Given I can make authenticated calls to the ID Store
+      And I have a record of each user's last-synced value
+      And those last-synced values are all in the past or empty
+    When I update the last-synced value for every user
+    Then every users' last-synced values should have changed

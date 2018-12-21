@@ -158,4 +158,27 @@ class IdStoreIntegrationContextBase implements Context
             }
         }
     }
+    
+    /**
+     * @When I update the last-synced value for every user
+     */
+    public function iUpdateTheLastSyncedValueForEveryUser()
+    {
+        $allEmployeeIds = array_keys($this->lastSyncedValues);
+        $this->idStore->updateSyncDatesIfSupported($allEmployeeIds);
+    }
+    
+    /**
+     * @Then every users' last-synced values should have changed
+     */
+    public function everyUsersLastSyncedValuesShouldHaveChanged()
+    {
+        $newLastSyncedValues = $this->getLastSyncedValueOfEachUser();
+        foreach ($this->lastSyncedValues as $employeeId => $oldLastSyncedValue) {
+            Assert::assertNotEquals(
+                $oldLastSyncedValue,
+                $newLastSyncedValues[$employeeId]
+            );
+        }
+    }
 }
