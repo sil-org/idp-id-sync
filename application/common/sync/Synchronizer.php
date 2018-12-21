@@ -539,6 +539,7 @@ class Synchronizer
         ));
         
         $usersWithoutEmail = [];
+        $employeeIdsSynced = [];
         
         foreach ($employeeIds as $employeeId) {
             if (empty($employeeId)) {
@@ -552,6 +553,7 @@ class Synchronizer
             
             try {
                 $this->syncUserInternal($employeeId);
+                $employeeIdsSynced[] = $employeeId;
             } catch (MissingEmailException $e) {
                 $this->logger->warning(sprintf(
                     'A User (Employee ID: %s) lacked an email address.',
@@ -571,6 +573,8 @@ class Synchronizer
                 ));
             }
         }
+        
+        $this->idStore->updateSyncDatesIfSupported($employeeIdsSynced);
         
         if (! empty($usersWithoutEmail)) {
             $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
