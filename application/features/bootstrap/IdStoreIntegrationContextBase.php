@@ -87,15 +87,17 @@ class IdStoreIntegrationContextBase implements Context
     }
     
     /**
-     * @Given those last-synced values are all in the past
+     * @Given those last-synced values are all in the past or empty
      */
-    public function thoseLastSyncedValuesAreAllInThePast()
+    public function thoseLastSyncedValuesAreAllInThePastOrEmpty()
     {
+        $nowTimestamp = time();
         foreach ($this->lastSyncedValues as $lastSyncedValue) {
-            $lastSyncedTimestamp = strtotime($lastSyncedValue);
-            $nowTimestamp = time();
-            Assert::assertNotFalse($lastSyncedTimestamp);
-            Assert::assertLessThan($nowTimestamp, $lastSyncedTimestamp);
+            if (! empty($lastSyncedValue)) {
+                $lastSyncedTimestamp = strtotime($lastSyncedValue);
+                Assert::assertNotFalse($lastSyncedTimestamp);
+                Assert::assertLessThan($nowTimestamp, $lastSyncedTimestamp);
+            }
         }
     }
     

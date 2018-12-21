@@ -23,7 +23,7 @@ Feature: Integration with a live ID Store
   Scenario: Not updating last-synced when we simply ask the ID Store for a user
     Given I can make authenticated calls to the ID Store
       And I have a record of each user's last-synced value
-      And those last-synced values are all in the past
+      And those last-synced values are all in the past or empty
     When I ask the ID Store for a specific active user
     Then NONE of the users' last-synced values should have changed
 
@@ -31,6 +31,6 @@ Feature: Integration with a live ID Store
   Scenario: Updating last-synced when we tell the ID Store to do so
     Given I can make authenticated calls to the ID Store
       And I have a record of each user's last-synced value
-      And those last-synced values are all in the past
+      And those last-synced values are all in the past or empty
     When I update the last-synced value for a specific active user
     Then ONLY that user's last-synced value should have changed
