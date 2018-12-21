@@ -466,6 +466,7 @@ class Synchronizer
     {
         try {
             $this->syncUserInternal($employeeId);
+            $this->idStore->updateSyncDatesIfSupported([$employeeId]);
         } catch (MissingEmailException $e) {
             $this->logger->warning(sprintf(
                 'That User (Employee ID: %s) lacked an email address.',
