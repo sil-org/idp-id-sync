@@ -38,16 +38,18 @@ class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
         $this->result = $this->idStore->getActiveUser($this->activeEmployeeId);
     }
     
-    protected function getLastSyncedValueOfEachUser()
+    protected function getAttributeForEachUser(string $attributeName)
     {
-        $lastSyncedValues = [];
         $googleSheetsClient = $this->getGoogleSheetsClient();
         $allUsersInfo = $googleSheetsClient->getAllUsersInfo();
+        $attributeValues = [];
+
         foreach ($allUsersInfo as $userInfo) {
             $employeeId = $userInfo[User::EMPLOYEE_ID];
-            $lastSyncedValues[$employeeId] = $userInfo['last_synced'];
+            $attributeValues[$employeeId] = $userInfo[$attributeName];
         }
-        return $lastSyncedValues;
+
+        return $attributeValues;
     }
     
     protected function getGoogleSheetsClient()

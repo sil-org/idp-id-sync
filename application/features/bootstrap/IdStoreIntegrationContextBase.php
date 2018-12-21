@@ -82,7 +82,7 @@ class IdStoreIntegrationContextBase implements Context
      */
     public function iHaveARecordOfEachUsersLastSyncedValue()
     {
-        $this->lastSyncedValues = $this->getLastSyncedValueOfEachUser();
+        $this->lastSyncedValues = $this->getAttributeForEachUser('last_synced');
         Assert::assertNotEmpty($this->lastSyncedValues);
     }
     
@@ -106,7 +106,7 @@ class IdStoreIntegrationContextBase implements Context
      */
     public function noneOfTheUsersLastSyncedValuesShouldHaveChanged()
     {
-        $newLastSyncedValues = $this->getLastSyncedValueOfEachUser();
+        $newLastSyncedValues = $this->getAttributeForEachUser('last_synced');
         foreach ($this->lastSyncedValues as $employeeId => $oldLastSyncedValue) {
             Assert::assertEquals(
                 $oldLastSyncedValue,
@@ -116,12 +116,24 @@ class IdStoreIntegrationContextBase implements Context
     }
     
     /**
-     * Get the last_synced value for each user, indexed on Employee ID.
+     * Get a specific attribute's value for each user. The keys will be the
+     * Employee ID, and the values will be the attribute's value.
      *
+     * EXAMPLE:
+     * Calling `getAttributeForEachUser('last_synced')` will return an
+     * array similar to this:
+     *
+     *     [
+     *         123 => '2018-12-21T20:53:14+00:00',
+     *         1234 => '2018-12-21T20:53:14+00:00',
+     *     ]
+     *
+     *
+     * @param string $attributeName The name of the desired attribute.
      * @return array<string,string>
      * @throws \Exception
      */
-    protected function getLastSyncedValueOfEachUser()
+    protected function getAttributeForEachUser(string $attributeName)
     {
         // NOTE: Override this method in the applicable subclasses.
         
@@ -137,7 +149,7 @@ class IdStoreIntegrationContextBase implements Context
      */
     public function onlyThatUsersLastSyncedValueShouldHaveChanged()
     {
-        $newLastSyncedValues = $this->getLastSyncedValueOfEachUser();
+        $newLastSyncedValues = $this->getAttributeForEachUser('last_synced');
         Assert::assertGreaterThan(
             1,
             count($newLastSyncedValues),
@@ -173,7 +185,7 @@ class IdStoreIntegrationContextBase implements Context
      */
     public function everyUsersLastSyncedValuesShouldHaveChanged()
     {
-        $newLastSyncedValues = $this->getLastSyncedValueOfEachUser();
+        $newLastSyncedValues = $this->getAttributeForEachUser('last_synced');
         foreach ($this->lastSyncedValues as $employeeId => $oldLastSyncedValue) {
             Assert::assertNotEquals(
                 $oldLastSyncedValue,
