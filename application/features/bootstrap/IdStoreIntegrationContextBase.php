@@ -136,12 +136,46 @@ class IdStoreIntegrationContextBase implements Context
     protected function getAttributeForEachUser(string $attributeName)
     {
         // NOTE: Override this method in the applicable subclasses.
-        
+        $this->throwNotYetImplementedException(__FUNCTION__, static::class);
+    }
+    
+    protected function throwNotYetImplementedException($functionName, $className)
+    {
         throw new \Exception(sprintf(
             'You have not yet implemented the %s() function on the %s class.',
-            __FUNCTION__,
-            static::class
+            $functionName,
+            $className
         ));
+    }
+    
+    
+    /**
+     * Get specific attributes for each user. The keys will be the Employee ID,
+     * and the values will be an array attribute name/value pairs.
+     *
+     * EXAMPLE:
+     * Calling `getAttributesForEachUser(['email', 'active'])` will return an
+     * array similar to this:
+     *
+     *     [
+     *         123 => [
+     *             'email' => 'test_user@example.com',
+     *             'active' => 'yes',
+     *         ],
+     *         1234 => [
+     *             'email' => 'another_user@example.com',
+     *             'active' => 'no',
+     *         ],
+     *     ]
+     *
+     * @param string[] $attributeNames The names of the desired attributes.
+     * @return array<string,string>
+     * @throws \Exception
+     */
+    protected function getAttributesForEachUser(array $attributeNames)
+    {
+        // NOTE: Override this method in the applicable subclasses.
+        $this->throwNotYetImplementedException(__FUNCTION__, static::class);
     }
     
     /**
@@ -192,5 +226,61 @@ class IdStoreIntegrationContextBase implements Context
                 $newLastSyncedValues[$employeeId]
             );
         }
+    }
+    
+    /**
+     * @When I update the last-synced values of users with a :field of :value
+     */
+    public function iUpdateTheLastSyncedValuesOfUsersWithAFieldOfValue($field, $value)
+    {
+        $employeeIdsToUpdate = [];
+        $attributeValues = $this->getAttributeForEachUser($field);
+        foreach ($attributeValues as $employeeId => $attributeValue) {
+            if ($attributeValue === $value) {
+                $employeeIdsToUpdate[] = $employeeId;
+            }
+        }
+        
+        $this->idStore->updateSyncDatesIfSupported($employeeIdsToUpdate);
+    }
+    
+    /**
+     * @Then ONLY last-synced values of users with a :field of :value should have changed
+     */
+    public function onlyLastSyncedValuesOfUsersWithAOfShouldHaveChanged($field, $value)
+    {
+        $numberOfMatchingUsers = 0;
+        $numberOfNonMatchingUsers = 0;
+        $allUsersDesiredInfo = $this->getAttributesForEachUser(['last_synced', $field]);
+        
+        foreach ($allUsersDesiredInfo as $employeeId => $thisUsersDesiredInfo) {
+            $thisUsersValue = $thisUsersDesiredInfo[$field];
+            
+            if ($thisUsersValue === $value) {
+                $numberOfMatchingUsers++;
+                Assert::assertNotEquals(
+                    $this->lastSyncedValues[$employeeId],
+                    $thisUsersDesiredInfo['last_synced']
+                );
+            } else {
+                $numberOfNonMatchingUsers++;
+                Assert::assertEquals(
+                    $this->lastSyncedValues[$employeeId],
+                    $thisUsersDesiredInfo['last_synced']
+                );
+            }
+        }
+        
+        Assert::assertGreaterThan(0, $numberOfMatchingUsers, sprintf(
+            'No users had a(n) %s of %s, so we could not prove that their last_synced values changed.',
+            $field,
+            $value
+        ));
+        Assert::assertGreaterThan(0, $numberOfNonMatchingUsers, sprintf(
+            'All of the users had a(n) %s of %s, so we could not prove that '
+            . "the other users' last_synced values did NOT change.",
+            $field,
+            $value
+        ));
     }
 }

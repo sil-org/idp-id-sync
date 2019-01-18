@@ -42,3 +42,16 @@ Feature: Integration with a live ID Store
       And those last-synced values are all in the past or empty
     When I update the last-synced value for every user
     Then every users' last-synced values should have changed
+
+  @integration @canUpdateLastSynced
+  Scenario Outline: Updating last-synced for some users
+    Given I can make authenticated calls to the ID Store
+      And I have a record of each user's last-synced value
+      And those last-synced values are all in the past or empty
+    When I update the last-synced values of users with a <field> of <value>
+    Then ONLY last-synced values of users with a <field> of <value> should have changed
+
+    Examples:
+      | field  | value |
+      | active | yes   |
+      | active | no    |
