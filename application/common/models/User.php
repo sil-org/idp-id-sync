@@ -16,7 +16,8 @@ class User
     const REQUIRE_MFA = 'require_mfa';
     const SPOUSE_EMAIL = 'spouse_email';
     const USERNAME = 'username';
-    
+    const GROUPS = 'groups';
+
     /**
      * The values (indexed by field name) for the fields which have been set.
      *
@@ -69,6 +70,7 @@ class User
             self::REQUIRE_MFA,
             self::SPOUSE_EMAIL,
             self::USERNAME,
+            self::GROUPS
         ];
     }
     
@@ -159,7 +161,15 @@ class User
     {
         return $this->values[self::SPOUSE_EMAIL] ?? null;
     }
-    
+
+    /**
+     * @return null|string
+     */
+    public function getGroups()
+    {
+        return $this->values[self::GROUPS] ?? null;
+    }
+
     public function __toString()
     {
         return \json_encode($this->toArray(), JSON_PRETTY_PRINT);
