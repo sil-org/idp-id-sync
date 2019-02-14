@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added:
-- Added 'groups' attribute
+- Added 'groups' and 'personal_email' attributes
 
 ## [2.1.0] - 2018-08-09
 ### Added:

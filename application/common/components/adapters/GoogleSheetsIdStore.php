@@ -169,6 +169,7 @@ class GoogleSheetsIdStore extends IdStoreBase
             'require_mfa' => User::REQUIRE_MFA,
             'manager_email' => User::MANAGER_EMAIL,
             'spouse_email' => User::SPOUSE_EMAIL,
+            'personal_email' => User::PERSONAL_EMAIL,
             'groups' => User::GROUPS,
             // No 'active' needed, since all ID Store records returned are active.
         ];
@@ -214,7 +215,7 @@ class GoogleSheetsIdStore extends IdStoreBase
         
         $users = [];
         $currentRow = $startRow;
-        $range = sprintf('Users!A%s:M%s', $startRow, $startRow + $howMany - 1);
+        $range = sprintf('Users!A%s:N%s', $startRow, $startRow + $howMany - 1);
         $rows = $this->sheets->spreadsheets_values->get($this->spreadsheetId, $range, ['majorDimension' => 'ROWS']);
         if (isset($rows['values'])) {
             foreach ($rows['values'] as $user) {
@@ -242,7 +243,8 @@ class GoogleSheetsIdStore extends IdStoreBase
                     User::REQUIRE_MFA => $user[9] ?? 'no',
                     User::MANAGER_EMAIL => $this->getValueIfNonEmpty($user, 10),
                     User::SPOUSE_EMAIL => $this->getValueIfNonEmpty($user, 11),
-                    User::GROUPS => $this->getValueIfNonEmpty($user, 12),
+                    User::PERSONAL_EMAIL => $this->getValueIfNonEmpty($user, 12),
+                    User::GROUPS => $this->getValueIfNonEmpty($user, 13),
                 ];
 
                 /*

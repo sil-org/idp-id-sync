@@ -50,6 +50,7 @@ class WorkdayIdStore extends IdStoreBase
             'requireMfa' => User::REQUIRE_MFA,
             'Manager_Email' => User::MANAGER_EMAIL,
             'Spouse_Email_Work' => User::SPOUSE_EMAIL,
+            'Personal_Email' => User::PERSONAL_EMAIL,
             'Groups' => User::GROUPS,
             // No 'active' needed, since all ID Store records returned are active.
         ];
