@@ -205,7 +205,7 @@ class GoogleSheetsClient extends Component
                 if (in_array($user[User::EMPLOYEE_ID], $employeeIdsAsStrings, true)) {
                     $updatedSyncDates[] = $nowAsADateString;
                 } else {
-                    $updatedSyncDates[] = null; // Null values won't change the existing data.
+                    $updatedSyncDates[] = $user['last_synced'];
                 }
             }
             
