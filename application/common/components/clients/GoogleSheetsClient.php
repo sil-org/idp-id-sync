@@ -8,6 +8,8 @@ use yii\helpers\Json;
 
 class GoogleSheetsClient extends Component
 {
+    const FIRST_ROW_AFTER_HEADERS = 2;
+    
     /**
      * @var null|string The Application Name to use with Google_Client.
      */
@@ -90,7 +92,7 @@ class GoogleSheetsClient extends Component
     public function getAllUsersInfo(): array
     {
         $allUsersInfo = [];
-        $start = 2;
+        $start = self::FIRST_ROW_AFTER_HEADERS;
         $howMany = 100;
         
         $hasAllUsers = false;
@@ -113,7 +115,7 @@ class GoogleSheetsClient extends Component
      * @return array
      */
     protected function getUsersInfoFromSpreadsheet(
-        int $startRow = 2,
+        int $startRow = self::FIRST_ROW_AFTER_HEADERS,
         int $howMany = 100
     ) {
         if (! $this->sheets instanceof \Google_Service_Sheets) {
@@ -188,7 +190,7 @@ class GoogleSheetsClient extends Component
         
         $nowAsADateString = date('c');
         
-        $startAtRow = 2;
+        $startAtRow = self::FIRST_ROW_AFTER_HEADERS;
         $howManyAtATime = 100;
         $safetyLimit = 10000;
         for (; $startAtRow < $safetyLimit; $startAtRow += $howManyAtATime) {
