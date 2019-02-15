@@ -52,6 +52,22 @@ class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
         return $attributeValues;
     }
     
+    protected function getAttributesForEachUser(array $attributeNames)
+    {
+        $googleSheetsClient = $this->getGoogleSheetsClient();
+        $allInfoForAllUsers = $googleSheetsClient->getAllUsersInfo();
+        $desiredInfoForAllUsers = [];
+        foreach ($allInfoForAllUsers as $allInfoForThisUser) {
+            $desiredInfoForThisUser = [];
+            foreach ($attributeNames as $attributeName) {
+                $desiredInfoForThisUser[$attributeName] = $allInfoForThisUser[$attributeName];
+            }
+            $employeeId = $allInfoForThisUser[User::EMPLOYEE_ID];
+            $desiredInfoForAllUsers[$employeeId] = $desiredInfoForThisUser;
+        }
+        return $desiredInfoForAllUsers;
+    }
+    
     protected function getGoogleSheetsClient()
     {
         if ($this->googleSheetsClient === null) {
