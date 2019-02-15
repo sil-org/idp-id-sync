@@ -37,7 +37,7 @@ class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
         $this->result = $this->idStore->getActiveUser($this->activeEmployeeId);
     }
     
-    protected function getAttributeForEachUser(string $attributeName)
+    protected function getAttributeForEachUser(string $attributeName): array
     {
         $googleSheetsClient = $this->getGoogleSheetsClient();
         $allUsersInfo = $googleSheetsClient->getAllUsersInfo();

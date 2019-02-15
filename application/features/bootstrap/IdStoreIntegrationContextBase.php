@@ -133,12 +133,19 @@ class IdStoreIntegrationContextBase implements Context
      * @return array<string,string>
      * @throws \Exception
      */
-    protected function getAttributeForEachUser(string $attributeName)
+    protected function getAttributeForEachUser(string $attributeName): array
     {
         // NOTE: Override this method in the applicable subclasses.
         $this->throwNotYetImplementedException(__FUNCTION__, static::class);
     }
     
+    /**
+     * Throw an exception that explains which class lacks which function.
+     *
+     * @param $functionName
+     * @param $className
+     * @throws \Exception
+     */
     protected function throwNotYetImplementedException($functionName, $className)
     {
         throw new \Exception(sprintf(
