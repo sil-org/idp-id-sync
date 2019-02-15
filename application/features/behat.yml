@@ -7,6 +7,8 @@ default:
             paths:    [ %paths.base%/../features/idp-id-broker-integration.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\IdpIdBrokerIntegrationContext ]
         insite_integration_features:
+            filters:
+                tags: '~@canUpdateLastSynced'
             paths:    [ %paths.base%/../features/id-store-integration.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\InsiteIntegrationContext ]
         safety_cutoff_features:
@@ -23,6 +25,6 @@ default:
             contexts: [ Sil\Idp\IdSync\Behat\Context\WebhookContext ]
         workday_integration_features:
             filters:
-                tags: '@allUsers'
+                tags: '~@specificUser && ~@usersChangedSince && ~@canUpdateLastSynced'
             paths:    [ %paths.base%/../features/id-store-integration.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\WorkdayIntegrationContext ]
