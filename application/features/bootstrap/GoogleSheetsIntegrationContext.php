@@ -1,7 +1,6 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Sil\Idp\IdSync\common\components\adapters\GoogleSheetsIdStore;
 use Sil\Idp\IdSync\common\components\clients\GoogleSheetsClient;
 use Sil\Idp\IdSync\common\models\User;
