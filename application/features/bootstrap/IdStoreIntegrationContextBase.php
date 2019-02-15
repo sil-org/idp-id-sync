@@ -169,7 +169,7 @@ class IdStoreIntegrationContextBase implements Context
      *     ]
      *
      * @param string[] $attributeNames The names of the desired attributes.
-     * @return array<string,string>
+     * @return array<mixed,array>
      * @throws \Exception
      */
     protected function getAttributesForEachUser(array $attributeNames)
