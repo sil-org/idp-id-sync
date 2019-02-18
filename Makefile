@@ -34,6 +34,9 @@ deps:
 depsupdate:
 	docker-compose run --rm cli composer update --no-scripts
 
+phpmyadmin:
+	docker-compose up -d phpmyadmin
+
 psr2:
 	docker-compose run --rm cli bash -c "vendor/bin/php-cs-fixer fix ."
 

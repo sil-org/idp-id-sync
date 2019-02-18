@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added:
 - Added 'groups' and 'personal_email' attributes
 
+## [2.1.1] - 2019-02-15
+### Fixed:
+- Wait to update `last_synced` until after actually syncing.
+- Reduce likelihood of hitting rate-limit when syncing with Google Sheets by
+  updating `last_synced` values in batches.
+
 ## [2.1.0] - 2018-08-09
 ### Added:
 - ID Store adapter for Workday
@@ -134,7 +140,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/2.1.0...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/2.1.1...develop
+[2.1.1]: https://github.com/silinternational/idp-id-sync/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/silinternational/idp-id-sync/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/silinternational/idp-id-sync/compare/1.2.0...2.0.0
 [1.2.0]: https://github.com/silinternational/idp-id-sync/compare/1.1.3...1.2.0

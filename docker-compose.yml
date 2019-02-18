@@ -69,6 +69,15 @@ services:
             MYSQL_USER: broker
             MYSQL_PASSWORD: broker
 
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        ports:
+        - "8001:80"
+        depends_on:
+        - brokerdb
+        environment:
+            PMA_HOST: brokerdb
+
     cli:
         build: ./
         volumes_from:
