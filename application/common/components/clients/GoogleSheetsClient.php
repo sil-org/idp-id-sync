@@ -123,7 +123,7 @@ class GoogleSheetsClient extends Component
         }
         
         $users = [];
-        $range = sprintf('Users!A%s:L%s', $startRow, $startRow + $howMany - 1);
+        $range = sprintf('Users!A%s:N%s', $startRow, $startRow + $howMany - 1);
         $rows = $this->sheets->spreadsheets_values->get(
             $this->spreadsheetId,
             $range,
@@ -155,6 +155,8 @@ class GoogleSheetsClient extends Component
                     User::REQUIRE_MFA => $user[9] ?? 'no',
                     User::MANAGER_EMAIL => $this->getValueIfNonEmpty($user, 10),
                     User::SPOUSE_EMAIL => $this->getValueIfNonEmpty($user, 11),
+                    User::PERSONAL_EMAIL => $this->getValueIfNonEmpty($user, 12),
+                    User::GROUPS => $this->getValueIfNonEmpty($user, 13),
                 ];
             }
         }
