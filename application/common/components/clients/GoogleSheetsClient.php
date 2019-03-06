@@ -154,7 +154,6 @@ class GoogleSheetsClient extends Component
                     'last_synced' => $this->getValueIfNonEmpty($user, 8),
                     User::REQUIRE_MFA => $user[9] ?? 'no',
                     User::MANAGER_EMAIL => $this->getValueIfNonEmpty($user, 10),
-                    User::SPOUSE_EMAIL => $this->getValueIfNonEmpty($user, 11),
                     User::PERSONAL_EMAIL => $this->getValueIfNonEmpty($user, 12),
                     User::GROUPS => $this->getValueIfNonEmpty($user, 13),
                 ];

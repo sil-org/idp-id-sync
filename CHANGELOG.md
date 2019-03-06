@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added:
-- Added 'groups' and 'personal_email' attributes
+- Added `groups` and `personal_email` attributes
+
+### Removed:
+- Removed `spouse_email` attribute
 
 ## [2.1.1] - 2019-02-15
 ### Fixed:

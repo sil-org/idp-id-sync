@@ -52,7 +52,6 @@ class InsiteIdStore extends IdStoreBase
             'locked' => User::LOCKED,
             'requires2sv' => User::REQUIRE_MFA,
             'supervisoremail' => User::MANAGER_EMAIL,
-            'spouseemail' => User::SPOUSE_EMAIL,
             // No 'active' needed, since all ID Store records returned are active.
         ];
     }
