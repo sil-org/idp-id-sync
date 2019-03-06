@@ -16,7 +16,6 @@ class User
     const MANAGER_EMAIL = 'manager_email';
     const PERSONAL_EMAIL = 'personal_email';
     const REQUIRE_MFA = 'require_mfa';
-    const SPOUSE_EMAIL = 'spouse_email';
     const USERNAME = 'username';
 
     /**
@@ -71,7 +70,6 @@ class User
             self::MANAGER_EMAIL,
             self::PERSONAL_EMAIL,
             self::REQUIRE_MFA,
-            self::SPOUSE_EMAIL,
             self::USERNAME,
         ];
     }
@@ -156,14 +154,6 @@ class User
         return $this->values[self::REQUIRE_MFA] ?? null;
     }
     
-    /**
-     * @return null|string
-     */
-    public function getSpouseEmail()
-    {
-        return $this->values[self::SPOUSE_EMAIL] ?? null;
-    }
-
     /**
      * @return null|string
      */

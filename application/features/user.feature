@@ -67,7 +67,5 @@ Feature: Standardizing user info
       | require_mfa   | 'yes'                    |
       | require_mfa   | 'no'                     |
       | require_mfa   | null                     |
-      | spouse_email  | 'spouse@example.com'     |
-      | spouse_email  | null                     |
       | username      | 'first_last'             |
       | username      | null                     |
