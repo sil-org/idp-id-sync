@@ -20,6 +20,18 @@ $idBrokerOptionalConfig['trustedIpRanges'] = Env::getArray('ID_BROKER_CONFIG_tru
 $idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
 
 $hrNotifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
+
+$emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
+
+// Re-retrieve the validIpRanges as an array.
+$emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
+if (empty($alertsEmail) && empty($hrNotifierEmailTo)) {
+    $emailServiceConfig['baseUrl'] = 'x';
+    $emailServiceConfig['accessToken'] = 'x';
+    $emailServiceConfig['assertValidIp'] = false;
+    $emailServiceConfig['validIpRanges'] = '';
+}
+
 if (empty($hrNotifierEmailTo)) {
     $notifierConfig = ['class' => NullNotifier::class];
 } else {
@@ -33,16 +45,6 @@ if (empty($hrNotifierEmailTo)) {
     ];
 }
 
-$emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
-
-// Re-retrieve the validIpRanges as an array.
-$emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
-if (empty($alertsEmail) && empty($hrNotifierEmailTo)) {
-    $emailServiceConfig['baseUrl'] = 'x';
-    $emailServiceConfig['accessToken'] = 'x';
-    $emailServiceConfig['assertValidIp'] = false;
-    $emailServiceConfig['validIpRanges'] = '';
-}
 return [
     'id' => $idpName,
     'bootstrap' => ['log'],
