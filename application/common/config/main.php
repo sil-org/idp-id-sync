@@ -114,5 +114,6 @@ return [
     ],
     'params' => [
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
+        'allowEmptyEmail' => Env::get('ALLOW_EMPTY_EMAIL', false),
     ],
 ];

@@ -74,7 +74,7 @@ class IdpIdBroker extends IdBrokerBase
      */
     public function createUser(array $config = [])
     {
-        if (empty($config[User::EMAIL])) {
+        if (empty($config[User::EMAIL]) && \Yii::$app->params['allowEmptyEmail'] === false) {
             throw new MissingEmailException(
                 'An email address is required.',
                 1494876311

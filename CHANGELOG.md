@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added:
 - Added `groups` and `personal_email` attributes
+- Added `ALLOW_EMPTY_EMAIL` environment variable, defaults to `false`
 
 ### Removed:
 - Removed `spouse_email` attribute
