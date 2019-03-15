@@ -123,7 +123,7 @@ class GoogleSheetsClient extends Component
         }
         
         $users = [];
-        $range = sprintf('Users!A%s:N%s', $startRow, $startRow + $howMany - 1);
+        $range = sprintf('Users!A%s:M%s', $startRow, $startRow + $howMany - 1);
         $rows = $this->sheets->spreadsheets_values->get(
             $this->spreadsheetId,
             $range,
@@ -154,8 +154,8 @@ class GoogleSheetsClient extends Component
                     'last_synced' => $this->getValueIfNonEmpty($user, 8),
                     User::REQUIRE_MFA => $user[9] ?? 'no',
                     User::MANAGER_EMAIL => $this->getValueIfNonEmpty($user, 10),
-                    User::PERSONAL_EMAIL => $this->getValueIfNonEmpty($user, 12),
-                    User::GROUPS => $this->getValueIfNonEmpty($user, 13),
+                    User::PERSONAL_EMAIL => $this->getValueIfNonEmpty($user, 11),
+                    User::GROUPS => $this->getValueIfNonEmpty($user, 12),
                 ];
             }
         }
