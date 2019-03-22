@@ -148,7 +148,7 @@ class GoogleSheetsClient extends Component
                     User::LAST_NAME => $user[2],
                     User::DISPLAY_NAME => $user[3],
                     User::USERNAME => $user[4],
-                    User::EMAIL => $user[5],
+                    User::EMAIL => $this->getValueIfNonEmpty($user, 5),
                     User::ACTIVE => $user[6] ?? 'yes',
                     User::LOCKED => $user[7] ?? 'no',
                     'last_synced' => $this->getValueIfNonEmpty($user, 8),
