@@ -336,6 +336,13 @@ class Synchronizer
     
     protected function getNumChangesAllowed($numActiveUsersInBroker)
     {
+        // If Broker is essentially empty, don't limit how many changes can be
+        // made (so that we can run a full sync of a new IdP, even if an
+        // incremental sync has happened).
+        if ($numActiveUsersInBroker < 10) {
+            return PHP_INT_MAX;
+        }
+        
         return max(
             ceil($numActiveUsersInBroker * $this->safetyCutoff),
             self::MIN_NUM_CHANGES_ALLOWED
