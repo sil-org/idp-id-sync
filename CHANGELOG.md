@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added:
 - Added `groups` and `personal_email` attributes
 - Added `ALLOW_EMPTY_EMAIL` environment variable, defaults to `false`
+- Include ID store adapter name in logs
 
 ### Removed:
 - Removed `spouse_email` attribute
