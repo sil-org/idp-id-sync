@@ -3,7 +3,7 @@
 require(__DIR__ . '/../../vendor/autoload.php');
 
 define('YII_ENV', Sil\PhpEnv\Env::get('APP_ENV', 'prod'));
-define('YII_DEBUG', YII_ENV !== 'prod');
+define('YII_DEBUG', YII_ENV === 'dev' || YII_ENV === 'test');
 
 require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
 require(__DIR__ . '/../../common/config/bootstrap.php');
