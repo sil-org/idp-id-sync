@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed:
 - Removed `spouse_email` attribute
 
+### Fixed
+- Stop limiting the number of changes (in a single sync) to an essentially-empty
+  broker (e.g. when populating it for the first time)
+
 ## [2.1.1] - 2019-02-15
 ### Fixed:
 - Wait to update `last_synced` until after actually syncing.
