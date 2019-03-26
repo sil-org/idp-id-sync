@@ -355,7 +355,10 @@ class Synchronizer
      */
     public function syncAll()
     {
-        $this->logger->info('Syncing all users...');
+        $this->logger->info(sprintf(
+            'Syncing all users... (%s)',
+            $this->idStore->getIdStoreName()
+        ));
         
         $idStoreUsers = $this->idStore->getAllActiveUsers();
         $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
@@ -534,8 +537,9 @@ class Synchronizer
     public function syncUsers(array $employeeIds)
     {
         $this->logger->info(sprintf(
-            'Syncing %s specific users...',
-            count($employeeIds)
+            'Syncing %s specific users... (%s)',
+            count($employeeIds),
+            $this->idStore->getIdStoreName()
         ));
         
         $usersWithoutEmail = [];
@@ -596,8 +600,9 @@ class Synchronizer
     public function syncUsersChangedSince($timestamp)
     {
         $this->logger->info(sprintf(
-            'Syncing users changed since %s...',
-            date($this->dateTimeFormat, $timestamp)
+            'Syncing users changed since %s... (%s)',
+            date($this->dateTimeFormat, $timestamp),
+            $this->idStore->getIdStoreName()
         ));
         
         $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
