@@ -3,7 +3,7 @@ app:
         image: silintl/idp-id-sync
         dockerfile_path: ./Dockerfile
         cached: true
-    links:
+    depends_on:
         - broker
         - brokerdb
     working_dir: /data
@@ -36,7 +36,7 @@ broker:
         MYSQL_DATABASE: broker
         MYSQL_USER: broker
         MYSQL_PASSWORD: broker
-    links:
+    depends_on:
         - brokercron
         - brokerdb
     command: whenavail brokerdb 3306 60 ./run.sh
@@ -56,7 +56,7 @@ brokercron:
         MYSQL_DATABASE: broker
         MYSQL_USER: broker
         MYSQL_PASSWORD: broker
-    links:
+    depends_on:
         - brokerdb
     command: whenavail brokerdb 3306 60 ./run-cron.sh
 

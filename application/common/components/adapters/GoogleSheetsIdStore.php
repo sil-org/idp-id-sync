@@ -113,7 +113,8 @@ class GoogleSheetsIdStore extends IdStoreBase
             'locked' => User::LOCKED,
             'require_mfa' => User::REQUIRE_MFA,
             'manager_email' => User::MANAGER_EMAIL,
-            'spouse_email' => User::SPOUSE_EMAIL,
+            'personal_email' => User::PERSONAL_EMAIL,
+            'groups' => User::GROUPS,
             // No 'active' needed, since all ID Store records returned are active.
         ];
     }

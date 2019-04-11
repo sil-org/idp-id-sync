@@ -19,12 +19,19 @@ $idBrokerOptionalConfig = Env::getArrayFromPrefix('ID_BROKER_CONFIG_');
 $idBrokerOptionalConfig['trustedIpRanges'] = Env::getArray('ID_BROKER_CONFIG_trustedIpRanges');
 $idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
 
+$hrNotifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
+
 $emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
 
 // Re-retrieve the validIpRanges as an array.
 $emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
+if (empty($alertsEmail) && empty($hrNotifierEmailTo)) {
+    $emailServiceConfig['baseUrl'] = 'x';
+    $emailServiceConfig['accessToken'] = 'x';
+    $emailServiceConfig['assertValidIp'] = false;
+    $emailServiceConfig['validIpRanges'] = '';
+}
 
-$hrNotifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
 if (empty($hrNotifierEmailTo)) {
     $notifierConfig = ['class' => NullNotifier::class];
 } else {
@@ -107,5 +114,6 @@ return [
     ],
     'params' => [
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
+        'allowEmptyEmail' => Env::get('ALLOW_EMPTY_EMAIL', false),
     ],
 ];

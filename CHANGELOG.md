@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added:
+- Added `groups` and `personal_email` attributes
+- Added `ALLOW_EMPTY_EMAIL` environment variable, defaults to `false`
+- Include ID store adapter name in logs
+
+### Removed:
+- Removed `spouse_email` attribute
+
+### Fixed
+- Stop limiting the number of changes (in a single sync) to an essentially-empty
+  broker (e.g. when populating it for the first time)
 
 ## [2.1.1] - 2019-02-15
 ### Fixed:

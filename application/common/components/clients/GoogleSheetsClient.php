@@ -123,7 +123,7 @@ class GoogleSheetsClient extends Component
         }
         
         $users = [];
-        $range = sprintf('Users!A%s:L%s', $startRow, $startRow + $howMany - 1);
+        $range = sprintf('Users!A%s:M%s', $startRow, $startRow + $howMany - 1);
         $rows = $this->sheets->spreadsheets_values->get(
             $this->spreadsheetId,
             $range,
@@ -148,13 +148,14 @@ class GoogleSheetsClient extends Component
                     User::LAST_NAME => $user[2],
                     User::DISPLAY_NAME => $user[3],
                     User::USERNAME => $user[4],
-                    User::EMAIL => $user[5],
+                    User::EMAIL => $this->getValueIfNonEmpty($user, 5),
                     User::ACTIVE => $user[6] ?? 'yes',
                     User::LOCKED => $user[7] ?? 'no',
                     'last_synced' => $this->getValueIfNonEmpty($user, 8),
                     User::REQUIRE_MFA => $user[9] ?? 'no',
                     User::MANAGER_EMAIL => $this->getValueIfNonEmpty($user, 10),
-                    User::SPOUSE_EMAIL => $this->getValueIfNonEmpty($user, 11),
+                    User::PERSONAL_EMAIL => $this->getValueIfNonEmpty($user, 11),
+                    User::GROUPS => $this->getValueIfNonEmpty($user, 12),
                 ];
             }
         }
@@ -207,7 +208,7 @@ class GoogleSheetsClient extends Component
                 if (in_array($user[User::EMPLOYEE_ID], $employeeIdsAsStrings, true)) {
                     $updatedSyncDates[] = $nowAsADateString;
                 } else {
-                    $updatedSyncDates[] = $user['last_synced'];
+                    $updatedSyncDates[] = $user['last_synced'] ?: '0000-00-00T00:00:00+00:00';
                 }
             }
             

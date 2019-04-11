@@ -10,13 +10,14 @@ class User
     const EMAIL = 'email';
     const EMPLOYEE_ID = 'employee_id';
     const FIRST_NAME = 'first_name';
+    const GROUPS = 'groups';
     const LAST_NAME = 'last_name';
     const LOCKED = 'locked';
     const MANAGER_EMAIL = 'manager_email';
+    const PERSONAL_EMAIL = 'personal_email';
     const REQUIRE_MFA = 'require_mfa';
-    const SPOUSE_EMAIL = 'spouse_email';
     const USERNAME = 'username';
-    
+
     /**
      * The values (indexed by field name) for the fields which have been set.
      *
@@ -63,11 +64,12 @@ class User
             self::EMAIL,
             self::EMPLOYEE_ID,
             self::FIRST_NAME,
+            self::GROUPS,
             self::LAST_NAME,
             self::LOCKED,
             self::MANAGER_EMAIL,
+            self::PERSONAL_EMAIL,
             self::REQUIRE_MFA,
-            self::SPOUSE_EMAIL,
             self::USERNAME,
         ];
     }
@@ -155,11 +157,19 @@ class User
     /**
      * @return null|string
      */
-    public function getSpouseEmail()
+    public function getPersonalEmail()
     {
-        return $this->values[self::SPOUSE_EMAIL] ?? null;
+        return $this->values[self::PERSONAL_EMAIL] ?? null;
     }
-    
+
+    /**
+     * @return null|string
+     */
+    public function getGroups()
+    {
+        return $this->values[self::GROUPS] ?? null;
+    }
+
     public function __toString()
     {
         return \json_encode($this->toArray(), JSON_PRETTY_PRINT);
