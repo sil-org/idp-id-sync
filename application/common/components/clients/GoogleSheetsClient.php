@@ -144,10 +144,10 @@ class GoogleSheetsClient extends Component
                 
                 $users[] = [
                     User::EMPLOYEE_ID => $user[0],
-                    User::FIRST_NAME => $user[1],
-                    User::LAST_NAME => $user[2],
-                    User::DISPLAY_NAME => $user[3],
-                    User::USERNAME => $user[4],
+                    User::FIRST_NAME => $this->getValueIfNonEmpty($user, 1),
+                    User::LAST_NAME => $this->getValueIfNonEmpty($user, 2),
+                    User::DISPLAY_NAME => $this->getValueIfNonEmpty($user, 3),
+                    User::USERNAME => $this->getValueIfNonEmpty($user, 4),
                     User::EMAIL => $this->getValueIfNonEmpty($user, 5),
                     User::ACTIVE => $user[6] ?? 'yes',
                     User::LOCKED => $user[7] ?? 'no',
