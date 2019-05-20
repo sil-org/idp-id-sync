@@ -95,6 +95,42 @@ class SagePeopleIdStore extends IdStoreBase
     }
 
     /**
+     * Get an access token by OAUTH request.
+     *
+     * @return string access token
+     * @throws Exception
+     */
+    private function getAccessToken(): string
+    {
+        $response = $this->getHttpClient()->post($this->authUrl, [
+            'connect_timeout' => $this->timeout,
+            'http_errors' => false,
+            'form_params' => [
+                'grant_type' => 'password',
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+                'username' => $this->username,
+                'password' => $this->password,
+            ],
+        ]);
+
+        $statusCode = (int)$response->getStatusCode();
+        if (($statusCode >= 200) && ($statusCode <= 299)) {
+            $data = Json::decode($response->getBody());
+            $accessToken = $data['access_token'] ?? '';
+        } else {
+            throw new Exception(sprintf(
+                'Unexpected response (%s %s): %s',
+                $response->getStatusCode(),
+                $response->getReasonPhrase(),
+                $response->getBody()
+            ), 1558380643);
+        }
+
+        return $accessToken;
+    }
+
+    /**
      * Get information about each of the (active) users.
      *
      * @return User[] A list of Users.
