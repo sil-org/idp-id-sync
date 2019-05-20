@@ -28,3 +28,8 @@ default:
                 tags: '~@specificUser && ~@usersChangedSince && ~@canUpdateLastSynced'
             paths:    [ %paths.base%/../features/id-store-integration.feature ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\WorkdayIntegrationContext ]
+        sage_people_integration_features:
+            filters:
+                tags: '~@specificUser && ~@usersChangedSince && ~@canUpdateLastSynced'
+            paths:    [ %paths.base%/../features/id-store-integration.feature ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\SagePeopleIntegrationContext ]
