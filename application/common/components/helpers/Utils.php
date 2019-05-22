@@ -3,7 +3,6 @@
 
 namespace Sil\Idp\IdSync\common\components\helpers;
 
-
 class Utils
 {
     /**
@@ -29,7 +28,8 @@ class Utils
      * @param string $parentKey array key associated with $childArray in the parent array
      * @return array
      */
-    public static function arrayCollapseRecursive($childArray, $parentKey = '') {
+    public static function arrayCollapseRecursive($childArray, $parentKey = '')
+    {
         $newArray = [];
 
         foreach ($childArray as $key => $value) {
@@ -43,5 +43,4 @@ class Utils
 
         return $newArray;
     }
-
 }
