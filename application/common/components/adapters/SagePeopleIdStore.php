@@ -78,7 +78,22 @@ class SagePeopleIdStore extends IdStoreBase
      */
     public function getActiveUser(string $employeeId)
     {
-        throw new Exception(__FUNCTION__ . ' not yet implemented');
+        $activeUsers = $this->getFromIdStore(
+            "WHERE fHCM2__Unique_Id__c='" . $employeeId . "'"
+            . " AND fHCM2__Employment_Status__c='Active'"
+        );
+        $numItems = count($activeUsers);
+        if ($numItems < 1) {
+            return null;
+        } elseif ($numItems === 1) {
+            return self::getAsUser($activeUsers[0]);
+        } else {
+            throw new Exception(sprintf(
+                'Too many results (%s) for Employee ID %s.',
+                $numItems,
+                var_export($employeeId, true)
+            ), 1558533849);
+        }
     }
 
     /**
