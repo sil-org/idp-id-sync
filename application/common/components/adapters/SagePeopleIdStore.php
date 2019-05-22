@@ -145,13 +145,13 @@ class SagePeopleIdStore extends IdStoreBase
         );
     }
 
+
     /**
-     * Get information about each of the (active) users.
-     *
-     * @return User[] A list of Users.
+     * @param string $whereClause
+     * @return array
      * @throws Exception
      */
-    public function getAllActiveUsers()
+    protected function getFromIdStore($whereClause): array
     {
         $accessToken = $this->getAccessToken();
 
@@ -167,8 +167,8 @@ class SagePeopleIdStore extends IdStoreBase
             'query' => [
                 'q' => 'SELECT Name,fHCM2__First_Name__c,fHCM2__Surname__c,fHCM2__User__r.Username,'
                     . 'fHCM2__User__r.Email,fHCM2__Manager_User__r.Email,fHCM2__Unique_Id__c,fHCM2__Home_Email__c'
-                    . ' FROM fHCM2__Team_Member__c'
-                    . ' WHERE fHCM2__Employment_Status__c=\'Active\''
+                    . ' FROM fHCM2__Team_Member__c '
+                    . $whereClause
                     . ' AND fHCM2__User__c!=null',
             ],
         ]);
@@ -196,7 +196,21 @@ class SagePeopleIdStore extends IdStoreBase
             ), 1558380645);
         }
 
-        $allActiveUsers = self::getRecordsFromResponseBody($body);
+        $activeUsers = self::getRecordsFromResponseBody($body);
+        return $activeUsers;
+    }
+
+    /**
+     * Get information about each of the (active) users.
+     *
+     * @return User[] A list of Users.
+     * @throws Exception
+     */
+    public function getAllActiveUsers()
+    {
+        $allActiveUsers = $this->getFromIdStore(
+            "WHERE fHCM2__Employment_Status__c='Active'"
+        );
 
         return self::getAsUsers($allActiveUsers);
     }
