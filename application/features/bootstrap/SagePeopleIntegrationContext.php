@@ -7,7 +7,7 @@ use Sil\PhpEnv\Env;
 /**
  * Defines application features from the specific context.
  */
-class WorkdayIntegrationContext extends IdStoreIntegrationContextBase
+class SagePeopleIntegrationContext extends IdStoreIntegrationContextBase
 {
     public function __construct()
     {
