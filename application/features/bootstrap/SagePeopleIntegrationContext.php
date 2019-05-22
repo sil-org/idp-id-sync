@@ -1,7 +1,7 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
-use Sil\Idp\IdSync\common\components\adapters\WorkdayIdStore;
+use Sil\Idp\IdSync\common\components\adapters\SagePeopleIdStore;
 use Sil\PhpEnv\Env;
 
 /**
@@ -20,14 +20,13 @@ class SagePeopleIntegrationContext extends IdStoreIntegrationContextBase
      */
     public function iCanMakeAuthenticatedCallsToTheIdStore()
     {
-        $sagePeopleApiUrl = Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_apiUrl');
-        $sagePeopleUsername = Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_username');
-        $sagePeoplePassword = Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_password');
-        
         $this->idStore = new SagePeopleIdStore([
-            'apiUrl' => $sagePeopleApiUrl,
-            'username' => $sagePeopleUsername,
-            'password' => $sagePeoplePassword,
+            'authUrl'      => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_authUrl'),
+            'queryUrl'     => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_queryUrl'),
+            'clientId'     => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_clientId'),
+            'clientSecret' => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_clientSecret'),
+            'username'     => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_username'),
+            'password'     => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_password'),
         ]);
     }
     
