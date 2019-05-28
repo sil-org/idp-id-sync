@@ -231,7 +231,6 @@ class SagePeopleIdStore extends IdStoreBase
         }
 
         if (! is_array($body)) {
-            echo PHP_EOL . json_encode($response->getBody()->getContents()) . PHP_EOL;
             throw new Exception(sprintf(
                 'Unexpected result when getting all active users: %s',
                 var_export($body, true)
