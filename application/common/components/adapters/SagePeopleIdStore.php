@@ -11,6 +11,15 @@ use yii\helpers\Json;
 
 class SagePeopleIdStore extends IdStoreBase
 {
+    const PROP_EMPLOYEE_ID = 'fHCM2__Unique_Id__c';
+    const PROP_FIRST_NAME = 'fHCM2__First_Name__c';
+    const PROP_LAST_NAME = 'fHCM2__Surname__c';
+    const PROP_DISPLAY_NAME = 'Name';
+    const PROP_PERSONAL_EMAIL = 'fHCM2__Home_Email__c';
+    const PROP_EMAIL = 'fHCM2__User__r.Email';
+    const PROP_USERNAME = 'fHCM2__User__r.Username';
+    const PROP_MANAGER_EMAIL = 'fHCM2__Manager_User__r.Email';
+
     public $authUrl = null;
     public $queryUrl = null;
     public $clientId = null;
@@ -52,17 +61,14 @@ class SagePeopleIdStore extends IdStoreBase
     public static function getIdBrokerFieldNames()
     {
         return [
-            'Name' => User::DISPLAY_NAME,
-            'fHCM2__Unique_Id__c' => User::EMPLOYEE_ID,
-            'fHCM2__First_Name__c' => User::FIRST_NAME,
-            'fHCM2__Surname__c' => User::LAST_NAME,
-            'fHCM2__Home_Email__c' => User::PERSONAL_EMAIL,
-            'fHCM2__User__r.Email' => User::EMAIL,
-            'fHCM2__User__r.Username' => User::USERNAME,
-            'fHCM2__Manager_User__r.Email' => User::MANAGER_EMAIL,
-//  TODO: Inquire about the following two fields:
-//            'Account_Locked__Disabled_or_Expired' => User::LOCKED,
-//            'requireMfa' => User::REQUIRE_MFA,
+            self::PROP_EMPLOYEE_ID => User::EMPLOYEE_ID,
+            self::PROP_FIRST_NAME => User::FIRST_NAME,
+            self::PROP_LAST_NAME => User::LAST_NAME,
+            self::PROP_DISPLAY_NAME => User::DISPLAY_NAME,
+            self::PROP_PERSONAL_EMAIL => User::PERSONAL_EMAIL,
+            self::PROP_EMAIL => User::EMAIL,
+            self::PROP_USERNAME => User::USERNAME,
+            self::PROP_MANAGER_EMAIL => User::MANAGER_EMAIL,
             // No 'active' needed, since all ID Store records returned are active.
         ];
     }
@@ -79,7 +85,7 @@ class SagePeopleIdStore extends IdStoreBase
     public function getActiveUser(string $employeeId)
     {
         $activeUsers = $this->getFromIdStore(
-            "WHERE fHCM2__Unique_Id__c='" . $employeeId . "'"
+            'WHERE ' . self::PROP_EMPLOYEE_ID . "='$employeeId'"
             . " AND fHCM2__Employment_Status__c='Active'"
         );
         $numItems = count($activeUsers);
@@ -180,8 +186,15 @@ class SagePeopleIdStore extends IdStoreBase
             ],
             'http_errors' => false,
             'query' => [
-                'q' => 'SELECT Name,fHCM2__First_Name__c,fHCM2__Surname__c,fHCM2__User__r.Username,'
-                    . 'fHCM2__User__r.Email,fHCM2__Manager_User__r.Email,fHCM2__Unique_Id__c,fHCM2__Home_Email__c'
+                'q' => 'SELECT '
+                    . self::PROP_DISPLAY_NAME . ','
+                    . self::PROP_FIRST_NAME . ','
+                    . self::PROP_LAST_NAME . ','
+                    . self::PROP_USERNAME . ','
+                    . self::PROP_EMAIL . ','
+                    . self::PROP_MANAGER_EMAIL . ','
+                    . self::PROP_EMPLOYEE_ID . ','
+                    . self::PROP_PERSONAL_EMAIL
                     . ' FROM fHCM2__Team_Member__c '
                     . $whereClause
                     . ' AND fHCM2__User__c!=null',
