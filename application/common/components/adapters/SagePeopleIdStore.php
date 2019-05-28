@@ -19,6 +19,8 @@ class SagePeopleIdStore extends IdStoreBase
     const PROP_EMAIL = 'fHCM2__User__r.Email';
     const PROP_USERNAME = 'fHCM2__User__r.Username';
     const PROP_MANAGER_EMAIL = 'fHCM2__Manager_User__r.Email';
+    const PROP_LOCKED = 'fHCM2__User__r.jaars_Locked_From_IdP__c';
+    const PROP_REQUIRE_MFA = 'fHCM2__User__r.jaars_Require_2sv_with_IdP__c';
 
     public $authUrl = null;
     public $queryUrl = null;
@@ -69,6 +71,8 @@ class SagePeopleIdStore extends IdStoreBase
             self::PROP_EMAIL => User::EMAIL,
             self::PROP_USERNAME => User::USERNAME,
             self::PROP_MANAGER_EMAIL => User::MANAGER_EMAIL,
+            self::PROP_LOCKED => User::LOCKED,
+            self::PROP_REQUIRE_MFA => User::REQUIRE_MFA,
             // No 'active' needed, since all ID Store records returned are active.
         ];
     }
@@ -160,7 +164,10 @@ class SagePeopleIdStore extends IdStoreBase
     {
         return  array_map(
             function ($item) {
-                return Utils::arrayCollapseRecursive($item);
+                $properties = Utils::arrayCollapseRecursive($item);
+                $properties[self::PROP_LOCKED] = $properties[self::PROP_LOCKED] ? 'yes' : 'no';
+                $properties[self::PROP_REQUIRE_MFA] = $properties[self::PROP_REQUIRE_MFA] ? 'yes' : 'no';
+                return $properties;
             },
             $body['records'] ?? []
         );
@@ -194,7 +201,9 @@ class SagePeopleIdStore extends IdStoreBase
                     . self::PROP_EMAIL . ','
                     . self::PROP_MANAGER_EMAIL . ','
                     . self::PROP_EMPLOYEE_ID . ','
-                    . self::PROP_PERSONAL_EMAIL
+                    . self::PROP_PERSONAL_EMAIL . ','
+                    . self::PROP_LOCKED . ','
+                    . self::PROP_REQUIRE_MFA
                     . ' FROM fHCM2__Team_Member__c '
                     . $whereClause
                     . ' AND fHCM2__User__c!=null',
