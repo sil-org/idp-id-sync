@@ -163,6 +163,10 @@ class SagePeopleIdStore extends IdStoreBase
      */
     private function getRecordsFromResponseBody($body)
     {
+        if ($body['done'] !== true) {
+            \Yii::error($this->getIdStoreName() . ' responded with incomplete data set');
+        }
+
         return  array_map(
             function ($item) {
                 $properties = Utils::arrayCollapseRecursive($item);
