@@ -88,10 +88,11 @@ class SagePeopleIdStore extends IdStoreBase
      */
     public function getActiveUser(string $employeeId)
     {
-        $activeUsers = $this->getFromIdStore(
-            'WHERE ' . self::PROP_EMPLOYEE_ID . "='$employeeId'"
-            . " AND fHCM2__Employment_Status__c='Active'"
-        );
+        $activeUsers = $this->getFromIdStore(sprintf(
+            "WHERE %s='%s' AND fHCM2__Employment_Status__c='Active'",
+            self::PROP_EMPLOYEE_ID,
+            $employeeId
+        ));
         $numItems = count($activeUsers);
         if ($numItems < 1) {
             return null;
