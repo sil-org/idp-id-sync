@@ -48,7 +48,7 @@ class SagePeopleIdStore extends IdStoreBase
                 throw new InvalidArgumentException(sprintf(
                     'No %s was provided.',
                     $requiredProperty
-                ), 1532982562);
+                ), 1559070540);
             }
         }
 
