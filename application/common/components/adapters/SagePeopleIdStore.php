@@ -164,14 +164,22 @@ class SagePeopleIdStore extends IdStoreBase
     private function getRecordsFromResponseBody($body)
     {
         if ($body['done'] !== true) {
+            /*
+             * This flag will be false if the amount of data is too large to be returned by one
+             * query. At present, the maximum number of records returned in one response is 2000.
+             * https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_changing_batch_size.htm#!
+             * If the data set grows beyond this boundary, this adapter will need to be revised
+             * to support multi-batch queries.
+             * (https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/dome_query.htm)
+             */
             \Yii::error($this->getIdStoreName() . ' responded with incomplete data set');
         }
 
         return  array_map(
             function ($item) {
                 $properties = Utils::arrayCollapseRecursive($item);
-                $properties[self::PROP_LOCKED] = $properties[self::PROP_LOCKED] ? 'yes' : 'no';
-                $properties[self::PROP_REQUIRE_MFA] = $properties[self::PROP_REQUIRE_MFA] ? 'yes' : 'no';
+//                $properties[self::PROP_LOCKED] = $properties[self::PROP_LOCKED] ? 'yes' : 'no';
+//                $properties[self::PROP_REQUIRE_MFA] = $properties[self::PROP_REQUIRE_MFA] ? 'yes' : 'no';
                 return $properties;
             },
             $body['records'] ?? []
