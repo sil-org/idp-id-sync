@@ -31,6 +31,11 @@ if [[ $rc != 0 ]]; then
   exit $rc;
 fi
 
+if [[ $APP_ENV == "dev" ]]; then
+    export XDEBUG_CONFIG="remote_enable=1 remote_host="$REMOTE_DEBUG_IP
+    apt-get -y -q install php-xdebug
+fi
+
 apache2ctl start
 
 # endless loop with a wait is needed for the trap to work
