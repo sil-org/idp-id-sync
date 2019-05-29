@@ -177,10 +177,7 @@ class SagePeopleIdStore extends IdStoreBase
 
         return  array_map(
             function ($item) {
-                $properties = Utils::arrayCollapseRecursive($item);
-                $properties[self::PROP_LOCKED] = $properties[self::PROP_LOCKED] ? 'yes' : 'no';
-                $properties[self::PROP_REQUIRE_MFA] = $properties[self::PROP_REQUIRE_MFA] ? 'yes' : 'no';
-                return $properties;
+                return Utils::arrayCollapseRecursive($item);
             },
             $body['records'] ?? []
         );
