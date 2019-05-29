@@ -74,7 +74,7 @@ class InsiteIdStore extends IdStoreBase
         } elseif ($numItems === 1) {
             return self::getAsUser($items[0]);
         } else {
-            throw Exception(sprintf(
+            throw new Exception(sprintf(
                 'Too many results (%s) for Employee ID %s.',
                 $numItems,
                 var_export($employeeId, true)
