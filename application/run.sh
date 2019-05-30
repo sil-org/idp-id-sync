@@ -32,7 +32,7 @@ if [[ $rc != 0 ]]; then
 fi
 
 if [[ $APP_ENV == "dev" ]]; then
-    export XDEBUG_CONFIG="remote_enable=1 remote_host="$REMOTE_DEBUG_IP
+    export XDEBUG_CONFIG="remote_enable=1 remote_host=${REMOTE_DEBUG_IP}"
     apt-get -y -q install php-xdebug
 fi
 
