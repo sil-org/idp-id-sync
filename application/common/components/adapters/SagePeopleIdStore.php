@@ -87,10 +87,15 @@ class SagePeopleIdStore extends IdStoreBase
      */
     public function getActiveUser(string $employeeId)
     {
+        $safeEmployeeId = preg_replace('/[^\w]/', '', $employeeId);
+        if ($employeeId !== $safeEmployeeId) {
+            throw new \Exception('employee_id contains invalid characters');
+
+        }
         $activeUsers = $this->getFromIdStore(sprintf(
             "WHERE %s='%s' AND fHCM2__Employment_Status__c='Active'",
             self::PROP_EMPLOYEE_ID,
-            preg_replace('/[^\w]/', '', $employeeId)
+            $safeEmployeeId
         ));
         $numItems = count($activeUsers);
         if ($numItems < 1) {
