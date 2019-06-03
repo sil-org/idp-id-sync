@@ -4,7 +4,6 @@ namespace Sil\Idp\IdSync\common\components\adapters;
 use Exception;
 use GuzzleHttp\Client;
 use InvalidArgumentException;
-use Sil\Idp\IdSync\common\components\helpers\Utils;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\Json;
@@ -88,10 +87,14 @@ class SagePeopleIdStore extends IdStoreBase
      */
     public function getActiveUser(string $employeeId)
     {
+        $safeEmployeeId = preg_replace('/[^\w]/', '', $employeeId);
+        if ($employeeId !== $safeEmployeeId) {
+            throw new \Exception('employee_id contains invalid characters');
+        }
         $activeUsers = $this->getFromIdStore(sprintf(
             "WHERE %s='%s' AND fHCM2__Employment_Status__c='Active'",
             self::PROP_EMPLOYEE_ID,
-            $employeeId
+            $safeEmployeeId
         ));
         $numItems = count($activeUsers);
         if ($numItems < 1) {
@@ -177,10 +180,7 @@ class SagePeopleIdStore extends IdStoreBase
 
         return  array_map(
             function ($item) {
-                $properties = Utils::arrayCollapseRecursive($item);
-                $properties[self::PROP_LOCKED] = $properties[self::PROP_LOCKED] ? 'yes' : 'no';
-                $properties[self::PROP_REQUIRE_MFA] = $properties[self::PROP_REQUIRE_MFA] ? 'yes' : 'no';
-                return $properties;
+                return self::arrayCollapseRecursive($item);
             },
             $body['records'] ?? []
         );
@@ -280,5 +280,44 @@ class SagePeopleIdStore extends IdStoreBase
     public function getIdStoreName(): string
     {
         return 'Sage People';
+    }
+
+    /**
+     * Recursively collapse a multi-dimensional array into a single-dimensional array.
+     * Array keys are combined using a dot to separate levels of the array. For instance:
+     * ```
+     * [
+     *     'a' => [
+     *         'x' => 'data1',
+     *     ],
+     *     'b' => 'data2',
+     * ]
+     * ```
+     * will be collapsed to
+     * ```
+     * [
+     *     'a.x' => 'data1',
+     *     'b' => 'data2',
+     * ]
+     * ```
+     *
+     * @param array $childArray array to be collapsed
+     * @param string $parentKey array key associated with $childArray in the parent array
+     * @return array
+     */
+    public static function arrayCollapseRecursive($childArray, $parentKey = '')
+    {
+        $newArray = [];
+
+        foreach ($childArray as $key => $value) {
+            $combinedKey = (empty($parentKey) ? '' : $parentKey . '.') . $key;
+            if (is_array($value)) {
+                $newArray = array_merge($newArray, self::arrayCollapseRecursive($value, $combinedKey));
+            } else {
+                $newArray[$combinedKey] = $value;
+            }
+        }
+
+        return $newArray;
     }
 }
