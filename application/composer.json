@@ -9,6 +9,7 @@
     "roave/security-advisories": "dev-master",
     "silinternational/email-service-php-client": "^2.0",
     "silinternational/idp-id-broker-php-client": "^3.0.0",
+    "silinternational/php-array-dot-notation": "0.1.0",
     "silinternational/php-env": "^2.1.1",
     "silinternational/psr3-adapters": "^1.1",
     "silinternational/yii2-json-log-targets": "^1.0",
