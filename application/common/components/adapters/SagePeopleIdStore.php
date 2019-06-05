@@ -187,6 +187,7 @@ class SagePeopleIdStore extends IdStoreBase
                  * Drop any non-word characters and replace spaces with underscores.
                  */
                 $username = str_replace(' ', '_', $properties[self::PROP_DISPLAY_NAME]);
+                $username = preg_replace('/[\W]/', '', $username);
                 $properties[self::PROP_USERNAME] = $username;
 
                 return $properties;
