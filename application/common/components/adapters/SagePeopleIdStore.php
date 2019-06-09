@@ -17,7 +17,7 @@ class SagePeopleIdStore extends IdStoreBase
     const PROP_DISPLAY_NAME = 'Name';
     const PROP_PERSONAL_EMAIL = 'fHCM2__Home_Email__c';
     const PROP_EMAIL = 'fHCM2__User__r.Email';
-    const PROP_USERNAME = 'fHCM2__User__r.Username';
+    const PROP_USERNAME = 'username';
     const PROP_MANAGER_EMAIL = 'fHCM2__Manager_User__r.Email';
     const PROP_LOCKED = 'fHCM2__User__r.jaars_Locked_From_IdP__c';
     const PROP_REQUIRE_MFA = 'fHCM2__User__r.jaars_Require_2sv_with_IdP__c';
@@ -179,9 +179,18 @@ class SagePeopleIdStore extends IdStoreBase
             \Yii::error($this->getIdStoreName() . ' responded with incomplete data set');
         }
 
-        return  array_map(
+        return array_map(
             function ($item) {
-                return DotNotation::collapse($item);
+                $properties = DotNotation::collapse($item);
+
+                /*
+                 * Drop any non-word characters and replace spaces with underscores.
+                 */
+                $username = str_replace(' ', '_', $properties[self::PROP_DISPLAY_NAME]);
+                $username = preg_replace('/[\W]/', '', $username);
+                $properties[self::PROP_USERNAME] = $username;
+
+                return $properties;
             },
             $body['records'] ?? []
         );
@@ -210,7 +219,6 @@ class SagePeopleIdStore extends IdStoreBase
                     . self::PROP_DISPLAY_NAME . ','
                     . self::PROP_FIRST_NAME . ','
                     . self::PROP_LAST_NAME . ','
-                    . self::PROP_USERNAME . ','
                     . self::PROP_EMAIL . ','
                     . self::PROP_MANAGER_EMAIL . ','
                     . self::PROP_EMPLOYEE_ID . ','
