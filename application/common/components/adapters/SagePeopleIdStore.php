@@ -266,7 +266,8 @@ class SagePeopleIdStore extends IdStoreBase
     public function getAllActiveUsers()
     {
         $allActiveUsers = $this->getFromIdStore(
-            "WHERE fHCM2__Employment_Status__c='Active'"
+            "WHERE fHCM2__Employment_Status__c='Active' AND fHCM2__User__c!=null AND "
+            . "fHCM2__Department__c!='a0H1U000001NKk4UAG'"
         );
 
         return self::getAsUsers($allActiveUsers);
