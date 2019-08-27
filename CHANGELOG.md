@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [3.1.0] - 2019-08-27
+### Added:
+- New Sage People ID Store adapter
+
+## [3.0.1] - 2019-05-10
+### Fixed
+- Stop failing entire sync job on bad Google Sheets data
+
+## [3.0.0] - 2019-04-11
 ### Added:
 - Added `groups` and `personal_email` attributes
 - Added `ALLOW_EMPTY_EMAIL` environment variable, defaults to `false`
@@ -149,7 +159,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/2.1.1...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/3.1.0...develop
+[3.1.0]: https://github.com/silinternational/idp-id-sync/compare/3.0.1...3.1.0
+[3.0.1]: https://github.com/silinternational/idp-id-sync/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/silinternational/idp-id-sync/compare/2.1.1...3.0.0
 [2.1.1]: https://github.com/silinternational/idp-id-sync/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/silinternational/idp-id-sync/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/silinternational/idp-id-sync/compare/1.2.0...2.0.0
