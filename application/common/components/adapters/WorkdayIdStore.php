@@ -121,6 +121,14 @@ class WorkdayIdStore extends IdStoreBase
                 var_export($allActiveUsers, true)
             ), 1532982679);
         }
+
+        foreach ($allActiveUsers as $key => $user) {
+            $allActiveUsers[$key]['Groups'] = implode(",", array_merge(
+                explode(" ", $user["reap_CompanyId"] ?? ""),
+                explode(" ", $user["reap_tree"] ?? "")
+            ));
+        }
+
         return self::getAsUsers($allActiveUsers);
     }
     
