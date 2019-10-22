@@ -123,10 +123,14 @@ class WorkdayIdStore extends IdStoreBase
         }
 
         foreach ($allActiveUsers as $key => $user) {
-            $allActiveUsers[$key]['Groups'] = implode(",", array_merge(
-                explode(" ", $user["reap_CompanyId"] ?? ""),
-                explode(" ", $user["reap_tree"] ?? "")
-            ));
+            $company_ids = str_replace(" ", ",", $user["company_ids"] ?? "");
+            $ou_tree = str_replace(" ", ",", $user["ou_tree"] ?? "");
+            if (strlen($company_ids) > 0 && strlen($ou_tree) > 0) {
+                $groups = $company_ids . "," . $ou_tree;
+            } else {
+                $groups = $company_ids . $ou_tree;
+            }
+            $allActiveUsers[$key]['Groups'] = $groups;
         }
 
         return self::getAsUsers($allActiveUsers);
