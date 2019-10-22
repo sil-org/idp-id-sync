@@ -123,12 +123,12 @@ class WorkdayIdStore extends IdStoreBase
         }
 
         foreach ($allActiveUsers as $key => $user) {
-            $company_ids = str_replace(" ", ",", $user["company_ids"] ?? "");
-            $ou_tree = str_replace(" ", ",", $user["ou_tree"] ?? "");
-            if (strlen($company_ids) > 0 && strlen($ou_tree) > 0) {
-                $groups = $company_ids . "," . $ou_tree;
+            $companyIDs = str_replace(" ", ",", $user["company_ids"] ?? "");
+            $ouTree = str_replace(" ", ",", $user["ou_tree"] ?? "");
+            if (strlen($companyIDs) > 0 && strlen($ouTree) > 0) {
+                $groups = $companyIDs . "," . $ouTree;
             } else {
-                $groups = $company_ids . $ou_tree;
+                $groups = $companyIDs . $ouTree;
             }
             $allActiveUsers[$key]['Groups'] = $groups;
         }
