@@ -1,7 +1,7 @@
-FROM silintl/php7:latest
+FROM silintl/php7:7.2
 MAINTAINER Matt Henderson <matt_henderson@sil.org>
 
-ENV REFRESHED_AT 2017-03-27
+ENV REFRESHED_AT 2019-09-09
 
 COPY dockerbuild/vhost.conf /etc/apache2/sites-enabled/
 
