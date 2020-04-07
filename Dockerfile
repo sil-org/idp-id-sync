@@ -1,15 +1,9 @@
 FROM silintl/php7:7.2
 MAINTAINER Matt Henderson <matt_henderson@sil.org>
 
-ENV REFRESHED_AT 2019-09-09
-
-COPY dockerbuild/vhost.conf /etc/apache2/sites-enabled/
+ENV REFRESHED_AT 2020-04-07
 
 RUN mkdir -p /data
-
-# Copy in syslog config
-RUN rm -f /etc/rsyslog.d/*
-COPY dockerbuild/rsyslog.conf /etc/rsyslog.conf
 
 # Copy in cron configuration
 COPY dockerbuild/idsync-cron /etc/cron.d/idsync-cron
@@ -32,6 +26,11 @@ COPY application/ /data/
 # Fix folder permissions
 RUN chown -R www-data:www-data \
     console/runtime/
+
+COPY dockerbuild/vhost.conf /etc/apache2/sites-enabled/
+
+# ErrorLog inside a VirtualHost block is ineffective for unknown reasons
+RUN sed -i -E 's@ErrorLog .*@ErrorLog /proc/self/fd/2@i' /etc/apache2/apache2.conf
 
 EXPOSE 80
 ENTRYPOINT ["/usr/local/bin/s3-expand"]

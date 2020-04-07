@@ -9,18 +9,6 @@ term_handler() {
 }
 trap 'kill ${!}; term_handler' SIGTERM
 
-if [[ "x" == "x$LOGENTRIES_KEY" ]]; then
-    echo "Missing LOGENTRIES_KEY environment variable";
-else
-    # Set logentries key based on environment variable
-    sed -i /etc/rsyslog.conf -e "s/LOGENTRIESKEY/${LOGENTRIES_KEY}/"
-    # Start syslog
-    rsyslogd
-    
-    # Give syslog time to fully start up.
-    sleep 3
-fi
-
 # Configure (and start) cron.
 output=$(./start-cron.sh 2>&1)
 
@@ -36,7 +24,7 @@ if [[ $APP_ENV == "dev" ]]; then
     apt-get -y -q install php-xdebug
 fi
 
-apache2ctl start
+apache2ctl -k start -D FOREGROUND
 
 # endless loop with a wait is needed for the trap to work
 while true

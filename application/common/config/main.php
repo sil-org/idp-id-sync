@@ -5,7 +5,7 @@ use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
 use Sil\Idp\IdSync\common\components\notify\NullNotifier;
 use Sil\JsonLog\target\EmailServiceTarget;
-use Sil\JsonLog\target\JsonSyslogTarget;
+use Sil\JsonLog\target\JsonStreamTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -45,6 +45,24 @@ if (empty($hrNotifierEmailTo)) {
     ];
 }
 
+$logPrefix = function () {
+    $request = Yii::$app->request;
+    $prefixData = [
+        'env' => YII_ENV,
+    ];
+    if ($request instanceof \yii\web\Request) {
+        // Assumes format: Bearer consumer-module-name-32randomcharacters
+        $prefixData['id'] = substr($request->headers['Authorization'], 7, 16) ?: 'unknown';
+        $prefixData['ip'] = $request->getUserIP();
+        $prefixData['method'] = $request->getMethod();
+        $prefixData['url'] = $request->getUrl();
+    } elseif ($request instanceof \yii\console\Request) {
+        $prefixData['id'] = '(console)';
+    }
+
+    return Json::encode($prefixData);
+};
+
 return [
     'id' => $idpName,
     'bootstrap' => ['log'],
@@ -65,18 +83,19 @@ return [
         'log' => [
             'targets' => [
                 [
-                    'class' => JsonSyslogTarget::class,
-                    'categories' => ['application'],
-                    
-                    // Disable logging of _SERVER, _POST, etc.
+                    'class' => JsonStreamTarget::class,
+                    'url' => 'php://stdout',
+                    'levels' => ['info'],
                     'logVars' => [],
-                    
-                    'prefix' => function ($message) use ($appEnv, $idpName) {
-                        return Json::encode([
-                            'app_env' => $appEnv,
-                            'idp_name' => $idpName,
-                        ]);
-                    },
+                    'categories' => ['application'],
+                    'prefix' => $logPrefix,
+                ],
+                [
+                    'class' => JsonStreamTarget::class,
+                    'url' => 'php://stderr',
+                    'levels' => ['error', 'warning'],
+                    'logVars' => [],
+                    'prefix' => $logPrefix,
                 ],
                 [
                     'class' => EmailServiceTarget::class,
