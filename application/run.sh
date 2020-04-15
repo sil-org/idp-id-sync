@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 # establish a signal handler to catch the SIGTERM from a 'docker stop'
 # reference: https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86
 term_handler() {
@@ -15,7 +17,7 @@ output=$(./start-cron.sh 2>&1)
 # If the cron stuff failed, exit.
 rc=$?;
 if [[ $rc != 0 ]]; then
-  logger -p 1 -t application.crit "FAILED to start cron jobs. Exit code ${rc}. Message: ${output}"
+  echo "FAILED to start cron jobs. Exit code ${rc}. Message: ${output}"
   exit $rc;
 fi
 
