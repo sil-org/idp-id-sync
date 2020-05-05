@@ -89,6 +89,7 @@ return [
                     'logVars' => [],
                     'categories' => ['application'],
                     'prefix' => $logPrefix,
+                    'exportInterval' => 1,
                 ],
                 [
                     'class' => JsonStreamTarget::class,
@@ -96,6 +97,7 @@ return [
                     'levels' => ['error', 'warning'],
                     'logVars' => [],
                     'prefix' => $logPrefix,
+                    'exportInterval' => 1,
                 ],
                 [
                     'class' => EmailServiceTarget::class,
@@ -125,6 +127,7 @@ return [
                             'idp_name' => $idpName,
                         ]);
                     },
+                    'exportInterval' => 1,
                 ],
             ],
         ],
