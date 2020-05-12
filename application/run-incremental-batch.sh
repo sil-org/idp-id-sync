@@ -7,7 +7,7 @@ echo "{\"message\": \"Preparing to run ID Sync batch\", \"batch\": \"incremental
 # If it failed, exit.
 rc=$?;
 if [[ $rc != 0 ]]; then
-  echo "{\"message\": \"FAILED: ID Sync batch. Exit code ${rc}. batch\": \"incremental\", \"idp_name\": \"${IDP_NAME}\", \"app_env\": \"${APP_ENV}\", \"id_store_adapter\": \"${ID_STORE_ADAPTER}\"}"
+  echo "{\"message\": \"FAILED: ID Sync batch. Exit code ${rc}.\", \"batch\": \"incremental\", \"idp_name\": \"${IDP_NAME}\", \"app_env\": \"${APP_ENV}\", \"id_store_adapter\": \"${ID_STORE_ADAPTER}\"}"
   exit $rc;
 fi
 
