@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Removed
+- Remove Insite ID Store adapter
 
 ## [3.3.1] - 2020-05-12
 ### Fixed

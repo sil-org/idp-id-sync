@@ -2,7 +2,7 @@
 namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
 use Sil\Idp\IdSync\common\components\IdStoreBase;
-use Sil\Idp\IdSync\common\components\adapters\InsiteIdStore;
+use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\ArrayHelper;
 
 class FakeIdStore extends IdStoreBase
@@ -90,8 +90,18 @@ class FakeIdStore extends IdStoreBase
 
     public static function getIdBrokerFieldNames()
     {
-        // For simplicity's sake, just use the field names from Insite.
-        return InsiteIdStore::getIdBrokerFieldNames();
+        return [
+            'employeenumber' => User::EMPLOYEE_ID,
+            'firstname' => User::FIRST_NAME,
+            'lastname' => User::LAST_NAME,
+            'displayname' => User::DISPLAY_NAME,
+            'email' => User::EMAIL,
+            'username' => User::USERNAME,
+            'locked' => User::LOCKED,
+            'requires2sv' => User::REQUIRE_MFA,
+            'supervisoremail' => User::MANAGER_EMAIL,
+            // No 'active' needed, since all ID Store records returned are active.
+        ];
     }
 
     public function getIdStoreName(): string
