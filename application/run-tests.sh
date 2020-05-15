@@ -23,3 +23,9 @@ sleep 15
 
 # If they failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
+# Run the unit tests
+./vendor/bin/phpunit
+
+# If they failed, exit.
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
