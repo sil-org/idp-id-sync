@@ -18,14 +18,14 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 whenavail brokerdb 3306 60 echo Waited for brokerdb
 sleep 15
 
-# Run the feature tests (skipping integration tests)
-./vendor/bin/behat --config=features/behat.yml --tags '~@integration'
+# Run the unit tests
+./vendor/bin/phpunit
 
 # If they failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
-# Run the unit tests
-./vendor/bin/phpunit
+# Run the feature tests (skipping integration tests)
+./vendor/bin/behat --config=features/behat.yml --tags '~@integration'
 
 # If they failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
