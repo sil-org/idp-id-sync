@@ -161,7 +161,7 @@ class WorkdayIdStore extends IdStoreBase
             $groups = [];
             foreach ($groupsFields as $groupsField) {
                 if (strlen($user[$groupsField]) > 0) {
-                    $groupsSubList = explode(' ', $user[$groupsField ?? '']);
+                    $groupsSubList = explode(' ', $user[$groupsField] ?? '');
                     $groups = array_merge($groups, $groupsSubList);
                 }
             }
