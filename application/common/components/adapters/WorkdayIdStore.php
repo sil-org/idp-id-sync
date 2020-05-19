@@ -13,6 +13,7 @@ class WorkdayIdStore extends IdStoreBase
     public $apiUrl = null;
     public $username = null;
     public $password = null;
+    public $groupsFields = null;
     
     public $timeout = 45; // Timeout in seconds (per call to ID Store API).
     
@@ -122,16 +123,7 @@ class WorkdayIdStore extends IdStoreBase
             ), 1532982679);
         }
 
-        foreach ($allActiveUsers as $key => $user) {
-            $companyIDs = str_replace(" ", ",", $user["company_ids"] ?? "");
-            $ouTree = str_replace(" ", ",", $user["ou_tree"] ?? "");
-            if (strlen($companyIDs) > 0 && strlen($ouTree) > 0) {
-                $groups = $companyIDs . "," . $ouTree;
-            } else {
-                $groups = $companyIDs . $ouTree;
-            }
-            $allActiveUsers[$key]['Groups'] = $groups;
-        }
+        $this->generateGroupsLists($allActiveUsers);
 
         return self::getAsUsers($allActiveUsers);
     }
@@ -152,5 +144,28 @@ class WorkdayIdStore extends IdStoreBase
     public function getIdStoreName(): string
     {
         return 'Workday';
+    }
+
+    public function generateGroupsLists(array &$users)
+    {
+        if ($this->groupsFields === null) {
+            $groupsFields = [
+                'company_ids',
+                'ou_tree',
+            ];
+        } else {
+            $groupsFields = explode(',', $this->groupsFields);
+        }
+
+        foreach ($users as $key => $user) {
+            $groups = [];
+            foreach ($groupsFields as $groupsField) {
+                if (strlen($user[$groupsField]) > 0) {
+                    $groupsSubList = explode(' ', $user[$groupsField ?? '']);
+                    $groups = array_merge($groups, $groupsSubList);
+                }
+            }
+            $users[$key]['Groups'] = implode(',', $groups);
+        }
     }
 }
