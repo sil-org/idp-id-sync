@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.0.1] - 2020-05-19
+### Fixed
+- Fixed null check on groupsField in Workday user array
+
 ## [4.0.0] - 2020-05-18
 ### Removed
 - Remove Insite ID Store adapter
