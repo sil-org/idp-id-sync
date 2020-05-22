@@ -47,12 +47,11 @@ class WorkdayIdStoreTest extends TestCase
         $this->assertEquals('x,y,z,1,2,3', $users[0]['Groups']);
     }
 
-    public function testGenerateGroupsListsEmptyCompanyIDs()
+    public function testGenerateGroupsListsMissingCompanyIDs()
     {
         $idStore = $this->getWorkdayIdStore();
         $users = [
             [
-                'company_ids' => '',
                 'ou_tree' => 'd e f',
             ],
         ];
@@ -60,13 +59,12 @@ class WorkdayIdStoreTest extends TestCase
         $this->assertEquals('d,e,f', $users[0]['Groups']);
     }
 
-    public function testGenerateGroupsListsEmptyOUTree()
+    public function testGenerateGroupsListsMissingOUTree()
     {
         $idStore = $this->getWorkdayIdStore();
         $users = [
             [
                 'company_ids' => 'a b c',
-                'ou_tree' => '',
             ],
         ];
         $idStore->generateGroupsLists($users);
