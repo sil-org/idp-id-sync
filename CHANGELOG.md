@@ -190,9 +190,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - First release.
 
 [Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.0.3...develop
-[4.0.0]: https://github.com/silinternational/idp-id-sync/compare/4.0.2...4.0.3
-[4.0.0]: https://github.com/silinternational/idp-id-sync/compare/4.0.1...4.0.2
-[4.0.0]: https://github.com/silinternational/idp-id-sync/compare/4.0.0...4.0.1
+[4.0.3]: https://github.com/silinternational/idp-id-sync/compare/4.0.2...4.0.3
+[4.0.2]: https://github.com/silinternational/idp-id-sync/compare/4.0.1...4.0.2
+[4.0.1]: https://github.com/silinternational/idp-id-sync/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/silinternational/idp-id-sync/compare/3.3.1...4.0.0
 [3.3.1]: https://github.com/silinternational/idp-id-sync/compare/3.3.0...3.3.1
 [3.3.0]: https://github.com/silinternational/idp-id-sync/compare/3.2.0...3.3.0
