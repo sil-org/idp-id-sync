@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [4.0.4] - 2020-10-06
+## [4.0.5] - 2020-10-07
 ### Fixed
 - Update Docker credentials
 
@@ -189,8 +189,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.0.4...develop
-[4.0.4]: https://github.com/silinternational/idp-id-sync/compare/4.0.2...4.0.4
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.0.5...develop
+[4.0.5]: https://github.com/silinternational/idp-id-sync/compare/4.0.2...4.0.5
 [4.0.2]: https://github.com/silinternational/idp-id-sync/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/silinternational/idp-id-sync/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/silinternational/idp-id-sync/compare/3.3.1...4.0.0
