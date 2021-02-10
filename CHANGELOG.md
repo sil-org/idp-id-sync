@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.1.0] - 2021-02-10
+### Added
+- Added `queryConditions` config variable on Sage People component
+### Fixed
+- Minor dependency updates
+
 ## [4.0.5] - 2020-10-07
 ### Fixed
 - Update Docker credentials
@@ -189,7 +195,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.0.5...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.1.0...develop
+[4.1.0]: https://github.com/silinternational/idp-id-sync/compare/4.0.5...4.1.0
 [4.0.5]: https://github.com/silinternational/idp-id-sync/compare/4.0.2...4.0.5
 [4.0.2]: https://github.com/silinternational/idp-id-sync/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/silinternational/idp-id-sync/compare/4.0.0...4.0.1

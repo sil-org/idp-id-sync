@@ -37,7 +37,7 @@ services:
         ports:
             - "8081:80"
         command: whenavail brokerdb 3306 60 ./run.sh
-    
+
     brokercron:
         image: silintl/idp-id-broker:develop
         environment:
@@ -53,7 +53,8 @@ services:
             MYSQL_DATABASE: broker
             MYSQL_USER: broker
             MYSQL_PASSWORD: broker
-        command: whenavail brokerdb 3306 60 ./run-cron.sh
+            RUN_TASK: cron/all
+        command: whenavail brokerdb 3306 60 ./run.sh
 
     brokerdb:
         image: silintl/mariadb:latest
@@ -88,7 +89,7 @@ services:
             ID_BROKER_CONFIG_assertValidIp: "false"
             COMPOSER_CACHE_DIR: /composer
         command: ["true"]
-        ports: 
+        ports:
             - "22:22"
 
 networks:

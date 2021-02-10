@@ -22,12 +22,15 @@ class SagePeopleIdStore extends IdStoreBase
     const PROP_LOCKED = 'fHCM2__User__r.jaars_Locked_From_IdP__c';
     const PROP_REQUIRE_MFA = 'fHCM2__User__r.jaars_Require_2sv_with_IdP__c';
 
+    const DEFAULT_QUERY_CONDITIONS = "fHCM2__Employment_Status__c='Active' AND fHCM2__User__c!=null AND fHCM2__Department__c!='a0H1U000001NKk4UAG'";
+
     public $authUrl = null;
     public $queryUrl = null;
     public $clientId = null;
     public $clientSecret = null;
     public $username = null;
     public $password = null;
+    public $queryConditions = null;
 
     public $timeout = 45; // Timeout in seconds (per call to ID Store API).
 
@@ -50,6 +53,10 @@ class SagePeopleIdStore extends IdStoreBase
                     $requiredProperty
                 ), 1559070540);
             }
+        }
+
+        if ($this->queryConditions === null) {
+            $this->queryConditions = self::DEFAULT_QUERY_CONDITIONS;
         }
 
         parent::init();
@@ -93,7 +100,7 @@ class SagePeopleIdStore extends IdStoreBase
             throw new \Exception('employee_id contains invalid characters');
         }
         $activeUsers = $this->getFromIdStore(sprintf(
-            "WHERE %s='%s' AND fHCM2__Employment_Status__c='Active'",
+            "WHERE %s='%s' AND " . $this->queryConditions,
             self::PROP_EMPLOYEE_ID,
             $safeEmployeeId
         ));
@@ -259,10 +266,7 @@ class SagePeopleIdStore extends IdStoreBase
      */
     public function getAllActiveUsers()
     {
-        $allActiveUsers = $this->getFromIdStore(
-            "WHERE fHCM2__Employment_Status__c='Active' AND fHCM2__User__c!=null AND "
-            . "fHCM2__Department__c!='a0H1U000001NKk4UAG'"
-        );
+        $allActiveUsers = $this->getFromIdStore('WHERE ' . $this->queryConditions);
 
         return self::getAsUsers($allActiveUsers);
     }
