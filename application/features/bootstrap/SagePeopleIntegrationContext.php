@@ -14,22 +14,23 @@ class SagePeopleIntegrationContext extends IdStoreIntegrationContextBase
         echo 'Testing integration with Sage People.' . PHP_EOL;
         parent::__construct();
     }
-    
+
     /**
      * @Given I can make authenticated calls to the ID Store
      */
     public function iCanMakeAuthenticatedCallsToTheIdStore()
     {
         $this->idStore = new SagePeopleIdStore([
-            'authUrl'      => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_authUrl'),
-            'queryUrl'     => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_queryUrl'),
-            'clientId'     => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_clientId'),
-            'clientSecret' => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_clientSecret'),
-            'username'     => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_username'),
-            'password'     => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_password'),
+            'authUrl'         => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_authUrl'),
+            'queryUrl'        => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_queryUrl'),
+            'clientId'        => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_clientId'),
+            'clientSecret'    => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_clientSecret'),
+            'username'        => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_username'),
+            'password'        => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_password'),
+            'queryConditions' => Env::requireEnv('TEST_SAGE_PEOPLE_CONFIG_queryConditions'),
         ]);
     }
-    
+
     /**
      * @When I ask the ID Store for a specific active user
      */
