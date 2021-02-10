@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-- Added `whereConditions` config variable on Sage People component
+- Added `queryConditions` config variable on Sage People component
 
 ## [4.0.5] - 2020-10-07
 ### Fixed
