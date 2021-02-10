@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [4.1.0] - 2021-02-10
 ### Added
 - Added `queryConditions` config variable on Sage People component
+### Fixed
+- Minor dependency updates
 
 ## [4.0.5] - 2020-10-07
 ### Fixed
