@@ -196,7 +196,7 @@ class Synchronizer
                 $this->createUser($userToAdd);
                 $employeeIdsOfUsersAdded[] = $userToAdd->getEmployeeId();
             } catch (MissingEmailException $e) {
-                $this->logger->warning(sprintf(
+                $this->logger->info(sprintf(
                     'A User (%s) lacked an email address.',
                     $userToAdd->getStringForLogMessage()
                 ));
@@ -478,7 +478,7 @@ class Synchronizer
             $this->syncUserInternal($employeeId);
             $this->idStore->updateSyncDatesIfSupported([$employeeId]);
         } catch (MissingEmailException $e) {
-            $this->logger->warning(sprintf(
+            $this->logger->info(sprintf(
                 'That User (Employee ID: %s) lacked an email address.',
                 $employeeId
             ));
@@ -566,7 +566,7 @@ class Synchronizer
                 $this->syncUserInternal($employeeId);
                 $employeeIdsSynced[] = $employeeId;
             } catch (MissingEmailException $e) {
-                $this->logger->warning(sprintf(
+                $this->logger->info(sprintf(
                     'A User (Employee ID: %s) lacked an email address.',
                     $employeeId
                 ));
