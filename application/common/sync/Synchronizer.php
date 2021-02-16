@@ -136,8 +136,7 @@ class Synchronizer
                 $employeeIdsOfUsersUpdated[] = $userToUpdateAndActivate->getEmployeeId();
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
-                    'Failed to update/activate user in the ID Broker (%s). '
-                    . 'Error %s: %s. [%s]',
+                    'Failed to update/activate user in the ID Broker (%s). Error %s: %s. [%s]',
                     $userToUpdateAndActivate->getStringForLogMessage(),
                     $e->getCode(),
                     $e->getMessage(),
