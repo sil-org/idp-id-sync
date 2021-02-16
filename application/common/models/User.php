@@ -170,6 +170,20 @@ class User
         return $this->values[self::GROUPS] ?? null;
     }
 
+    /**
+     * @return string
+     */
+    public function getStringForLogMessage()
+    {
+        return sprintf(
+            'ID: "%s" username: "%s" email: "%s"',
+            // use var_export so null becomes "NULL"
+            var_export($this->getEmployeeId(), true),
+            var_export($this->getUsername(), true),
+            var_export($this->getEmail(), true)
+        );
+    }
+
     public function __toString()
     {
         return \json_encode($this->toArray(), JSON_PRETTY_PRINT);

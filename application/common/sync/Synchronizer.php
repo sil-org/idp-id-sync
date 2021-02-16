@@ -136,9 +136,9 @@ class Synchronizer
                 $employeeIdsOfUsersUpdated[] = $userToUpdateAndActivate->getEmployeeId();
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
-                    'Failed to update/activate user in the ID Broker (Employee ID: %s). '
+                    'Failed to update/activate user in the ID Broker (%s). '
                     . 'Error %s: %s. [%s]',
-                    var_export($userToUpdateAndActivate->getEmployeeId(), true),
+                    $userToUpdateAndActivate->getStringForLogMessage(),
                     $e->getCode(),
                     $e->getMessage(),
                     1494360119
@@ -197,15 +197,15 @@ class Synchronizer
                 $employeeIdsOfUsersAdded[] = $userToAdd->getEmployeeId();
             } catch (MissingEmailException $e) {
                 $this->logger->warning(sprintf(
-                    'A User (Employee ID: %s) lacked an email address.',
-                    $userToAdd->getEmployeeId()
+                    'A User (%s) lacked an email address.',
+                    $userToAdd->getStringForLogMessage()
                 ));
                 $usersWithoutEmail[] = $userToAdd;
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
-                    'Failed to add user to ID Broker (Employee ID: %s). '
+                    'Failed to add user to ID Broker (%s). '
                     . 'Error %s: %s. [%s]',
-                    var_export($userToAdd->getEmployeeId(), true),
+                    $userToAdd->getStringForLogMessage(),
                     $e->getCode(),
                     $e->getMessage(),
                     1494360152
