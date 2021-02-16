@@ -24,7 +24,7 @@ class User
      * @var array<string,mixed>
      */
     private $values = [];
-    
+
     /**
      * Create a new User model from the given user info, which must be an
      * associative array with keys matching this class's constants and which
@@ -37,20 +37,20 @@ class User
         if (empty($userInfo[self::EMPLOYEE_ID])) {
             throw new InvalidArgumentException('Employee ID cannot be empty.', 1493733219);
         }
-        
+
         // Set all of the provided fields, taking whatever value was given.
         foreach (self::getAllFieldNames() as $fieldName) {
             if (array_key_exists($fieldName, $userInfo)) {
                 $this->values[$fieldName] = $userInfo[$fieldName];
             }
         }
-        
+
         // Ensure fields with stricter constraints have valid values.
         $this->values[self::EMPLOYEE_ID] = (string)$userInfo[self::EMPLOYEE_ID];
         $this->setLocked($userInfo[self::LOCKED] ?? null);
         $this->setRequireMfa($userInfo[self::REQUIRE_MFA] ?? null);
     }
-    
+
     /**
      * Get the list of all of the field names supported by this User model.
      *
@@ -73,7 +73,7 @@ class User
             self::USERNAME,
         ];
     }
-    
+
     /**
      * @return string
      */
@@ -81,7 +81,7 @@ class User
     {
         return $this->values[self::EMPLOYEE_ID];
     }
-    
+
     /**
      * @return null|string
      */
@@ -89,7 +89,7 @@ class User
     {
         return $this->values[self::FIRST_NAME] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -97,7 +97,7 @@ class User
     {
         return $this->values[self::LAST_NAME] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -105,7 +105,7 @@ class User
     {
         return $this->values[self::DISPLAY_NAME] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -113,7 +113,7 @@ class User
     {
         return $this->values[self::USERNAME] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -121,7 +121,7 @@ class User
     {
         return $this->values[self::EMAIL] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -129,7 +129,7 @@ class User
     {
         return $this->values[self::ACTIVE] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -137,7 +137,7 @@ class User
     {
         return $this->values[self::LOCKED] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -145,7 +145,7 @@ class User
     {
         return $this->values[self::MANAGER_EMAIL] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -153,7 +153,7 @@ class User
     {
         return $this->values[self::REQUIRE_MFA] ?? null;
     }
-    
+
     /**
      * @return null|string
      */
@@ -188,7 +188,7 @@ class User
     {
         return \json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
-    
+
     protected function isAffirmative($value)
     {
         if ($value === null) {
@@ -196,30 +196,30 @@ class User
         } elseif (is_bool($value)) {
             return $value;
         }
-        
+
         $lowercasedValue = strtolower(trim($value));
-        
+
         return in_array($lowercasedValue, ['true', 'yes', '1'], true);
     }
-    
+
     protected function setLocked($input)
     {
         if ($input === null) {
             return;
         }
-        
+
         $this->values[self::LOCKED] = $this->isAffirmative($input) ? 'yes' : 'no';
     }
-    
+
     protected function setRequireMfa($input)
     {
         if ($input === null) {
             return;
         }
-        
+
         $this->values[self::REQUIRE_MFA] = $this->isAffirmative($input) ? 'yes' : 'no';
     }
-    
+
     /**
      * Get this User object's data as an associative array.
      *
