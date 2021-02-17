@@ -18,24 +18,24 @@ class Synchronizer
     /** @var float */
     const MIN_NUM_CHANGES_ALLOWED = 10;
     const SAFETY_CUTOFF_DEFAULT = 0.15;
-    
+
     public $dateTimeFormat = 'n/j/y g:ia T';
-    
+
     /** @var IdBrokerInterface */
     private $idBroker;
-    
+
     /** @var IdStoreInterface */
     private $idStore;
-    
+
     /** @var LoggerInterface */
     private $logger;
-    
+
     /** @var NotifierInterface */
     private $notifier;
-    
+
     /** @var float */
     private $safetyCutoff;
-    
+
     /**
      * Create a new Synchronizer object.
      *
@@ -66,14 +66,14 @@ class Synchronizer
         $this->logger = $logger ?? new NullLogger();
         $this->notifier = $notifier ?? new NullNotifier();
         $this->safetyCutoff = $safetyCutoff ?? self::SAFETY_CUTOFF_DEFAULT;
-        
+
         $this->logger->info('Safety cutoff: {value}', [
             'value' => var_export($this->safetyCutoff, true),
         ]);
-        
+
         $this->assertValidSafetyCutoff($this->safetyCutoff);
     }
-    
+
     /**
      * Abort the sync (and log an error message) due to surpassing the safety
      * cutoff.
@@ -108,7 +108,7 @@ class Synchronizer
         $this->logger->error($errorMessage);
         throw new Exception($errorMessage, $errorCode);
     }
-    
+
     /**
      * Update the given user in the ID Broker, setting it to be active.
      *
@@ -121,7 +121,7 @@ class Synchronizer
         );
         $this->logger->info('Updated/activated user: ' . $user->getEmployeeId());
     }
-    
+
     /**
      * Update the given Users in the ID Broker, setting them to be active.
      *
@@ -136,25 +136,24 @@ class Synchronizer
                 $employeeIdsOfUsersUpdated[] = $userToUpdateAndActivate->getEmployeeId();
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
-                    'Failed to update/activate user in the ID Broker (Employee ID: %s). '
-                    . 'Error %s: %s. [%s]',
-                    var_export($userToUpdateAndActivate->getEmployeeId(), true),
+                    'Failed to update/activate user in the ID Broker (%s). Error %s: %s. [%s]',
+                    $userToUpdateAndActivate->getStringForLogMessage(),
                     $e->getCode(),
                     $e->getMessage(),
                     1494360119
                 ));
             }
         }
-        
+
         $this->logger->notice([
             'action' => 'update',
             'attempted' => count($usersToUpdateAndActivate),
             'succeeded' => count($employeeIdsOfUsersUpdated),
         ]);
-        
+
         $this->idStore->updateSyncDatesIfSupported($employeeIdsOfUsersUpdated);
     }
-    
+
     protected function assertValidSafetyCutoff($value)
     {
         if (! self::isValidSafetyCutoff($value)) {
@@ -166,7 +165,7 @@ class Synchronizer
             throw new InvalidArgumentException($errorMessage, 1500322937);
         }
     }
-    
+
     /**
      * Create the given user in the ID Broker.
      *
@@ -181,7 +180,7 @@ class Synchronizer
         $this->idBroker->createUser($user->toArray());
         $this->logger->info('Created user: ' . $user->getEmployeeId());
     }
-    
+
     /**
      * Create the given Users in the ID Broker.
      *
@@ -196,36 +195,36 @@ class Synchronizer
                 $this->createUser($userToAdd);
                 $employeeIdsOfUsersAdded[] = $userToAdd->getEmployeeId();
             } catch (MissingEmailException $e) {
-                $this->logger->warning(sprintf(
-                    'A User (Employee ID: %s) lacked an email address.',
-                    $userToAdd->getEmployeeId()
+                $this->logger->info(sprintf(
+                    'A User (%s) lacked an email address.',
+                    $userToAdd->getStringForLogMessage()
                 ));
                 $usersWithoutEmail[] = $userToAdd;
             } catch (Exception $e) {
                 $this->logger->error(sprintf(
-                    'Failed to add user to ID Broker (Employee ID: %s). '
+                    'Failed to add user to ID Broker (%s). '
                     . 'Error %s: %s. [%s]',
-                    var_export($userToAdd->getEmployeeId(), true),
+                    $userToAdd->getStringForLogMessage(),
                     $e->getCode(),
                     $e->getMessage(),
                     1494360152
                 ));
             }
         }
-        
+
         $this->logger->notice([
             'action' => 'create',
             'attempted' => count($usersToAdd),
             'succeeded' => count($employeeIdsOfUsersAdded),
         ]);
-        
+
         $this->idStore->updateSyncDatesIfSupported($employeeIdsOfUsersAdded);
-        
+
         if (! empty($usersWithoutEmail)) {
             $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
         }
     }
-    
+
     public static function countActiveUsers($usersInfo, $activeFieldName = 'active')
     {
         return array_reduce($usersInfo, function ($carry, $userInfo) use ($activeFieldName) {
@@ -235,7 +234,7 @@ class Synchronizer
             return $carry;
         }, 0);
     }
-    
+
     /**
      * Deactivate the specified user in the ID Broker.
      *
@@ -246,7 +245,7 @@ class Synchronizer
         $this->idBroker->deactivateUser($employeeId);
         $this->logger->info('Deactivated user: ' . $employeeId);
     }
-    
+
     /**
      * Deactivate the specified users in the ID Broker.
      *
@@ -271,16 +270,16 @@ class Synchronizer
                 ));
             }
         }
-        
+
         $this->logger->notice([
             'action' => 'deactivate',
             'attempted' => count($employeeIdsToDeactivate),
             'succeeded' => count($employeeIdsDeactivated),
         ]);
-        
+
         $this->idStore->updateSyncDatesIfSupported($employeeIdsDeactivated);
     }
-    
+
     /**
      * Get a list of all users in the ID Broker, indexed by `employee_id`.
      *
@@ -297,14 +296,14 @@ class Synchronizer
                 join(', ', $fields)
             ), 1501181580);
         }
-        
+
         $rawList = $this->idBroker->listUsers($fields);
         $usersByEmployeeId = [];
-        
+
         foreach ($rawList as $user) {
             /* @var $user User */
             $employeeId = $user->getEmployeeId();
-            
+
             // Prevent duplicates.
             if (array_key_exists($employeeId, $usersByEmployeeId)) {
                 $this->logger->error(sprintf(
@@ -314,15 +313,15 @@ class Synchronizer
                 ));
                 continue;
             }
-            
+
             $userInfo = $user->toArray();
             unset($userInfo[User::EMPLOYEE_ID]);
             $usersByEmployeeId[$employeeId] = $userInfo;
         }
-        
+
         return $usersByEmployeeId;
     }
-    
+
     protected function getNumActiveUsersInBroker($idBrokerUsersInfo = null)
     {
         if ($idBrokerUsersInfo === null) {
@@ -333,7 +332,7 @@ class Synchronizer
         }
         return self::countActiveUsers($idBrokerUsersInfo);
     }
-    
+
     protected function getNumChangesAllowed($numActiveUsersInBroker)
     {
         // If Broker is essentially empty, don't limit how many changes can be
@@ -342,18 +341,18 @@ class Synchronizer
         if ($numActiveUsersInBroker < 10) {
             return PHP_INT_MAX;
         }
-        
+
         return max(
             ceil($numActiveUsersInBroker * $this->safetyCutoff),
             self::MIN_NUM_CHANGES_ALLOWED
         );
     }
-    
+
     public static function isValidSafetyCutoff($value)
     {
         return is_numeric($value) && ($value >= 0.0);
     }
-    
+
     /**
      * Do a full synchronization, requesting all users from the ID Store and
      * updating all records in the ID Broker.
@@ -366,31 +365,31 @@ class Synchronizer
             'Syncing all users... (%s)',
             $this->idStore->getIdStoreName()
         ));
-        
+
         $idStoreUsers = $this->idStore->getAllActiveUsers();
         $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
             'employee_id',
             'active',
         ]);
-        
+
         $numActiveUsersInBroker = $this->getNumActiveUsersInBroker(
             $idBrokerUserInfoByEmployeeId
         );
-        
+
         $usersToAdd = [];
         $usersToUpdateAndActivate = [];
         $employeeIdsToDeactivate = [];
         $employeeIdsAlreadyInactive = [];
-        
+
         $this->logger->info(sprintf(
             'Found %s ID Store users and %s ID Broker users.',
             count($idStoreUsers),
             count($idBrokerUserInfoByEmployeeId)
         ));
-        
+
         foreach ($idStoreUsers as $idStoreUser) {
             $employeeId = $idStoreUser->getEmployeeId();
-            
+
             if (empty($employeeId)) {
                 $this->logger->warning(sprintf(
                     'Received an empty Employee ID (%s) in the list of users '
@@ -399,7 +398,7 @@ class Synchronizer
                 ));
                 continue;
             }
-            
+
             if (array_key_exists($employeeId, $idBrokerUserInfoByEmployeeId)) {
                 // User exists in both places. Update and set as active:
                 $usersToUpdateAndActivate[] = $idStoreUser;
@@ -407,12 +406,12 @@ class Synchronizer
                 // User is only in the ID Store. Add to ID Broker:
                 $usersToAdd[] = $idStoreUser;
             }
-            
+
             // Remove that user from the list of ID Broker users who have not
             // yet been processed.
             unset($idBrokerUserInfoByEmployeeId[$employeeId]);
         }
-        
+
         // Deactivate the remaining (unprocessed) users in the ID Broker list.
         foreach ($idBrokerUserInfoByEmployeeId as $employeeId => $userInfo) {
             // If this user not currently inactive, deactivate them.
@@ -422,9 +421,9 @@ class Synchronizer
                 $employeeIdsAlreadyInactive[] = $employeeId;
             }
         }
-        
+
         $numChangesAllowed = $this->getNumChangesAllowed($numActiveUsersInBroker);
-        
+
         if (count($usersToAdd) > $numChangesAllowed) {
             $this->abortSync(
                 'create',
@@ -434,7 +433,7 @@ class Synchronizer
                 1501165932
             );
         }
-        
+
         /**
          * NOTE: If we begin intelligently comparing users found in both places
          * and only updating those that need it, then we could limit updates to
@@ -442,7 +441,7 @@ class Synchronizer
          * to exist in both places, so for a full sync that will almost always
          * be above the safety cutoff.
          */
-        
+
         if (count($employeeIdsToDeactivate) > $numChangesAllowed) {
             $this->abortSync(
                 'deactivate',
@@ -452,20 +451,20 @@ class Synchronizer
                 1499971625
             );
         }
-        
+
         $this->createUsers($usersToAdd);
         $this->activateAndUpdateUsers($usersToUpdateAndActivate);
         $this->deactivateUsers($employeeIdsToDeactivate);
-        
+
         $this->logger->notice([
             'action' => 'none (already inactive)',
             'count' => count($employeeIdsAlreadyInactive),
         ]);
         $this->idStore->updateSyncDatesIfSupported($employeeIdsAlreadyInactive);
-        
+
         $this->logger->info('Done attempting to sync all users.');
     }
-    
+
     /**
      * Synchronize a specific user, requesting their information from the
      * ID Store and updating it accordingly in the ID Broker.
@@ -478,7 +477,7 @@ class Synchronizer
             $this->syncUserInternal($employeeId);
             $this->idStore->updateSyncDatesIfSupported([$employeeId]);
         } catch (MissingEmailException $e) {
-            $this->logger->warning(sprintf(
+            $this->logger->info(sprintf(
                 'That User (Employee ID: %s) lacked an email address.',
                 $employeeId
             ));
@@ -495,7 +494,7 @@ class Synchronizer
             ));
         }
     }
-    
+
     /**
      * Actually make the calls to synchronize the specified user.
      *
@@ -509,13 +508,13 @@ class Synchronizer
                 1491336331
             );
         }
-        
+
         $idStoreUser = $this->idStore->getActiveUser($employeeId);
         $idBrokerUser = $this->idBroker->getUser($employeeId);
-        
+
         $isInIdStore = ($idStoreUser !== null);
         $isInIdBroker = ($idBrokerUser !== null);
-        
+
         if ($isInIdStore) {
             if ($isInIdBroker) {
                 $this->activateAndUpdateUser($idStoreUser);
@@ -534,7 +533,7 @@ class Synchronizer
             }
         }
     }
-    
+
     /**
      * Synchronize a specific set of users.
      *
@@ -548,10 +547,10 @@ class Synchronizer
             count($employeeIds),
             $this->idStore->getIdStoreName()
         ));
-        
+
         $usersWithoutEmail = [];
         $employeeIdsSynced = [];
-        
+
         foreach ($employeeIds as $employeeId) {
             if (empty($employeeId)) {
                 $this->logger->warning(sprintf(
@@ -561,12 +560,12 @@ class Synchronizer
                 ));
                 continue;
             }
-            
+
             try {
                 $this->syncUserInternal($employeeId);
                 $employeeIdsSynced[] = $employeeId;
             } catch (MissingEmailException $e) {
-                $this->logger->warning(sprintf(
+                $this->logger->info(sprintf(
                     'A User (Employee ID: %s) lacked an email address.',
                     $employeeId
                 ));
@@ -584,19 +583,19 @@ class Synchronizer
                 ));
             }
         }
-        
+
         $this->idStore->updateSyncDatesIfSupported($employeeIdsSynced);
-        
+
         if (! empty($usersWithoutEmail)) {
             $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
         }
-        
+
         $this->logger->info(sprintf(
             'Done attempting to sync %s specific users.',
             count($employeeIds)
         ));
     }
-    
+
     /**
      * Get the list of users that the ID Store believes have been changed
      * (added, altered, or removed/deactivated) since the given timestamp, then
@@ -611,16 +610,16 @@ class Synchronizer
             date($this->dateTimeFormat, $timestamp),
             $this->idStore->getIdStoreName()
         ));
-        
+
         $changedUsers = $this->idStore->getUsersChangedSince($timestamp);
         $employeeIds = [];
         foreach ($changedUsers as $changedUser) {
             $employeeIds[] = $changedUser->getEmployeeId();
         }
-        
+
         $numActiveUsersInBroker = $this->getNumActiveUsersInBroker();
         $numChangesAllowed = $this->getNumChangesAllowed($numActiveUsersInBroker);
-        
+
         if (count($employeeIds) > $numChangesAllowed) {
             $this->abortSync(
                 'change',
@@ -630,9 +629,9 @@ class Synchronizer
                 1501177946
             );
         }
-        
+
         $this->syncUsers($employeeIds);
-        
+
         $this->logger->info(sprintf(
             'Done attempting to sync users changed since %s.',
             date($this->dateTimeFormat, $timestamp)
