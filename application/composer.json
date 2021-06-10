@@ -1,6 +1,12 @@
 {
   "name": "silinternational/idp-id-sync",
   "minimum-stability": "stable",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
   "require": {
     "php": ">=7.0",
     "ext-json": "*",
