@@ -1,7 +1,14 @@
-FROM silintl/php7:7.2
-MAINTAINER Matt Henderson <matt_henderson@sil.org>
+FROM silintl/php7:7.4
+LABEL maintainer="matt_henderson@sil.org"
 
-ENV REFRESHED_AT 2020-04-07
+ENV REFRESHED_AT 2020-06-10
+
+# Install cron
+RUN apt-get update \
+    && apt-get install -y \
+       cron \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /data
 
