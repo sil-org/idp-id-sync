@@ -2,7 +2,6 @@ app:
     build:
         image: silintl/idp-id-sync
         dockerfile_path: ./Dockerfile
-        cached: true
     depends_on:
         - broker
         - brokerdb

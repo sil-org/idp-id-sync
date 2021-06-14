@@ -57,7 +57,7 @@ services:
         command: whenavail brokerdb 3306 60 ./run.sh
 
     brokerdb:
-        image: silintl/mariadb:latest
+        image: mariadb:10
         ports:
             - "3306"
         environment:

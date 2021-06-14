@@ -22,12 +22,12 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v2.18.2",
+            "version": "v2.19.0",
             "description": "A tool to automatically fix PHP code style"
         },
         {
             "name": "google/apiclient",
-            "version": "v2.9.1",
+            "version": "v2.9.2",
             "description": "Client library for Google APIs"
         },
         {
@@ -42,7 +42,7 @@
         },
         {
             "name": "roave/security-advisories",
-            "version": "dev-master 5f40d4d",
+            "version": "dev-master ba84189",
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it"
         },
         {
@@ -77,12 +77,12 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.40",
+            "version": "2.0.42.1",
             "description": "Yii PHP Framework Version 2"
         },
         {
             "name": "yiisoft/yii2-gii",
-            "version": "2.2.1",
+            "version": "2.2.2",
             "description": "The Gii extension for the Yii framework"
         },
         {
