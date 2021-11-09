@@ -36,7 +36,7 @@ class SiteController extends BaseRestController
         }
 
         // This sends error emails to the dev team too often
-        // $this->checkNotifierStats($notifier);
+        // $this->checkNotifierStatus($notifier);
 
         try {
             /* @var $idBroker IdBrokerInterface */
@@ -54,7 +54,7 @@ class SiteController extends BaseRestController
         }
     }
 
-    private function checkNotifierStats($notifier)
+    private function checkNotifierStatus($notifier)
     {
         try {
             $notifier->getSiteStatus();
