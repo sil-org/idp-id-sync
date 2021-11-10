@@ -26,7 +26,7 @@ class SiteController extends BaseRestController
     {
         /* @var $webApp \yii\web\Application */
         $webApp = \Yii::$app;
-        
+
         try {
             /* @var $notifier NotifierInterface */
             $notifier = $webApp->get('notifier');
@@ -34,14 +34,10 @@ class SiteController extends BaseRestController
             \Yii::error($e->getMessage());
             throw new Exception500("Check notifier component's configuration.");
         }
-        
-        try {
-            $notifier->getSiteStatus();
-        } catch (Exception $e) {
-            \Yii::error($e->getMessage());
-            throw new Exception500('Problem with notifier. Is email service down?');
-        }
-        
+
+        // This sends error emails to the dev team too often
+        // $this->checkNotifierStatus($notifier);
+
         try {
             /* @var $idBroker IdBrokerInterface */
             $idBroker = $webApp->get('idBroker');
@@ -55,6 +51,16 @@ class SiteController extends BaseRestController
         } catch (Exception $e) {
             \Yii::error($e->getMessage());
             throw new Exception500('Problem with ID Broker service.');
+        }
+    }
+
+    private function checkNotifierStatus($notifier)
+    {
+        try {
+            $notifier->getSiteStatus();
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage());
+            throw new Exception500('Problem with notifier. Is email service down?');
         }
     }
 

@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.1.4] - 2021-11-10
+### Removed
+- Avoid error spam by removing email service status check
+
+## [4.1.3] - 2021-11-10
+### Fixed
+- Fixed `env` value in logs
+
+## [4.1.2] - 2021-11-10
+### Changed
+- Upgraded to PHP 7.4
+
 ## [4.1.1] - 2021-02-17
 ### Fixed
 - Included more detail in sync error messages
