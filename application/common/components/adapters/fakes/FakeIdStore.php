@@ -10,7 +10,7 @@ class FakeIdStore extends IdStoreBase
     private $activeUsers = [];
     private $updatedSyncDateFor = [];
     private $userChanges = [];
-    
+
     /**
      * @param array $activeUsersSparseInfo - An array (indexed by employee id)
      *     of info about ACTIVE users (which may each include only a subset of
@@ -30,7 +30,7 @@ class FakeIdStore extends IdStoreBase
         $this->userChanges = $userChanges;
         parent::__construct($config);
     }
-    
+
     /**
      * Take the (potentially incomplete) user info and add null values for all
      * missing fields, then add the result to our list of active users in this
@@ -42,12 +42,12 @@ class FakeIdStore extends IdStoreBase
     private function addUserFromSparseInfo(string $employeeId, array $sparseUserInfo)
     {
         $userInfo = [];
-        foreach (array_keys(self::getIdBrokerFieldNames()) as $idStoreFieldName) {
+        foreach (array_keys(self::getFieldNameMap()) as $idStoreFieldName) {
             $userInfo[$idStoreFieldName] = $sparseUserInfo[$idStoreFieldName] ?? null;
         }
         $this->activeUsers[$employeeId] = $userInfo;
     }
-    
+
     /**
      * WARNING: This function only exists on the FAKE ID Store, and should only
      * be used for setting up tests.
@@ -60,7 +60,7 @@ class FakeIdStore extends IdStoreBase
         $record = $this->activeUsers[$employeeId];
         $this->activeUsers[$employeeId] = ArrayHelper::merge($record, $changes);
     }
-    
+
     public function getActiveUser(string $employeeId)
     {
         $idStoreUser = $this->activeUsers[$employeeId] ?? null;
@@ -88,7 +88,7 @@ class FakeIdStore extends IdStoreBase
         return self::getAsUsers($this->activeUsers);
     }
 
-    public static function getIdBrokerFieldNames()
+    public static function getFieldNameMap()
     {
         return [
             'employeenumber' => User::EMPLOYEE_ID,
@@ -108,12 +108,12 @@ class FakeIdStore extends IdStoreBase
     {
         return 'the fake ID Store';
     }
-    
+
     public function wasSyncDateUpdatedFor(string $employeeId)
     {
         return $this->updatedSyncDateFor[$employeeId] ?? false;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -123,7 +123,7 @@ class FakeIdStore extends IdStoreBase
             $this->updatedSyncDateFor[$employeeId] = true;
         }
     }
-    
+
     public function listEmployeeIdsWithUpdatedSyncDate()
     {
         $employeeIds = [];

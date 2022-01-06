@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Renamed internal user fields from "broker" to "internal"
 
 ## [4.1.4] - 2021-11-10
 ### Removed

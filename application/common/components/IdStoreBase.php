@@ -22,20 +22,20 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
         self::ADAPTER_WORKDAY => WorkdayIdStore::class,
         self::ADAPTER_SAGE_PEOPLE => SagePeopleIdStore::class,
     ];
-    
+
     public static function getAdapterClassFor($adapterName)
     {
         if (array_key_exists($adapterName, self::$adapters)) {
             return self::$adapters[$adapterName];
         }
-        
+
         throw new \InvalidArgumentException(sprintf(
             "Unknown ID Store adapter (%s). Must be one of the following: \n%s\n",
             $adapterName,
             join("\n", array_keys(self::$adapters))
         ), 1491316896);
     }
-    
+
     /**
      * Convert user information keyed on ID Store field names into a User object.
      *
@@ -44,9 +44,9 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
      */
     protected static function getAsUser($idStoreUserInfo)
     {
-        return new User(self::translateToIdBrokerFieldNames($idStoreUserInfo));
+        return new User(self::translateToInternalFieldNames($idStoreUserInfo));
     }
-    
+
     /**
      * Convert information about a list of users (each being an array of user
      * information keyed on ID Store field names) into a list of User objects.
@@ -61,48 +61,48 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
             return self::getAsUser($entry);
         }, $idStoreUserInfoList);
     }
-    
+
     /**
-     * Get the list of ID Broker field names, indexed by the equivalent ID Store
+     * Get the list of Internal field names, indexed by the equivalent ID Store
      * field names.
      *
      * @var array<string,string>
      */
-    abstract public static function getIdBrokerFieldNames();
-    
+    abstract public static function getFieldNameMap();
+
     /**
-     * Get the ID Broker field name corresponding to the given ID Store field
-     * name. If there is no such ID Broker field, return null.
+     * Get the internal field name corresponding to the given ID Store field
+     * name. If there is no such internal field, return null.
      *
      * @param string $idStoreFieldName
      * @return string|null
      */
-    protected static function getIdBrokerFieldNameFor(string $idStoreFieldName)
+    protected static function getInternalFieldNameFor(string $idStoreFieldName)
     {
-        $idBrokerFieldNames = static::getIdBrokerFieldNames();
-        return $idBrokerFieldNames[$idStoreFieldName] ?? null;
+        $internalFieldNames = static::getFieldNameMap();
+        return $internalFieldNames[$idStoreFieldName] ?? null;
     }
-    
+
     /**
      * Take the given user info and translate the keys from the field names used
-     * by the ID Store to those used by the ID Broker.
+     * by the ID Store to those used internally.
      *
      * @param array $userFromIdStore
-     * @return array The array of user information, keyed on the ID Broker
+     * @return array The array of user information, keyed on the internal
      *     version of the field names.
      */
-    public static function translateToIdBrokerFieldNames(array $userFromIdStore)
+    public static function translateToInternalFieldNames(array $userFromIdStore)
     {
-        $userForIdBroker = [];
-        
+        $internalUser = [];
+
         foreach ($userFromIdStore as $idStoreFieldName => $value) {
-            $idBrokerFieldName = self::getIdBrokerFieldNameFor($idStoreFieldName);
-            if ($idBrokerFieldName !== null) {
-                $userForIdBroker[$idBrokerFieldName] = $value;
+            $internalFieldName = self::getInternalFieldNameFor($idStoreFieldName);
+            if ($internalFieldName !== null) {
+                $internalUser[$internalFieldName] = $value;
             }
         }
-        
-        return $userForIdBroker;
+
+        return $internalUser;
     }
 
     /**
