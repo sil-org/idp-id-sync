@@ -72,7 +72,8 @@ class SyncContext implements Context
         $this->makeFakeIdStoreWithUser($tempIdStoreUserInfo);
     }
 
-    protected function makeFakeIdStoreWithUser($user) {
+    protected function makeFakeIdStoreWithUser($user)
+    {
         $this->tempEmployeeId = $user['employeenumber'];
 
         $this->idStore = $this->getFakeIdStore([
