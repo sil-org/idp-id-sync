@@ -91,6 +91,7 @@ class FakeIdStore extends IdStoreBase
     public static function getFieldNameMap()
     {
         return [
+            // No 'active' needed, since all ID Store records returned are active.
             'employeenumber' => User::EMPLOYEE_ID,
             'firstname' => User::FIRST_NAME,
             'lastname' => User::LAST_NAME,
@@ -100,7 +101,9 @@ class FakeIdStore extends IdStoreBase
             'locked' => User::LOCKED,
             'requires2sv' => User::REQUIRE_MFA,
             'supervisoremail' => User::MANAGER_EMAIL,
-            // No 'active' needed, since all ID Store records returned are active.
+
+            'hrname' => User::HR_CONTACT_NAME,
+            'hremail' => User::HR_CONTACT_EMAIL,
         ];
     }
 

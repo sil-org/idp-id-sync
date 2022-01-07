@@ -68,3 +68,9 @@ Alternate email address of the user. Upon creation of a new user, if specified, 
 
 ### Groups (`groups`)
 A comma-separated list of groups that can be used to limit access to certain applications (SAML Service Providers) based on SAML configuration elsewhere in the IdP system.
+
+### HR Contact Name (`hr_contact_name`)
+Name of Human Resources contact person, used for notifications such as "New User" notification.
+
+### HR Contact Email (`hr_contact_email`)
+Email address of Human Resources contact person, used for notifications such as "New User" notification.

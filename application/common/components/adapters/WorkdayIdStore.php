@@ -41,6 +41,7 @@ class WorkdayIdStore extends IdStoreBase
     public static function getFieldNameMap(): array
     {
         return [
+            // 'active' field isn't needed, since all Workday records returned are active.
             'Employee_Number' => User::EMPLOYEE_ID,
             'First_Name' => User::FIRST_NAME,
             'Last_Name' => User::LAST_NAME,
@@ -52,7 +53,9 @@ class WorkdayIdStore extends IdStoreBase
             'Manager_Email' => User::MANAGER_EMAIL,
             'Personal_Email' => User::PERSONAL_EMAIL,
             'Groups' => User::GROUPS,
-            // No 'active' needed, since all ID Store records returned are active.
+
+            'HR_Contact_Name' => User::HR_CONTACT_NAME,
+            'HR_Contact_Email' => User::HR_CONTACT_EMAIL,
         ];
     }
 
