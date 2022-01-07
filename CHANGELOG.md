@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Renamed internal user fields from "broker" to "internal"
+- Added two new user fields: `hr_contact_name`, and `hr_contact_email`
 
 ## [4.1.4] - 2021-11-10
 ### Removed
