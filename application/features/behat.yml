@@ -28,3 +28,6 @@ default:
                 tags: '~@usersChangedSince && ~@canUpdateLastSynced'
             paths:    [ "%paths.base%/../features/id-store-integration.feature" ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\SagePeopleIntegrationContext ]
+        notification_features:
+            paths:    [ "%paths.base%/../features/notification.feature" ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\NotificationContext ]

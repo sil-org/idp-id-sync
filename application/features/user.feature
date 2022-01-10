@@ -47,25 +47,33 @@ Feature: Standardizing user info
     Then the result should ONLY contain <field> and an Employee ID
 
     Examples:
-      | field         | input                    |
-      | active        | 'yes'                    |
-      | active        | 'no'                     |
-      | active        | null                     |
-      | display_name  | 'First Last'             |
-      | display_name  | null                     |
-      | email         | 'first_last@example.com' |
-      | email         | null                     |
-      | first_name    | 'First'                  |
-      | first_name    | null                     |
-      | last_name     | 'Last'                   |
-      | last_name     | null                     |
-      | locked        | 'yes'                    |
-      | locked        | 'no'                     |
-      | locked        | null                     |
-      | manager_email | 'manager@example.com'    |
-      | manager_email | null                     |
-      | require_mfa   | 'yes'                    |
-      | require_mfa   | 'no'                     |
-      | require_mfa   | null                     |
-      | username      | 'first_last'             |
-      | username      | null                     |
+      | field               | input                      |
+      | active              | 'yes'                      |
+      | active              | 'no'                       |
+      | active              | null                       |
+      | display_name        | 'First Last'               |
+      | display_name        | null                       |
+      | email               | 'first_last@example.com'   |
+      | email               | null                       |
+      | first_name          | 'First'                    |
+      | first_name          | null                       |
+      | groups              | 'group1,group2'            |
+      | groups              | null                       |
+      | hr_contact_name     | 'Toby Flenderson'          |
+      | hr_contact_name     | null                       |
+      | hr_contact_email    | 'tobyf@office.example.com' |
+      | hr_contact_email    | null                       |
+      | last_name           | 'Last'                     |
+      | last_name           | null                       |
+      | locked              | 'yes'                      |
+      | locked              | 'no'                       |
+      | locked              | null                       |
+      | manager_email       | 'michaels@example.com'     |
+      | manager_email       | null                       |
+      | personal_email      | 'personal@example.com'     |
+      | personal_email      | null                       |
+      | require_mfa         | 'yes'                      |
+      | require_mfa         | 'no'                       |
+      | require_mfa         | null                       |
+      | username            | 'first_last'               |
+      | username            | null                       |

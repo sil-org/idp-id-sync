@@ -67,7 +67,7 @@ class SagePeopleIdStore extends IdStoreBase
      * and values being the ID Broker field names.
      * @return array
      */
-    public static function getIdBrokerFieldNames()
+    public static function getFieldNameMap()
     {
         return [
             self::PROP_EMPLOYEE_ID => User::EMPLOYEE_ID,

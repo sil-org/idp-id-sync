@@ -14,11 +14,11 @@ class WorkdayIdStore extends IdStoreBase
     public $username = null;
     public $password = null;
     public $groupsFields = null;
-    
+
     public $timeout = 45; // Timeout in seconds (per call to ID Store API).
-    
+
     protected $httpClient = null;
-    
+
     public function init()
     {
         $requiredProperties = [
@@ -34,13 +34,14 @@ class WorkdayIdStore extends IdStoreBase
                 ), 1532982562);
             }
         }
-        
+
         parent::init();
     }
-    
-    public static function getIdBrokerFieldNames()
+
+    public static function getFieldNameMap(): array
     {
         return [
+            // 'active' field isn't needed, since all Workday records returned are active.
             'Employee_Number' => User::EMPLOYEE_ID,
             'First_Name' => User::FIRST_NAME,
             'Last_Name' => User::LAST_NAME,
@@ -52,10 +53,12 @@ class WorkdayIdStore extends IdStoreBase
             'Manager_Email' => User::MANAGER_EMAIL,
             'Personal_Email' => User::PERSONAL_EMAIL,
             'Groups' => User::GROUPS,
-            // No 'active' needed, since all ID Store records returned are active.
+
+            'HR_Contact_Name' => User::HR_CONTACT_NAME,
+            'HR_Contact_Email' => User::HR_CONTACT_EMAIL,
         ];
     }
-    
+
     /**
      * Get the specified user's information. Note that inactive users will be
      * treated as non-existent users.
@@ -69,7 +72,7 @@ class WorkdayIdStore extends IdStoreBase
     {
         throw new Exception(__FUNCTION__ . ' not yet implemented');
     }
-    
+
     /**
      * Get a list of users' information (containing at least an Employee ID) for
      * all users changed since the specified time.
@@ -82,7 +85,7 @@ class WorkdayIdStore extends IdStoreBase
     {
         throw new Exception(__FUNCTION__ . ' not yet implemented');
     }
-    
+
     /**
      * Get information about each of the (active) users.
      *
@@ -100,7 +103,7 @@ class WorkdayIdStore extends IdStoreBase
             ],
             'http_errors' => false,
         ]);
-        
+
         $statusCode = (int)$response->getStatusCode();
         if ($statusCode === 404) {
             $allActiveUsers = null;
@@ -115,7 +118,7 @@ class WorkdayIdStore extends IdStoreBase
                 $response->getBody()
             ), 1533069498);
         }
-        
+
         if (! is_array($allActiveUsers)) {
             throw new Exception(sprintf(
                 'Unexpected result when getting all active users: %s',
@@ -127,7 +130,7 @@ class WorkdayIdStore extends IdStoreBase
 
         return self::getAsUsers($allActiveUsers);
     }
-    
+
     /**
      * Get the HTTP client to use.
      *
@@ -140,7 +143,7 @@ class WorkdayIdStore extends IdStoreBase
         }
         return $this->httpClient;
     }
-    
+
     public function getIdStoreName(): string
     {
         return 'Workday';

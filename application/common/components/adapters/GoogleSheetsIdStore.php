@@ -11,33 +11,33 @@ class GoogleSheetsIdStore extends IdStoreBase
      * @var null|string The Application Name to use with Google_Client.
      */
     public $applicationName = null;
-    
+
     /**
      * @var null|string The path to the JSON file with authentication
      *     credentials from Google.
      */
     public $jsonAuthFilePath = null;
-    
+
     /**
      * @var null|string The JSON authentication credentials from Google.
      */
     public $jsonAuthString = null;
-    
+
     /**
      * @var null|string The Spreadsheet ID.
      */
     public $spreadsheetId = null;
-    
+
     /**
      * @var array<string> OAuth Scopes needed for reading/writing sheets.
      */
     public $scopes = [\Google_Service_Sheets::SPREADSHEETS];
-    
+
     /**
      * @var GoogleSheetsClient
      */
     private $googleSheetsClient = null;
-    
+
     /**
      * Init and ensure required properties are set
      */
@@ -50,10 +50,10 @@ class GoogleSheetsIdStore extends IdStoreBase
             'spreadsheetId' => $this->spreadsheetId,
             'scopes' => $this->scopes,
         ]);
-        
+
         parent::init();
     }
-    
+
     /**
      * Get the specified user's information. Note that inactive users will be
      * treated as non-existent users.
@@ -72,7 +72,7 @@ class GoogleSheetsIdStore extends IdStoreBase
         }
         return null;
     }
-    
+
     /**
      * Get information about each of the (active) users.
      *
@@ -81,27 +81,27 @@ class GoogleSheetsIdStore extends IdStoreBase
     public function getAllActiveUsers(): array
     {
         $allUsersInfo = $this->googleSheetsClient->getAllUsersInfo();
-        
+
         $allActiveUsersInfo = array_filter(
             $allUsersInfo,
             function ($user) {
                 return ($user[User::ACTIVE] === 'yes');
             }
         );
-        
+
         return array_map(
             function ($entry) {
                 // Unset 'active', since ID Stores only return active users.
                 unset($entry[User::ACTIVE]);
-                
+
                 // Convert the resulting user info to a User.
                 return self::getAsUser($entry);
             },
             $allActiveUsersInfo
         );
     }
-    
-    public static function getIdBrokerFieldNames(): array
+
+    public static function getFieldNameMap(): array
     {
         return [
             'employee_id' => User::EMPLOYEE_ID,
@@ -118,7 +118,7 @@ class GoogleSheetsIdStore extends IdStoreBase
             // No 'active' needed, since all ID Store records returned are active.
         ];
     }
-    
+
     /**
      * Get a user-friendly name for this ID Store.
      *
@@ -128,7 +128,7 @@ class GoogleSheetsIdStore extends IdStoreBase
     {
         return 'Google Sheets';
     }
-    
+
     /**
      * Get a list of users who have had qualifying changes (name, email, locked,
      * activated, added) since the given Unix timestamp.
