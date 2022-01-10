@@ -60,7 +60,7 @@ class SyncContext implements Context
     }
 
     /**
-     * @Given a specific user exists in the ID Store
+     * @Given a specific user exists in the ID Store (with an email address)
      */
     public function aSpecificUserExistsInTheIdStore()
     {

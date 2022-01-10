@@ -6,8 +6,8 @@ Feature: Sending notifications
     When I call the sendMissingEmailNotice function
     Then an email is sent
 
-  Scenario: Don't send missing email notification
-    Given a specific user exists in the ID Store
+  Scenario: Don't send missing email notification when the ID Store user has an email address
+    Given a specific user exists in the ID Store with an email address
       But the user does not exist in the ID Broker
     When I get the user info from the ID Store and send it to the ID Broker
     Then an email with subject "Email address missing" is not sent
