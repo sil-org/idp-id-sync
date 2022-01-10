@@ -177,17 +177,12 @@ class User
     /**
      * @return null|string
      */
-    public function getHRContactName()
-    {
-        return $this->values[self::HR_CONTACT_NAME] ?? null;
-    }
-
-    /**
-     * @return null|string
-     */
     public function getHRContactEmail()
     {
-        return $this->values[self::HR_CONTACT_EMAIL] ?? null;
+        $email = $this->values[self::HR_CONTACT_EMAIL] ?? null;
+        $name = $this->values[self::HR_CONTACT_NAME] ?? null;
+
+        return sprintf("%s <%s>", $name, $email);
     }
 
     /**
