@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Send "new user" email notification to user's HR contact upon creation in the IdP
 ### Changed
 - Renamed internal user fields from "broker" to "internal"
 - Added two new user fields: `hr_contact_name`, and `hr_contact_email`

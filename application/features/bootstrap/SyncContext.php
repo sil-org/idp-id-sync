@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
+use Sil\Idp\IdSync\common\components\notify\FakeEmailNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
@@ -28,7 +29,7 @@ class SyncContext implements Context
     private $idBroker;
 
     /** @var FakeIdStore */
-    private $idStore;
+    protected $idStore;
 
     /** @var LoggerInterface */
     protected $logger;
@@ -36,7 +37,7 @@ class SyncContext implements Context
     /** @var NotifierInterface */
     protected $notifier;
 
-    private $tempEmployeeId;
+    protected $tempEmployeeId;
 
     private $tempUserChanges = [];
 
@@ -67,6 +68,8 @@ class SyncContext implements Context
             'firstname' => 'Person',
             'lastname' => 'One',
             'email' => 'person_one@example.com',
+            'hrname' => 'HR Person',
+            'hremail' => 'hr@example.com',
         ];
 
         $this->makeFakeIdStoreWithUser($tempIdStoreUserInfo);

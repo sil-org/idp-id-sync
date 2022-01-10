@@ -2,6 +2,7 @@
 namespace Sil\Idp\IdSync\common\components\notify;
 
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
+use Sil\Idp\IdSync\common\models\User;
 
 class FakeEmailNotifier implements NotifierInterface
 {
@@ -31,5 +32,31 @@ class FakeEmailNotifier implements NotifierInterface
             'html_body' => 'This is the html body',
             'text_body' => 'This is the text body',
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function sendNewUserNotice(User $user)
+    {
+        $this->emailsSent[] = [
+            'to_address' => $user->getHRContactEmail(),
+            'subject' => sprintf(
+                'New user in orgName IdP (%s)',
+                $user->getEmployeeId()
+            ),
+            'html_body' => 'This is the html body',
+            'text_body' => 'This is the text body',
+        ];
+    }
+
+    public function findEmailBySubject($subject): array
+    {
+        foreach ($this->emailsSent as $email) {
+            if (str_contains($email['subject'], $subject)) {
+                return $email;
+            }
+        }
+        return [];
     }
 }
