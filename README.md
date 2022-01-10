@@ -46,7 +46,7 @@ A user’s first name. Required.
 A user’s last name.
 
 ### Display Name (`display_name`)
-A user’s full name. If blank, the display name will be the first name and last name concatenated.
+A user’s full name. If blank, the display name will be the first name and last name concatenated with a space in between.
 
 ### Email (`email`)
 A user’s primary email address. The user must have a primary email address. The `ALLOW_EMPTY_EMAIL` configuration option can be set to `true` to temporarily allow a user to only have a personal email address (see below). This can be useful if the onboarding process does not allow for an organizational email address to be created before the IdP user is added.
