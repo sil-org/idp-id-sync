@@ -179,6 +179,8 @@ class Synchronizer
     {
         $this->idBroker->createUser($user->toArray());
         $this->logger->info('Created user: ' . $user->getEmployeeId());
+
+        $this->notifier->sendNewUserNotice($user);
     }
 
     /**
