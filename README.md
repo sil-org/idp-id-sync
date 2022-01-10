@@ -6,9 +6,23 @@ Copy ```local.env.dist``` to ```local.env``` and supply any necessary values.
 
 ## Testing
 
+Many of the tests depend on other containers. Before running any tests, build the full development environment using
+`make start` before running tests.
+
 ### Run all except integration tests
 
 Run `make testci`
+
+### Run a single test suite
+
+- `make bash`
+- `vendor/bin/behat --config=features/behat.yml --suite=notification_features`
+
+OR
+
+- `docker-compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --suite=notification_features"`
+
+Substitute `notification_features` with any of the suites defined in `behat.yml`
 
 ### Integration tests
 
