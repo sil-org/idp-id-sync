@@ -1,6 +1,7 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
+use Exception;
 use PHPUnit\Framework\Assert;
 use Sil\Idp\IdSync\common\components\notify\FakeEmailNotifier;
 use Sil\Idp\IdSync\common\models\User;
@@ -97,5 +98,20 @@ class NotificationContext extends SyncContext
             $email['to_address'],
             "Email was not sent to " . $user->getHRContactEmail()
         );
+    }
+
+    /**
+     * @Given new user email notifications are :enabledOrDisabled
+     * @throws Exception
+     */
+    public function newUserEmailNotificationsAre($enabledOrDisabled)
+    {
+        if ($enabledOrDisabled === "enabled") {
+            $this->enableNewUserNotifications = true;
+        } else if ($enabledOrDisabled === "disabled") {
+            $this->enableNewUserNotifications = false;
+        } else {
+            throw new Exception("invalid option '$enabledOrDisabled' for email new user email notifications");
+        }
     }
 }

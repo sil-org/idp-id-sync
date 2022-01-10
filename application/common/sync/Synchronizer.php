@@ -36,6 +36,9 @@ class Synchronizer
     /** @var float */
     private $safetyCutoff;
 
+    /** @var bool */
+    private $enableNewUserNotification;
+
     /**
      * Create a new Synchronizer object.
      *
@@ -53,19 +56,23 @@ class Synchronizer
      *     rounded up (so that we can always make at least 1 change, assuming
      *     this value is > 0.0 and there are any active users in ID Broker). If
      *     no value is given, a default value will be used.
+     * @param bool $enableNewUserNotification (Optional:) Enable notification
+     *     email on new user creation.
      */
     public function __construct(
         IdStoreInterface $idStore,
         IdBrokerInterface $idBroker,
         LoggerInterface $logger = null,
         NotifierInterface $notifier = null,
-        $safetyCutoff = null
+        $safetyCutoff = null,
+        bool $enableNewUserNotification = false
     ) {
         $this->idStore = $idStore;
         $this->idBroker = $idBroker;
         $this->logger = $logger ?? new NullLogger();
         $this->notifier = $notifier ?? new NullNotifier();
         $this->safetyCutoff = $safetyCutoff ?? self::SAFETY_CUTOFF_DEFAULT;
+        $this->enableNewUserNotification = $enableNewUserNotification;
 
         $this->logger->info('Safety cutoff: {value}', [
             'value' => var_export($this->safetyCutoff, true),
@@ -180,7 +187,9 @@ class Synchronizer
         $this->idBroker->createUser($user->toArray());
         $this->logger->info('Created user: ' . $user->getEmployeeId());
 
-        $this->notifier->sendNewUserNotice($user);
+        if ($this->enableNewUserNotification) {
+            $this->notifier->sendNewUserNotice($user);
+        }
     }
 
     /**

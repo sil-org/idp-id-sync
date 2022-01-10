@@ -41,6 +41,9 @@ class SyncContext implements Context
 
     private $tempUserChanges = [];
 
+    /** @var bool */
+    protected $enableNewUserNotifications = false;
+
     public function __construct()
     {
         $this->logger = new Psr3ConsoleLogger();
@@ -90,7 +93,9 @@ class SyncContext implements Context
             $this->idStore,
             $this->idBroker,
             $this->logger,
-            $this->notifier
+            $this->notifier,
+            Synchronizer::SAFETY_CUTOFF_DEFAULT,
+            $this->enableNewUserNotifications
         );
     }
 

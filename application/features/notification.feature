@@ -19,10 +19,16 @@ Feature: Sending notifications
     Then an email is sent
       And the email subject contains "Email address missing"
 
-  Scenario: New user email notification
-    Given a specific user exists in the ID Store
+  Scenario: New user email notification - enabled
+    Given new user email notifications are enabled
+      And a specific user exists in the ID Store
       But the user does not exist in the ID Broker
     When I get the user info from the ID Store and send it to the ID Broker
     Then a "New user" email is sent to the user's HR contact
 
-    # TODO: ensure the new user notification can be disabled
+  Scenario: New user email notification - disabled
+    Given new user email notifications are disabled
+      And a specific user exists in the ID Store
+      But the user does not exist in the ID Broker
+    When I get the user info from the ID Store and send it to the ID Broker
+    Then an email with subject "New user" is not sent
