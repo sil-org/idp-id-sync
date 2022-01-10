@@ -108,7 +108,7 @@ class NotificationContext extends SyncContext
     {
         if ($enabledOrDisabled === "enabled") {
             $this->enableNewUserNotifications = true;
-        } else if ($enabledOrDisabled === "disabled") {
+        } elseif ($enabledOrDisabled === "disabled") {
             $this->enableNewUserNotifications = false;
         } else {
             throw new Exception("invalid option '$enabledOrDisabled' for email new user email notifications");
