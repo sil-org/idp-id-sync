@@ -8,7 +8,7 @@ use yii\helpers\Html;
 ?>
 <h2>New 'User'</h2>
 <p>
-  The following user has just been activated in the <?= Html::encode($organizationName) ?> IdP.
+  The following user has just been created in the <?= Html::encode($organizationName) ?> IdP:
 </p>
 <ol>
     <li>

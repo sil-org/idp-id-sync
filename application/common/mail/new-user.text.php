@@ -9,7 +9,7 @@ use Sil\Idp\IdSync\common\models\User;
     New User
     --------
 
-    The following user has just been activated in the <?= $organizationName ?> IdP:
+    The following user has just been created in the <?= $organizationName ?> IdP:
 
 <?php
     echo sprintf('Employee ID %s', $user->getEmployeeId());
