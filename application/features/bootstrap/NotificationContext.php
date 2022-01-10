@@ -1,7 +1,6 @@
 <?php
 namespace Sil\Idp\IdSync\Behat\Context;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use PHPUnit\Framework\Assert;
 use Sil\Idp\IdSync\common\components\notify\FakeEmailNotifier;
 use Sil\Idp\IdSync\common\models\User;
