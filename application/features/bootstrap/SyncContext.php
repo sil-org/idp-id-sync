@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
+use Sil\Idp\IdSync\common\components\notify\FakeEmailNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
@@ -28,7 +29,7 @@ class SyncContext implements Context
     private $idBroker;
 
     /** @var FakeIdStore */
-    private $idStore;
+    protected $idStore;
 
     /** @var LoggerInterface */
     protected $logger;
@@ -36,9 +37,12 @@ class SyncContext implements Context
     /** @var NotifierInterface */
     protected $notifier;
 
-    private $tempEmployeeId;
+    protected $tempEmployeeId;
 
     private $tempUserChanges = [];
+
+    /** @var bool */
+    protected $enableNewUserNotifications = false;
 
     public function __construct()
     {
@@ -56,7 +60,7 @@ class SyncContext implements Context
     }
 
     /**
-     * @Given a specific user exists in the ID Store
+     * @Given a specific user exists in the ID Store (with an email address)
      */
     public function aSpecificUserExistsInTheIdStore()
     {
@@ -67,6 +71,8 @@ class SyncContext implements Context
             'firstname' => 'Person',
             'lastname' => 'One',
             'email' => 'person_one@example.com',
+            'hrname' => 'HR Person',
+            'hremail' => 'hr@example.com',
         ];
 
         $this->makeFakeIdStoreWithUser($tempIdStoreUserInfo);
@@ -87,7 +93,9 @@ class SyncContext implements Context
             $this->idStore,
             $this->idBroker,
             $this->logger,
-            $this->notifier
+            $this->notifier,
+            Synchronizer::SAFETY_CUTOFF_DEFAULT,
+            $this->enableNewUserNotifications
         );
     }
 

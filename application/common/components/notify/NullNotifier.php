@@ -16,8 +16,13 @@ class NullNotifier implements NotifierInterface
     {
         return 'NullNotifier, so no status to check.';
     }
-    
+
     public function sendMissingEmailNotice(array $users)
+    {
+        // noop
+    }
+
+    public function sendNewUserNotice(User $user)
     {
         // noop
     }
