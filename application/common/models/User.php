@@ -2,7 +2,7 @@
 namespace Sil\Idp\IdSync\common\models;
 
 use InvalidArgumentException;
-use yii\db\Exception;
+use Exception;
 
 class User
 {
