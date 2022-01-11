@@ -2,6 +2,7 @@
 namespace Sil\Idp\IdSync\common\models;
 
 use InvalidArgumentException;
+use yii\db\Exception;
 
 class User
 {
@@ -175,12 +176,23 @@ class User
     }
 
     /**
-     * @return null|string
+     * @return string
+     * @throws Exception
      */
-    public function getHRContactEmail()
+    public function getHRContactEmail(): string
     {
         $email = $this->values[self::HR_CONTACT_EMAIL] ?? null;
         $name = $this->values[self::HR_CONTACT_NAME] ?? null;
+
+        // check for null or empty string
+        if ($email == "") {
+            throw new Exception("HR Contact Email is empty");
+        }
+
+        // check for null or empty string
+        if ($name == "") {
+            return $email;
+        }
 
         return sprintf("%s <%s>", $name, $email);
     }
