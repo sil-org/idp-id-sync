@@ -154,7 +154,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
     {
         try {
             return $user->getHRContactEmail();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             if ($this->emailTo != '') {
                 return $this->emailTo;
             }
