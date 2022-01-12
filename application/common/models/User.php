@@ -195,7 +195,7 @@ class User
             throw new Exception("HR Contact Email is empty");
         }
 
-        return $email
+        return $email;
     }
 
     /**
