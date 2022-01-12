@@ -188,6 +188,7 @@ class Synchronizer
         $this->logger->info('Created user: ' . $user->getEmployeeId());
 
         if ($this->enableNewUserNotification) {
+            $this->logger->info('Sending new user notification to HR Contact for user: ' . $user->getEmployeeId());
             try {
                 $this->notifier->sendNewUserNotice($user);
             } catch (Exception $e) {
