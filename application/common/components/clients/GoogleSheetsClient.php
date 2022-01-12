@@ -9,38 +9,38 @@ use yii\helpers\Json;
 class GoogleSheetsClient extends Component
 {
     const FIRST_ROW_AFTER_HEADERS = 2;
-    
+
     /**
      * @var null|string The Application Name to use with Google_Client.
      */
     public $applicationName = null;
-    
+
     /**
      * @var null|string The path to the JSON file with authentication
      *     credentials from Google.
      */
     public $jsonAuthFilePath = null;
-    
+
     /**
      * @var null|string The JSON authentication credentials from Google.
      */
     public $jsonAuthString = null;
-    
+
     /**
      * @var null|string The Spreadsheet ID.
      */
     public $spreadsheetId = null;
-    
+
     /**
      * @var array<string> OAuth Scopes needed for reading/writing sheets.
      */
     public $scopes = [\Google_Service_Sheets::SPREADSHEETS];
-    
+
     /**
      * @var \Google_Service_Sheets
      */
     private $sheets = null;
-    
+
     /**
      * Init and ensure required properties are set
      */
@@ -69,10 +69,10 @@ class GoogleSheetsClient extends Component
                 ), 1495648880);
             }
         }
-        
+
         parent::init();
     }
-    
+
     protected function initGoogleClient()
     {
         $jsonCreds = Json::decode($this->jsonAuthString);
@@ -83,7 +83,7 @@ class GoogleSheetsClient extends Component
         $googleClient->setAccessType('offline');
         $this->sheets = new \Google_Service_Sheets($googleClient);
     }
-    
+
     /**
      * Get information about ALL of the users (active or not).
      *
@@ -94,21 +94,21 @@ class GoogleSheetsClient extends Component
         $allUsersInfo = [];
         $start = self::FIRST_ROW_AFTER_HEADERS;
         $howMany = 100;
-        
+
         $hasAllUsers = false;
         while (! $hasAllUsers) {
             $batch = $this->getUsersInfoFromSpreadsheet($start, $howMany);
             $allUsersInfo = array_merge($allUsersInfo, $batch);
             $start += $howMany;
-            
+
             if (count($batch) < $howMany) {
                 $hasAllUsers = true;
             }
         }
-        
+
         return $allUsersInfo;
     }
-    
+
     /**
      * @param int $startRow
      * @param int $howMany
@@ -121,27 +121,27 @@ class GoogleSheetsClient extends Component
         if (! $this->sheets instanceof \Google_Service_Sheets) {
             $this->initGoogleClient();
         }
-        
+
         $users = [];
-        $range = sprintf('Users!A%s:M%s', $startRow, $startRow + $howMany - 1);
+        $range = sprintf('Users!A%s:O%s', $startRow, $startRow + $howMany - 1);
         $rows = $this->sheets->spreadsheets_values->get(
             $this->spreadsheetId,
             $range,
             ['majorDimension' => 'ROWS']
         );
-        
+
         if (isset($rows['values'])) {
             foreach ($rows['values'] as $user) {
                 // If the first column is empty, take it to mean that there are no more records.
                 if (empty($user[0])) {
                     break;
                 }
-                
+
                 // NOTE:
                 // Trailing empty cells are not returned by Google Sheets.
                 // Intermediate empty cells come back as empty strings, so an
                 // empty column could be absent or "". Handle both situations.
-                
+
                 $users[] = [
                     User::EMPLOYEE_ID => $user[0],
                     User::FIRST_NAME => $this->getValueIfNonEmpty($user, 1),
@@ -156,13 +156,15 @@ class GoogleSheetsClient extends Component
                     User::MANAGER_EMAIL => $this->getValueIfNonEmpty($user, 10),
                     User::PERSONAL_EMAIL => $this->getValueIfNonEmpty($user, 11),
                     User::GROUPS => $this->getValueIfNonEmpty($user, 12),
+                    User::HR_CONTACT_NAME => $this->getValueIfNonEmpty($user, 13),
+                    User::HR_CONTACT_EMAIL => $this->getValueIfNonEmpty($user, 14),
                 ];
             }
         }
-        
+
         return $users;
     }
-    
+
     /**
      * Get the value in the array at the specified index (or key). If empty,
      * return null.
@@ -178,19 +180,19 @@ class GoogleSheetsClient extends Component
         }
         return $array[$index];
     }
-    
+
     public function updateSyncDatesFor(array $employeeIds)
     {
         $employeeIdsAsStrings = array_map(function ($employeeId) {
             return (string)$employeeId;
         }, $employeeIds);
-        
+
         if (! $this->sheets instanceof \Google_Service_Sheets) {
             $this->initGoogleClient();
         }
-        
+
         $nowAsADateString = date('c');
-        
+
         $startAtRow = self::FIRST_ROW_AFTER_HEADERS;
         $howManyAtATime = 100;
         $safetyLimit = 10000;
@@ -199,21 +201,21 @@ class GoogleSheetsClient extends Component
             if (empty($users)) {
                 break;
             }
-            
+
             $updatedSyncDates = [];
-            
+
             for ($rowOffset = 0; $rowOffset < count($users); $rowOffset++) {
                 $user = $users[$rowOffset];
-                
+
                 if (in_array($user[User::EMPLOYEE_ID], $employeeIdsAsStrings, true)) {
                     $updatedSyncDates[] = $nowAsADateString;
                 } else {
                     $updatedSyncDates[] = $user['last_synced'] ?: '0000-00-00T00:00:00+00:00';
                 }
             }
-            
+
             $finalRow = $startAtRow + count($users) - 1;
-            
+
             // Update last_synced column in spreadsheet.
             $updateRange = sprintf('Users!I%s:I%s', $startAtRow, $finalRow);
             $updateBody = new \Google_Service_Sheets_ValueRange([
