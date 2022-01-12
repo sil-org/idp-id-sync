@@ -85,6 +85,8 @@ class EmailServiceNotifier extends Component implements NotifierInterface
      */
     public function sendMissingEmailNotice(array $users)
     {
+        // preserve the "missing email notification not needed" capability
+        // when the Notifier is not NullNotifier
         if (empty($this->emailTo)) {
             return;
         }
