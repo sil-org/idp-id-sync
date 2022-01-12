@@ -32,18 +32,14 @@ if (empty($alertsEmail) && empty($hrNotifierEmailTo)) {
     $emailServiceConfig['validIpRanges'] = '';
 }
 
-if (empty($hrNotifierEmailTo)) {
-    $notifierConfig = ['class' => NullNotifier::class];
-} else {
-    /* Configure the notifier, used to send notifications to HR (such as
-     * when users lack an email address):  */
-    $notifierConfig = [
-        'class' => EmailServiceNotifier::class,
-        'emailServiceConfig' => $emailServiceConfig,
-        'emailTo' => $hrNotifierEmailTo,
-        'organizationName' => $idpDisplayName,
-    ];
-}
+/* Configure the notifier, used to send notifications to HR (such as
+ * when users lack an email address):  */
+$notifierConfig = [
+    'class' => EmailServiceNotifier::class,
+    'emailServiceConfig' => $emailServiceConfig,
+    'emailTo' => $hrNotifierEmailTo,
+    'organizationName' => $idpDisplayName,
+];
 
 $logPrefix = function () {
     $request = Yii::$app->request;
@@ -67,19 +63,19 @@ return [
     'id' => $idpName,
     'bootstrap' => ['log'],
     'components' => [
-        
+
         'idBroker' => ArrayHelper::merge([
             'class' => IdBrokerBase::getAdapterClassFor(
                 Env::get('ID_BROKER_ADAPTER')
             ),
         ], $idBrokerOptionalConfig),
-        
+
         'idStore' => ArrayHelper::merge([
             'class' => IdStoreBase::getAdapterClassFor(
                 Env::get('ID_STORE_ADAPTER')
             ),
         ], $idStoreOptionalConfig),
-        
+
         'log' => [
             'targets' => [
                 [
@@ -131,7 +127,7 @@ return [
                 ],
             ],
         ],
-        
+
         'notifier' => $notifierConfig,
     ],
     'params' => [

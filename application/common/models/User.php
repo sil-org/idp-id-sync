@@ -184,13 +184,11 @@ class User
         $email = $this->values[self::HR_CONTACT_EMAIL] ?? null;
         $name = $this->values[self::HR_CONTACT_NAME] ?? null;
 
-        // check for null or empty string
-        if ($email == "") {
+        if (empty($email)) {
             throw new Exception("HR Contact Email is empty");
         }
 
-        // check for null or empty string
-        if ($name == "") {
+        if (empty($name)) {
             return $email;
         }
 

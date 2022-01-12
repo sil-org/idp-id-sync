@@ -85,6 +85,10 @@ class EmailServiceNotifier extends Component implements NotifierInterface
      */
     public function sendMissingEmailNotice(array $users)
     {
+        if (empty($this->emailTo)) {
+            return;
+        }
+
         $templateVars = [
             'organizationName' => $this->organizationName,
             'users' => $users,
@@ -114,6 +118,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
 
     /**
      * {@inheritdoc}
+     * @throws \Exception if no email address is available
      */
     public function sendNewUserNotice(User $user)
     {
@@ -131,7 +136,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
         );
 
         $this->getEmailServiceClient()->email([
-            'to_address' => $user->getHRContactEmail(),
+            'to_address' => $this->getEmailTo($user),
             'subject' => sprintf(
                 'New user in %s IdP (%s)',
                 $this->organizationName,
@@ -140,5 +145,20 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             'html_body' => $htmlBody,
             'text_body' => $textBody,
         ]);
+    }
+
+    /**
+     * @throws \Exception if no email address is available
+     */
+    protected function getEmailTo(User $user): string
+    {
+        try {
+            return $user->getHRContactEmail();
+        } catch(\Exception $e) {
+            if ($this->emailTo != '') {
+                return $this->emailTo;
+            }
+            throw new \Exception('no notifier email found for user ' . $user->getEmployeeId());
+        }
     }
 }
