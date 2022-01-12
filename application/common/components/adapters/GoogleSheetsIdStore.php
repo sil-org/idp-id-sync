@@ -104,6 +104,7 @@ class GoogleSheetsIdStore extends IdStoreBase
     public static function getFieldNameMap(): array
     {
         return [
+            // No 'active' needed, since all ID Store records returned are active.
             'employee_id' => User::EMPLOYEE_ID,
             'first_name' => User::FIRST_NAME,
             'last_name' => User::LAST_NAME,
@@ -115,7 +116,9 @@ class GoogleSheetsIdStore extends IdStoreBase
             'manager_email' => User::MANAGER_EMAIL,
             'personal_email' => User::PERSONAL_EMAIL,
             'groups' => User::GROUPS,
-            // No 'active' needed, since all ID Store records returned are active.
+
+            User::HR_CONTACT_NAME => User::HR_CONTACT_NAME,
+            User::HR_CONTACT_EMAIL => User::HR_CONTACT_EMAIL,
         ];
     }
 
