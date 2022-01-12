@@ -176,23 +176,26 @@ class User
     }
 
     /**
+     * @return null|string
+     */
+    public function getHRContactName()
+    {
+        return $this->values[self::HR_CONTACT_NAME] ?? null;
+    }
+
+    /**
      * @return string
      * @throws Exception
      */
     public function getHRContactEmail(): string
     {
         $email = $this->values[self::HR_CONTACT_EMAIL] ?? null;
-        $name = $this->values[self::HR_CONTACT_NAME] ?? null;
 
         if (empty($email)) {
             throw new Exception("HR Contact Email is empty");
         }
 
-        if (empty($name)) {
-            return $email;
-        }
-
-        return sprintf("%s <%s>", $name, $email);
+        return $email
     }
 
     /**
