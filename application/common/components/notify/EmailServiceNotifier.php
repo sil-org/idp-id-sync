@@ -155,7 +155,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
         try {
             return $user->getHRContactEmail();
         } catch (\Exception $e) {
-            if ($this->emailTo != '') {
+            if (! empty($this->emailTo)) {
                 return $this->emailTo;
             }
             throw new \Exception('no notifier email found for user ' . $user->getEmployeeId());
