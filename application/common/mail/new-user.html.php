@@ -6,15 +6,15 @@ use yii\helpers\Html;
 /* @var $user User */
 
 ?>
-<h2>New 'User'</h2>
+<h2>New User</h2>
 <p>
   The following user has just been created in the <?= Html::encode($organizationName) ?> IdP:
 </p>
-<ol>
+<ul>
     <li>
         Employee ID <?= Html::encode($user->getEmployeeId()) ?>
         <?php if ($user->getUsername() !== null): ?>
             (<?= Html::encode($user->getUsername()) ?>)
         <?php endif; ?>
     </li>
-</ol>
+</ul>
