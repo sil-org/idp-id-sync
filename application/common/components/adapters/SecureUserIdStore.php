@@ -40,7 +40,6 @@ class SecureUserIdStore extends IdStoreBase
     public static function getFieldNameMap(): array
     {
         return [
-            // 'active' field isn't needed, since all Workday records returned are active.
             'employee_number' => User::EMPLOYEE_ID,
             'first_name' => User::FIRST_NAME,
             'last_name' => User::LAST_NAME,
