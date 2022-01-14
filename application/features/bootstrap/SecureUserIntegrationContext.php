@@ -11,7 +11,6 @@ use yii\base\BaseObject;
  */
 class SecureUserIntegrationContext extends IdStoreIntegrationContextBase
 {
-    
     public function __construct()
     {
         echo 'Testing integration with Secure User.' . PHP_EOL;
@@ -23,7 +22,7 @@ class SecureUserIntegrationContext extends IdStoreIntegrationContextBase
      */
     public function iCanMakeAuthenticatedCallsToTheIdStore()
     {
-        $secureUserApiUrl = Env::requireEnv(  'TEST_SECURE_USER_CONFIG_apiUrl');
+        $secureUserApiUrl = Env::requireEnv('TEST_SECURE_USER_CONFIG_apiUrl');
         $secureUserApiKey = Env::requireEnv('TEST_SECURE_USER_CONFIG_apiKey');
         $secureUserApiSecret = Env::requireEnv('TEST_SECURE_USER_CONFIG_apiSecret');
 

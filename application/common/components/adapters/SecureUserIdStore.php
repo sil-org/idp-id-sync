@@ -143,7 +143,6 @@ class SecureUserIdStore extends IdStoreBase
             },
             $allActiveUsersInfo
         );
-
     }
 
     /**
@@ -163,5 +162,4 @@ class SecureUserIdStore extends IdStoreBase
     {
         return 'SecureUser';
     }
-
 }
