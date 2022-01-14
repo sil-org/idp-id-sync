@@ -94,7 +94,7 @@ class SecureUserIdStore extends IdStoreBase
     {
         $client = $this->getHttpClient();
 
-        $api_sig = hash_hmac('sha256', time().$this->apiKey, $this->apiSecret);
+        $api_sig = hash_hmac('sha256', time() . $this->apiKey, $this->apiSecret);
 
         $response = $client->get($this->apiUrl, [
             'connect_timeout' => $this->timeout,
