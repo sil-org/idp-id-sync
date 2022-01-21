@@ -16,14 +16,14 @@ Feature: Synchronizing records
     When I get the user info from the ID Store and send it to the ID Broker
     Then the user should exist in the ID Broker
       And the user info in the ID Broker and the ID Store should match
-    And we should have tried to update the ID Store's last-synced date for that user
+      And we should have tried to update the ID Store's last-synced date for that user
 
   Scenario: User exists in the ID Broker but not the ID Store
     Given a specific user exists in the ID Broker
       But the user does not exist in the ID Store
     When I learn the user does not exist in the ID Store and I tell the ID Broker
     Then the user should be inactive in the ID Broker
-    And we should have tried to update the ID Store's last-synced date for that user
+      And we should have tried to update the ID Store's last-synced date for that user
 
   Scenario: User does not exist in the ID Store or the ID Broker
     Given a specific user does not exist in the ID Store

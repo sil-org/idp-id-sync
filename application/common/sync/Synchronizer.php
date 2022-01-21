@@ -36,6 +36,9 @@ class Synchronizer
     /** @var float */
     private $safetyCutoff;
 
+    /** @var bool */
+    private $enableNewUserNotification;
+
     /**
      * Create a new Synchronizer object.
      *
@@ -53,19 +56,23 @@ class Synchronizer
      *     rounded up (so that we can always make at least 1 change, assuming
      *     this value is > 0.0 and there are any active users in ID Broker). If
      *     no value is given, a default value will be used.
+     * @param bool $enableNewUserNotification (Optional:) Enable notification
+     *     email on new user creation.
      */
     public function __construct(
         IdStoreInterface $idStore,
         IdBrokerInterface $idBroker,
         LoggerInterface $logger = null,
         NotifierInterface $notifier = null,
-        $safetyCutoff = null
+        $safetyCutoff = null,
+        bool $enableNewUserNotification = false
     ) {
         $this->idStore = $idStore;
         $this->idBroker = $idBroker;
         $this->logger = $logger ?? new NullLogger();
         $this->notifier = $notifier ?? new NullNotifier();
         $this->safetyCutoff = $safetyCutoff ?? self::SAFETY_CUTOFF_DEFAULT;
+        $this->enableNewUserNotification = $enableNewUserNotification;
 
         $this->logger->info('Safety cutoff: {value}', [
             'value' => var_export($this->safetyCutoff, true),
@@ -179,6 +186,21 @@ class Synchronizer
     {
         $this->idBroker->createUser($user->toArray());
         $this->logger->info('Created user: ' . $user->getEmployeeId());
+
+        if ($this->enableNewUserNotification) {
+            $this->logger->info('Sending new user notification to HR Contact for user: ' . $user->getEmployeeId());
+            try {
+                $this->notifier->sendNewUserNotice($user);
+            } catch (Exception $e) {
+                $this->logger->error(sprintf(
+                    'Could not send New User notification for user (%s) Error %s: %s. [%s]',
+                    $user->getStringForLogMessage(),
+                    $e->getCode(),
+                    $e->getMessage(),
+                    1641936120
+                ));
+            }
+        }
     }
 
     /**

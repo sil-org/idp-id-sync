@@ -20,11 +20,25 @@ default:
             contexts: [ Sil\Idp\IdSync\Behat\Context\WebhookContext ]
         workday_integration_features:
             filters:
-                tags: '~@specificUser && ~@usersChangedSince && ~@canUpdateLastSynced'
+                # removing whitespace to silence faulty deprecation warning
+                # see https://github.com/Behat/Gherkin/pull/215#issuecomment-944115733
+                tags: '~@specificUser&&~@usersChangedSince&&~@canUpdateLastSynced'
             paths:    [ "%paths.base%/../features/id-store-integration.feature" ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\WorkdayIntegrationContext ]
         sage_people_integration_features:
             filters:
-                tags: '~@usersChangedSince && ~@canUpdateLastSynced'
+                # removing whitespace to silence faulty deprecation warning
+                # see https://github.com/Behat/Gherkin/pull/215#issuecomment-944115733
+                tags: '~@usersChangedSince&&~@canUpdateLastSynced'
             paths:    [ "%paths.base%/../features/id-store-integration.feature" ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\SagePeopleIntegrationContext ]
+        secure_user_integration_features:
+            filters:
+                # removing whitespace to silence faulty deprecation warning
+                # see https://github.com/Behat/Gherkin/pull/215#issuecomment-944115733
+                tags: '~@usersChangedSince&&~@canUpdateLastSynced'
+            paths:    [ "%paths.base%/../features/id-store-integration.feature" ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\SecureUserIntegrationContext ]
+        notification_features:
+            paths:    [ "%paths.base%/../features/notification.feature" ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\NotificationContext ]

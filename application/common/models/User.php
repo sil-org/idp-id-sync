@@ -2,6 +2,7 @@
 namespace Sil\Idp\IdSync\common\models;
 
 use InvalidArgumentException;
+use Exception;
 
 class User
 {
@@ -11,6 +12,8 @@ class User
     const EMPLOYEE_ID = 'employee_id';
     const FIRST_NAME = 'first_name';
     const GROUPS = 'groups';
+    const HR_CONTACT_NAME = 'hr_contact_name';
+    const HR_CONTACT_EMAIL = 'hr_contact_email';
     const LAST_NAME = 'last_name';
     const LOCKED = 'locked';
     const MANAGER_EMAIL = 'manager_email';
@@ -65,6 +68,8 @@ class User
             self::EMPLOYEE_ID,
             self::FIRST_NAME,
             self::GROUPS,
+            self::HR_CONTACT_NAME,
+            self::HR_CONTACT_EMAIL,
             self::LAST_NAME,
             self::LOCKED,
             self::MANAGER_EMAIL,
@@ -168,6 +173,29 @@ class User
     public function getGroups()
     {
         return $this->values[self::GROUPS] ?? null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getHRContactName()
+    {
+        return $this->values[self::HR_CONTACT_NAME] ?? null;
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getHRContactEmail(): string
+    {
+        $email = $this->values[self::HR_CONTACT_EMAIL] ?? null;
+
+        if (empty($email)) {
+            throw new Exception("HR Contact Email is empty");
+        }
+
+        return $email;
     }
 
     /**

@@ -18,25 +18,25 @@ class EmailServiceNotifier extends Component implements NotifierInterface
      * @var array
      */
     public $emailServiceConfig;
-    
+
     /**
      * What address to send the email to.
      * @var string
      */
     public $emailTo;
-    
+
     /**
      * The name of the organization.
      * @var string
      */
     public $organizationName;
-    
+
     public function init()
     {
         $this->assertConfigIsValid();
         parent::init();
     }
-    
+
     protected function assertConfigIsValid()
     {
         $requiredParams = [
@@ -45,7 +45,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             'baseUrl',
             'validIpRanges',
         ];
-        
+
         foreach ($requiredParams as $param) {
             if (! isset($this->emailServiceConfig[$param])) {
                 throw new InvalidArgumentException(
@@ -55,7 +55,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             }
         }
     }
-    
+
     /**
      * @return EmailServiceClient
      */
@@ -71,7 +71,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             ]
         );
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -79,12 +79,18 @@ class EmailServiceNotifier extends Component implements NotifierInterface
     {
         return $this->getEmailServiceClient()->getSiteStatus();
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function sendMissingEmailNotice(array $users)
     {
+        // preserve the "missing email notification not needed" capability
+        // when the Notifier is not NullNotifier
+        if (empty($this->emailTo)) {
+            return;
+        }
+
         $templateVars = [
             'organizationName' => $this->organizationName,
             'users' => $users,
@@ -97,7 +103,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             '@common/mail/missing-email.text.php',
             $templateVars
         );
-        
+
         $numUsers = count($users);
         $this->getEmailServiceClient()->email([
             'to_address' => $this->emailTo,
@@ -110,5 +116,51 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             'html_body' => $htmlBody,
             'text_body' => $textBody,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws \Exception if no email address is available
+     */
+    public function sendNewUserNotice(User $user)
+    {
+        $templateVars = [
+            'organizationName' => $this->organizationName,
+            'user' => $user,
+        ];
+        $htmlBody = \Yii::$app->view->render(
+            '@common/mail/new-user.html.php',
+            $templateVars
+        );
+        $textBody = \Yii::$app->view->render(
+            '@common/mail/new-user.text.php',
+            $templateVars
+        );
+
+        $this->getEmailServiceClient()->email([
+            'to_address' => $this->getEmailTo($user),
+            'subject' => sprintf(
+                'New user in %s IdP (%s)',
+                $this->organizationName,
+                $user->getEmployeeId()
+            ),
+            'html_body' => $htmlBody,
+            'text_body' => $textBody,
+        ]);
+    }
+
+    /**
+     * @throws \Exception if no email address is available
+     */
+    protected function getEmailTo(User $user): string
+    {
+        try {
+            return $user->getHRContactEmail();
+        } catch (\Exception $e) {
+            if (! empty($this->emailTo)) {
+                return $this->emailTo;
+            }
+            throw new \Exception('no notifier email found for user ' . $user->getEmployeeId());
+        }
     }
 }

@@ -8,12 +8,11 @@ use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\Json;
 
-class WorkdayIdStore extends IdStoreBase
+class SecureUserIdStore extends IdStoreBase
 {
     public $apiUrl = null;
-    public $username = null;
-    public $password = null;
-    public $groupsFields = null;
+    public $apiKey = null;
+    public $apiSecret = null;
 
     public $timeout = 45; // Timeout in seconds (per call to ID Store API).
 
@@ -23,15 +22,15 @@ class WorkdayIdStore extends IdStoreBase
     {
         $requiredProperties = [
             'apiUrl',
-            'username',
-            'password',
+            'apiKey',
+            'apiSecret',
         ];
         foreach ($requiredProperties as $requiredProperty) {
             if (empty($this->$requiredProperty)) {
                 throw new InvalidArgumentException(sprintf(
                     'No %s was provided.',
                     $requiredProperty
-                ), 1532982562);
+                ), 1642083101);
             }
         }
 
@@ -41,21 +40,14 @@ class WorkdayIdStore extends IdStoreBase
     public static function getFieldNameMap(): array
     {
         return [
-            // 'active' field isn't needed, since all Workday records returned are active.
-            'Employee_Number' => User::EMPLOYEE_ID,
-            'First_Name' => User::FIRST_NAME,
-            'Last_Name' => User::LAST_NAME,
-            'Display_Name' => User::DISPLAY_NAME,
-            'Email' => User::EMAIL,
-            'Username' => User::USERNAME,
-            'Account_Locked__Disabled_or_Expired' => User::LOCKED,
-            'requireMfa' => User::REQUIRE_MFA,
-            'Manager_Email' => User::MANAGER_EMAIL,
-            'Personal_Email' => User::PERSONAL_EMAIL,
-            'Groups' => User::GROUPS,
-
-            'HR_Contact_Name' => User::HR_CONTACT_NAME,
-            'HR_Contact_Email' => User::HR_CONTACT_EMAIL,
+            'employee_number' => User::EMPLOYEE_ID,
+            'first_name' => User::FIRST_NAME,
+            'last_name' => User::LAST_NAME,
+            'display_name' => User::DISPLAY_NAME,
+            'email' => User::EMAIL,
+            'username' => User::USERNAME,
+            'locked' => User::LOCKED,
+            'manager_email' => User::MANAGER_EMAIL,
         ];
     }
 
@@ -70,7 +62,13 @@ class WorkdayIdStore extends IdStoreBase
      */
     public function getActiveUser(string $employeeId)
     {
-        throw new Exception(__FUNCTION__ . ' not yet implemented');
+        $allUsers = $this->getAllActiveUsers();
+        foreach ($allUsers as $user) {
+            if ((string)$user->getEmployeeId() === (string)$employeeId) {
+                return $user;
+            }
+        }
+        return null;
     }
 
     /**
@@ -94,41 +92,56 @@ class WorkdayIdStore extends IdStoreBase
      */
     public function getAllActiveUsers()
     {
-        $response = $this->getHttpClient()->get($this->apiUrl, [
-            'auth' => [$this->username, $this->password, 'basic'],
+        $client = $this->getHttpClient();
+
+        $api_sig = hash_hmac('sha256', time() . $this->apiKey, $this->apiSecret);
+
+        $response = $client->get($this->apiUrl, [
             'connect_timeout' => $this->timeout,
             'headers' => [
                 'Accept' => 'application/json',
-                'Accept-Encoding' => 'gzip',
+                'x-api-key' => $this->apiKey,
+                'x-auth-hmac-sha256' => $api_sig,
             ],
             'http_errors' => false,
         ]);
 
         $statusCode = (int)$response->getStatusCode();
-        if ($statusCode === 404) {
-            $allActiveUsers = null;
-        } elseif (($statusCode >= 200) && ($statusCode <= 299)) {
-            $data = Json::decode($response->getBody());
-            $allActiveUsers = $data['Report_Entry'] ?? null;
+        if (($statusCode >= 200) && ($statusCode <= 299)) {
+            $allUsersInfo = Json::decode($response->getBody());
         } else {
             throw new Exception(sprintf(
                 'Unexpected response (%s %s): %s',
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
                 $response->getBody()
-            ), 1533069498);
+            ), 1642083102);
         }
 
-        if (! is_array($allActiveUsers)) {
+        if (! is_array($allUsersInfo)) {
             throw new Exception(sprintf(
                 'Unexpected result when getting all active users: %s',
-                var_export($allActiveUsers, true)
-            ), 1532982679);
+                var_export($allUsersInfo, true)
+            ), 1642083103);
         }
 
-        $this->generateGroupsLists($allActiveUsers);
+        $allActiveUsersInfo = array_filter(
+            $allUsersInfo,
+            function ($user) {
+                return ($user[User::ACTIVE] === true);
+            }
+        );
 
-        return self::getAsUsers($allActiveUsers);
+        return array_map(
+            function ($entry) {
+                // Unset 'active', since ID Stores only return active users.
+                unset($entry[User::ACTIVE]);
+
+                // Convert the resulting user info to a User.
+                return self::getAsUser($entry);
+            },
+            $allActiveUsersInfo
+        );
     }
 
     /**
@@ -146,30 +159,6 @@ class WorkdayIdStore extends IdStoreBase
 
     public function getIdStoreName(): string
     {
-        return 'Workday';
-    }
-
-    public function generateGroupsLists(array &$users)
-    {
-        if ($this->groupsFields === null) {
-            $groupsFields = [
-                'company_ids',
-                'ou_tree',
-            ];
-        } else {
-            $groupsFields = explode(',', $this->groupsFields);
-        }
-
-        foreach ($users as $key => $user) {
-            $groups = [];
-            foreach ($groupsFields as $groupsField) {
-                $value = $user[$groupsField] ?? '';
-                if (strlen($value) > 0) {
-                    $groupsSubList = explode(' ', $value);
-                    $groups = array_merge($groups, $groupsSubList);
-                }
-            }
-            $users[$key]['Groups'] = implode(',', $groups);
-        }
+        return 'SecureUser';
     }
 }

@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
+use Sil\Idp\IdSync\common\components\notify\FakeEmailNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
@@ -23,29 +24,32 @@ class SyncContext implements Context
 {
     /** @var Exception */
     private $exceptionThrown = null;
-    
+
     /** @var IdBrokerInterface */
     private $idBroker;
-    
+
     /** @var FakeIdStore */
-    private $idStore;
-    
+    protected $idStore;
+
     /** @var LoggerInterface */
     protected $logger;
-    
+
     /** @var NotifierInterface */
     protected $notifier;
-    
-    private $tempEmployeeId;
-    
+
+    protected $tempEmployeeId;
+
     private $tempUserChanges = [];
-    
+
+    /** @var bool */
+    protected $enableNewUserNotifications = false;
+
     public function __construct()
     {
         $this->logger = new Psr3ConsoleLogger();
         $this->notifier = new ConsoleNotifier();
     }
-    
+
     /**
      * @param array $activeUsers
      * @return FakeIdStore
@@ -54,9 +58,9 @@ class SyncContext implements Context
     {
         return new FakeIdStore($activeUsers, $this->tempUserChanges);
     }
-    
+
     /**
-     * @Given a specific user exists in the ID Store
+     * @Given a specific user exists in the ID Store (with an email address)
      */
     public function aSpecificUserExistsInTheIdStore()
     {
@@ -67,22 +71,31 @@ class SyncContext implements Context
             'firstname' => 'Person',
             'lastname' => 'One',
             'email' => 'person_one@example.com',
+            'hrname' => 'HR Person',
+            'hremail' => 'hr@example.com',
         ];
-        
-        $this->tempEmployeeId = $tempIdStoreUserInfo['employeenumber'];
-        
+
+        $this->makeFakeIdStoreWithUser($tempIdStoreUserInfo);
+    }
+
+    protected function makeFakeIdStoreWithUser($user)
+    {
+        $this->tempEmployeeId = $user['employeenumber'];
+
         $this->idStore = $this->getFakeIdStore([
-            $this->tempEmployeeId => $tempIdStoreUserInfo,
+            $this->tempEmployeeId => $user,
         ]);
     }
-    
+
     protected function createSynchronizer()
     {
         return new Synchronizer(
             $this->idStore,
             $this->idBroker,
             $this->logger,
-            $this->notifier
+            $this->notifier,
+            Synchronizer::SAFETY_CUTOFF_DEFAULT,
+            $this->enableNewUserNotifications
         );
     }
 
@@ -92,7 +105,7 @@ class SyncContext implements Context
     public function theUserExistsInTheIdBroker()
     {
         $user = $this->idStore->getActiveUser($this->tempEmployeeId);
-        
+
         $this->idBroker = new FakeIdBroker([
             $this->tempEmployeeId => $user->toArray(),
         ]);
@@ -128,7 +141,7 @@ class SyncContext implements Context
         $userInfoFromIdBroker = $userFromIdBroker->toArray();
         $userFromIdStore = $this->idStore->getActiveUser($this->tempEmployeeId);
         $userInfoFromIdStore = $userFromIdStore->toArray();
-        
+
         foreach ($userInfoFromIdStore as $attribute => $value) {
             Assert::assertSame($value, $userInfoFromIdBroker[$attribute], sprintf(
                 "Expected the ID Broker data...\n%s\n... to match the ID Store data...\n%s",
@@ -205,7 +218,7 @@ class SyncContext implements Context
         foreach ($table as $row) {
             // Ensure all required fields have a value.
             $row['email'] = $row['email'] ?? $row['username'] . '@example.com';
-            
+
             // Note: This should use the ID Store field name.
             $idStoreActiveUsers[$row['employeenumber']] = $row;
         }
@@ -247,7 +260,7 @@ class SyncContext implements Context
             $desiredFields = array_keys($row);
             break;
         }
-        
+
         $actualUsers = $this->getIdBrokerUsers($desiredFields);
         Assert::assertJsonStringEqualsJsonString(
             Json::encode($table, JSON_PRETTY_PRINT),
@@ -260,7 +273,7 @@ class SyncContext implements Context
             "---\nTo debug this, see if any errors were logged (above) in the test output.\n---"
         );
     }
-    
+
     /**
      * @param array $desiredFields
      * @return User[]
@@ -393,7 +406,7 @@ class SyncContext implements Context
     public function usersAreActiveInTheIdStoreAndAreInactiveInTheIdBroker($number)
     {
         $this->usersAreActiveInTheIdStore($number);
-        
+
         $idBrokerUsers = [];
         foreach ($this->idStore->getAllActiveUsers() as $user) {
             $userInfo = $user->toArray();
@@ -402,7 +415,7 @@ class SyncContext implements Context
         }
         $this->idBroker = new FakeIdBroker($idBrokerUsers);
     }
-    
+
     /**
      * @Then an exception should NOT have been thrown
      */
@@ -415,7 +428,7 @@ class SyncContext implements Context
             $possibleException->getMessage()
         ));
     }
-    
+
     /**
      * @Given the user has a manager email address in the ID Broker
      * @throws Exception
@@ -437,7 +450,7 @@ class SyncContext implements Context
             'supervisoremail' => null,
         ]);
     }
-    
+
     /**
      * @Then the user should not have a manager email address in the ID Broker
      * @throws Exception
@@ -502,10 +515,10 @@ class SyncContext implements Context
             $expected[] = $row['employeenumber'];
         }
         $actual = $this->idStore->listEmployeeIdsWithUpdatedSyncDate();
-        
+
         sort($expected);
         sort($actual);
-        
+
         Assert::assertEquals($expected, $actual);
     }
 }

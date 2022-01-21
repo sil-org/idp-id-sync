@@ -28,7 +28,7 @@ class ConsoleNotifier implements NotifierInterface
         }
         return join("\n", $outputLines) . "\n";
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -36,7 +36,7 @@ class ConsoleNotifier implements NotifierInterface
     {
         return 'No external service status to check.';
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -47,5 +47,16 @@ class ConsoleNotifier implements NotifierInterface
             count($users),
             $this->getBasicInfoAsTextList($users)
         ) . PHP_EOL;
+    }
+
+    public function sendNewUserNotice(User $user)
+    {
+        $userInfo = sprintf('Employee ID %s', $user->getEmployeeId());
+        if ($user->getUsername() !== null) {
+            $userInfo .= sprintf(' (%s)', $user->getUsername());
+        }
+        $hr = $user->getHRContactEmail();
+
+        echo sprintf("NOTIFIER: Notify %s that the following user was created: \n%s", $hr, $userInfo) . PHP_EOL;
     }
 }

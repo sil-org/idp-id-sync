@@ -23,22 +23,25 @@ trait SyncProvider
     {
         /* @var $idStore IdStoreInterface */
         $idStore = Yii::$app->idStore;
-        
+
         /* @var $idBroker IdBrokerInterface */
         $idBroker = Yii::$app->idBroker;
-        
+
         /* @var $notifier NotifierInterface */
         $notifier = Yii::$app->notifier;
-        
+
         $logger = new Psr3Yii2Logger();
         $syncSafetyCutoff = Yii::$app->params['syncSafetyCutoff'];
-        
+
+        $enableNewUserNotification = Yii::$app->params['enableNewUserNotification'] ?? false;
+
         return new Synchronizer(
             $idStore,
             $idBroker,
             $logger,
             $notifier,
-            $syncSafetyCutoff
+            $syncSafetyCutoff,
+            $enableNewUserNotification
         );
     }
 }

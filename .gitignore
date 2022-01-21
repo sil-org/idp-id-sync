@@ -21,3 +21,6 @@ google-auth.json
 .php_cs.cache
 
 dockercfg
+
+# PHPUnit
+.phpunit.result.cache
