@@ -77,7 +77,7 @@ class SiteController extends BaseRestController
             $idBroker->getSiteStatus();
         } catch (Exception $e) {
             \Yii::error($e->getMessage());
-            throw new HttpException(self::HttpExceptionBadGateway,'Problem with ID Broker service.');
+            throw new HttpException(self::HttpExceptionBadGateway, 'Problem with ID Broker service.');
         }
     }
 
