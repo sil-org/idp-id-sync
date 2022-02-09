@@ -105,6 +105,7 @@ return [
                         'yii\web\HttpException:404',
                         'yii\web\HttpException:409',
                         'yii\web\HttpException:422',
+                        'yii\web\HttpException:502',
                         'Sil\EmailService\Client\EmailServiceClientException',
                     ],
                     'levels' => ['error'],
