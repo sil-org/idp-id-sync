@@ -5,11 +5,14 @@ use Exception;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\frontend\components\BaseRestController;
+use yii\web\HttpException;
 use yii\web\ServerErrorHttpException as Exception500;
 use yii\web\NotFoundHttpException;
 
 class SiteController extends BaseRestController
 {
+    const HttpExceptionBadGateway = 502;
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -22,6 +25,10 @@ class SiteController extends BaseRestController
         return $behaviors;
     }
 
+    /**
+     * @throws HttpException with status 502 (Bad Gateway) if any of the dependent services have a problem
+     * @throws Exception500 if dependent services are misconfigured
+     */
     public function actionSystemStatus()
     {
         /* @var $webApp \yii\web\Application */
@@ -35,8 +42,7 @@ class SiteController extends BaseRestController
             throw new Exception500("Check notifier component's configuration.");
         }
 
-        // This sends error emails to the dev team too often
-        // $this->checkNotifierStatus($notifier);
+        $this->checkNotifierStatus($notifier);
 
         try {
             /* @var $idBroker IdBrokerInterface */
@@ -45,25 +51,39 @@ class SiteController extends BaseRestController
             \Yii::error($e->getMessage());
             throw new Exception500("Check idBroker component's configuration.");
         }
-        
-        try {
-            $idBroker->getSiteStatus();
-        } catch (Exception $e) {
-            \Yii::error($e->getMessage());
-            throw new Exception500('Problem with ID Broker service.');
-        }
+
+        $this->checkIdBrokerStatus($idBroker);
     }
 
+    /**
+     * @throws HttpException with status 502 (Bad Gateway) if the Notifier has a problem
+     */
     private function checkNotifierStatus($notifier)
     {
         try {
             $notifier->getSiteStatus();
         } catch (Exception $e) {
             \Yii::error($e->getMessage());
-            throw new Exception500('Problem with notifier. Is email service down?');
+            throw new HttpException(self::HttpExceptionBadGateway, 'Problem with notifier. Is email service down?');
         }
     }
 
+    /**
+     * @throws HttpException with status 502 (Bad Gateway) if the ID Broker has a problem
+     */
+    private function checkIdBrokerStatus($idBroker)
+    {
+        try {
+            $idBroker->getSiteStatus();
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage());
+            throw new HttpException(self::HttpExceptionBadGateway, 'Problem with ID Broker service.');
+        }
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
     public function actionUndefinedRequest()
     {
         throw new NotFoundHttpException();

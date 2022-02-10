@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+- Don't send email alerts for /site/system-status errors that are likely transient
+
 ## [4.2.0] - 2022-01-20
 ### Added
 - Added Secure User ID Store adapter
