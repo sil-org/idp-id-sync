@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### [4.2.2] - 2022-02-14
+- Remove redundant error log entry in /site/system-status handler
+
 ## [4.2.1] - 2022-02-10
 ### Fixed
 - Don't send email alerts for /site/system-status errors that are likely transient
@@ -224,7 +227,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.2.1...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.2.2...develop
+[4.2.2]: https://github.com/silinternational/idp-id-sync/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/silinternational/idp-id-sync/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/silinternational/idp-id-sync/compare/4.1.4...4.2.0
 [4.1.4]: https://github.com/silinternational/idp-id-sync/compare/4.1.3...4.1.4
