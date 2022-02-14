@@ -63,7 +63,6 @@ class SiteController extends BaseRestController
         try {
             $notifier->getSiteStatus();
         } catch (Exception $e) {
-            \Yii::error($e->getMessage());
             throw new HttpException(self::HttpExceptionBadGateway, 'Problem with notifier. Is email service down?');
         }
     }
@@ -76,7 +75,6 @@ class SiteController extends BaseRestController
         try {
             $idBroker->getSiteStatus();
         } catch (Exception $e) {
-            \Yii::error($e->getMessage());
             throw new HttpException(self::HttpExceptionBadGateway, 'Problem with ID Broker service.');
         }
     }
