@@ -6,7 +6,7 @@ use Sil\Idp\IdSync\common\models\User;
 /* @var $user User */
 
 ?>
-  $user->getHRContactName(),
+  <?= $user->getHRContactName() ?>,
 
   The <?= $organizationName ?> IDP account you requested for
   <?php if (empty($user->getDisplayName())) {
