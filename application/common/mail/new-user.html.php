@@ -31,3 +31,7 @@ use yii\helpers\Html;
     echo Html::encode($user->getEmail());
 }?>
 </p>
+
+<hr>
+
+This is an automated message.

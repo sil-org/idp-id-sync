@@ -22,3 +22,7 @@ use Sil\Idp\IdSync\common\models\User;
 } else {
     echo $user->getEmail();
 }?>
+
+--
+
+This is an automated message.
