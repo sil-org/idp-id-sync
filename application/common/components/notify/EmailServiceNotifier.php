@@ -137,12 +137,15 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             $templateVars
         );
 
+        $name = empty($user->getDisplayName())
+            ? $user->getFirstName() . ' ' . $user->getLastName()
+            : $user->getDisplayName();
         $this->getEmailServiceClient()->email([
             'to_address' => $this->getEmailTo($user),
             'subject' => sprintf(
-                'New user in %s IdP (%s)',
+                'Created %s IDP user for %s [do not reply]',
                 $this->organizationName,
-                $user->getEmployeeId()
+                $name
             ),
             'html_body' => $htmlBody,
             'text_body' => $textBody,

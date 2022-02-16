@@ -6,15 +6,28 @@ use yii\helpers\Html;
 /* @var $user User */
 
 ?>
-<h2>New User</h2>
 <p>
-  The following user has just been created in the <?= Html::encode($organizationName) ?> IdP:
+  <?= Html::encode($user->getHRContactName()) ?>,
 </p>
-<ul>
-    <li>
-        Employee ID <?= Html::encode($user->getEmployeeId()) ?>
-        <?php if ($user->getUsername() !== null): ?>
-            (<?= Html::encode($user->getUsername()) ?>)
-        <?php endif; ?>
-    </li>
-</ul>
+
+<p>
+  The <?= Html::encode($organizationName) ?> IDP account you requested for
+    <?php if (empty($user->getDisplayName())) {
+    echo Html::encode($user->getFirstName() . ' ' . $user->getLastName());
+} else {
+    echo Html::encode($user->getDisplayName());
+}?>
+    (Staff ID <?= Html::encode($user->getEmployeeId()) ?>) has been created.
+    Their username is <?= Html::encode($user->getUsername()) ?>.
+</p>
+
+<p>
+  An invite message will be sent to <?= Html::encode($user->getFirstName()) ?> at
+  the following address:
+
+    <?php if (empty($user->getEmail())) {
+    echo Html::encode($user->getPersonalEmail());
+} else {
+    echo Html::encode($user->getEmail());
+}?>
+</p>

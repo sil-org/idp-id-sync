@@ -6,14 +6,19 @@ use Sil\Idp\IdSync\common\models\User;
 /* @var $user User */
 
 ?>
-    New User
-    --------
+  $user->getHRContactName(),
 
-    The following user has just been created in the <?= $organizationName ?> IdP:
+  The <?= $organizationName ?> IDP account you requested for
+  <?php if (empty($user->getDisplayName())) {
+    echo $user->getFirstName() . ' ' . $user->getLastName();
+} else {
+    echo $user->getDisplayName();
+}?> (Staff ID <?= $user->getEmployeeId() ?>)
+  has been created. Their username is <?= $user->getUsername() ?>.
 
-<?php
-    echo sprintf('Employee ID %s', $user->getEmployeeId());
-    if ($user->getUsername() !== null) {
-        echo sprintf(' (%s)', $user->getUsername());
-    }
-    echo "\n";
+  An invite message will be sent to <?= $user->getFirstName() ?> at
+  the following address: <?php if (empty($user->getEmail())) {
+    echo $user->getPersonalEmail();
+} else {
+    echo $user->getEmail();
+}?>
