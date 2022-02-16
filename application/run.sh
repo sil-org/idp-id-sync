@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# exit immediately if any line has non-zero exit code
+set -e
+
+# echo each line for debugging
 set -x
 
 # establish a signal handler to catch the SIGTERM from a 'docker stop'
@@ -19,11 +23,6 @@ rc=$?;
 if [[ $rc != 0 ]]; then
   echo "FAILED to start cron jobs. Exit code ${rc}. Message: ${output}"
   exit $rc;
-fi
-
-if [[ $APP_ENV == "dev" ]]; then
-    export XDEBUG_CONFIG="remote_enable=1 remote_host=${REMOTE_DEBUG_IP}"
-    apt-get -y -q install php-xdebug
 fi
 
 apache2ctl -k start -D FOREGROUND
