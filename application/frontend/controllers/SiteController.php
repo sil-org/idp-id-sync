@@ -63,7 +63,11 @@ class SiteController extends BaseRestController
         try {
             $notifier->getSiteStatus();
         } catch (Exception $e) {
-            throw new HttpException(self::HttpExceptionBadGateway, 'Problem with notifier. Is email service down?');
+            throw new HttpException(
+                self::HttpExceptionBadGateway,
+                'Problem with notifier. Is email service down? : ' . $e->getMessage(),
+                $e->getCode()
+            );
         }
     }
 
@@ -75,7 +79,11 @@ class SiteController extends BaseRestController
         try {
             $idBroker->getSiteStatus();
         } catch (Exception $e) {
-            throw new HttpException(self::HttpExceptionBadGateway, 'Problem with ID Broker service.');
+            throw new HttpException(
+                self::HttpExceptionBadGateway,
+                'Problem with ID Broker service: ' . $e->getMessage(),
+                $e->getCode()
+            );
         }
     }
 
