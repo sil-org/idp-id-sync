@@ -26,7 +26,7 @@ broker:
 
 clean:
 	docker-compose kill
-	docker system prune -f
+	docker-compose rm -f
 
 deps:
 	docker-compose run --rm cli composer install --no-scripts
