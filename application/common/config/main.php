@@ -25,12 +25,6 @@ $emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
 
 // Re-retrieve the validIpRanges as an array.
 $emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
-if (empty($alertsEmail) && empty($hrNotifierEmailTo)) {
-    $emailServiceConfig['baseUrl'] = 'x';
-    $emailServiceConfig['accessToken'] = 'x';
-    $emailServiceConfig['assertValidIp'] = false;
-    $emailServiceConfig['validIpRanges'] = '';
-}
 
 /* Configure the notifier, used to send notifications to HR (such as
  * when users lack an email address):  */

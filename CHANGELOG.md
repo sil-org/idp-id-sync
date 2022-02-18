@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### [4.2.3] - 2022-02-18
+## Fixed
+- Improved the new-user email template to be more friendly
+- Don't destroy all the Docker infrastructure on the user's dev machine in 'make clean'.
+## Changed
+- Made email configuration required.
+## Removed
+- Removed Xdebug since it is no longer readily available in the base image.
+
 ### [4.2.2] - 2022-02-14
 - Remove redundant error log entry in /site/system-status handler
 
@@ -227,7 +236,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.2.2...develop
+[Unreleased]: https://github.com/silinternational/idp-id-sync/compare/4.2.3...develop
+[4.2.3]: https://github.com/silinternational/idp-id-sync/compare/4.2.2...4.2.3
 [4.2.2]: https://github.com/silinternational/idp-id-sync/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/silinternational/idp-id-sync/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/silinternational/idp-id-sync/compare/4.1.4...4.2.0
