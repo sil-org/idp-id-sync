@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Sil\Idp\IdSync\common\components\adapters\GoogleSheetsIdStore;
@@ -12,13 +13,13 @@ use Sil\PhpEnv\Env;
 class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
 {
     private $googleSheetsClient = null;
-    
+
     public function __construct()
     {
         echo 'Testing integration with Google Sheets.' . PHP_EOL;
         parent::__construct();
     }
-    
+
     /**
      * @Given I can make authenticated calls to the ID Store
      */
@@ -27,7 +28,7 @@ class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
         $googleSheetsConfig = Env::getArrayFromPrefix('TEST_GOOGLE_SHEETS_CONFIG_');
         $this->idStore = new GoogleSheetsIdStore($googleSheetsConfig);
     }
-    
+
     /**
      * @When I ask the ID Store for a specific active user
      */
@@ -36,7 +37,7 @@ class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
         $this->activeEmployeeId = Env::requireEnv('TEST_GOOGLE_SHEETS_EMPLOYEE_ID');
         $this->result = $this->idStore->getActiveUser($this->activeEmployeeId);
     }
-    
+
     protected function getAttributeForEachUser(string $attributeName): array
     {
         $googleSheetsClient = $this->getGoogleSheetsClient();
@@ -50,7 +51,7 @@ class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
 
         return $attributeValues;
     }
-    
+
     protected function getAttributesForEachUser(array $attributeNames)
     {
         $googleSheetsClient = $this->getGoogleSheetsClient();
@@ -66,7 +67,7 @@ class GoogleSheetsIntegrationContext extends IdStoreIntegrationContextBase
         }
         return $desiredInfoForAllUsers;
     }
-    
+
     protected function getGoogleSheetsClient()
     {
         if ($this->googleSheetsClient === null) {

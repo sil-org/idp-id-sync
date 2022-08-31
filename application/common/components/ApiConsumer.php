@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\components;
 
 use yii\base\Component;
@@ -33,7 +34,7 @@ class ApiConsumer extends Component implements IdentityInterface
         // since this app is a stateless RESTful app, this is not applicable (no cookies)
         return null;
     }
-    
+
     protected static function isValidToken($token)
     {
         $validTokensString = Yii::$app->params['idSyncAccessTokens'];

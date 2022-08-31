@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\components\adapters;
 
 use Exception;
@@ -12,7 +13,7 @@ class IdpIdBroker extends IdBrokerBase
 {
     /** @var IdBrokerClient */
     protected $client;
-    
+
     public function init()
     {
         if (empty($this->accessToken)) {
@@ -27,7 +28,7 @@ class IdpIdBroker extends IdBrokerBase
         ]);
         parent::init();
     }
-    
+
     /**
      * Activate a user.
      *
@@ -41,7 +42,7 @@ class IdpIdBroker extends IdBrokerBase
             'active' => 'yes',
         ]);
     }
-    
+
     /**
      * Attempt to authenticate using the given credentials, getting back
      * information about the authenticated user (if the credentials were
@@ -63,7 +64,7 @@ class IdpIdBroker extends IdBrokerBase
         }
         return new User($authenticatedUserInfo);
     }
-    
+
     /**
      * Create a user with the given information.
      *
@@ -87,7 +88,7 @@ class IdpIdBroker extends IdBrokerBase
             );
         }
     }
-    
+
     /**
      * Deactivate a user.
      *
@@ -98,7 +99,7 @@ class IdpIdBroker extends IdBrokerBase
     {
         $this->getClient()->deactivateUser($employeeId);
     }
-    
+
     /**
      * @return IdBrokerClient
      */
@@ -106,7 +107,7 @@ class IdpIdBroker extends IdBrokerBase
     {
         return $this->client;
     }
-    
+
     /**
      * Get information about the specified user.
      *
@@ -128,7 +129,7 @@ class IdpIdBroker extends IdBrokerBase
     {
         return $this->getClient()->getSiteStatus();
     }
-    
+
     /**
      * Get a list of all users.
      *
@@ -140,7 +141,7 @@ class IdpIdBroker extends IdBrokerBase
     {
         return self::getAsUsers($this->getClient()->listUsers($fields));
     }
-    
+
     /**
      * Set the password for the specified user.
      *
@@ -153,7 +154,7 @@ class IdpIdBroker extends IdBrokerBase
     {
         $this->getClient()->setPassword($employeeId, $password);
     }
-    
+
     /**
      * Update the specified user with the given information.
      *

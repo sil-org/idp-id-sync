@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\components\adapters;
 
 use Exception;
@@ -11,18 +12,18 @@ use yii\helpers\Json;
 
 class SagePeopleIdStore extends IdStoreBase
 {
-    const PROP_EMPLOYEE_ID = 'fHCM2__Unique_Id__c';
-    const PROP_FIRST_NAME = 'fHCM2__First_Name__c';
-    const PROP_LAST_NAME = 'fHCM2__Surname__c';
-    const PROP_DISPLAY_NAME = 'Name';
-    const PROP_PERSONAL_EMAIL = 'fHCM2__Home_Email__c';
-    const PROP_EMAIL = 'fHCM2__User__r.Email';
-    const PROP_USERNAME = 'JAARS_IdP_Username__c';
-    const PROP_MANAGER_EMAIL = 'fHCM2__Manager_User__r.Email';
-    const PROP_LOCKED = 'fHCM2__User__r.jaars_Locked_From_IdP__c';
-    const PROP_REQUIRE_MFA = 'fHCM2__User__r.jaars_Require_2sv_with_IdP__c';
+    public const PROP_EMPLOYEE_ID = 'fHCM2__Unique_Id__c';
+    public const PROP_FIRST_NAME = 'fHCM2__First_Name__c';
+    public const PROP_LAST_NAME = 'fHCM2__Surname__c';
+    public const PROP_DISPLAY_NAME = 'Name';
+    public const PROP_PERSONAL_EMAIL = 'fHCM2__Home_Email__c';
+    public const PROP_EMAIL = 'fHCM2__User__r.Email';
+    public const PROP_USERNAME = 'JAARS_IdP_Username__c';
+    public const PROP_MANAGER_EMAIL = 'fHCM2__Manager_User__r.Email';
+    public const PROP_LOCKED = 'fHCM2__User__r.jaars_Locked_From_IdP__c';
+    public const PROP_REQUIRE_MFA = 'fHCM2__User__r.jaars_Require_2sv_with_IdP__c';
 
-    const DEFAULT_QUERY_CONDITIONS = "fHCM2__Employment_Status__c='Active' AND fHCM2__User__c!=null AND fHCM2__Department__c!='a0H1U000001NKk4UAG'";
+    public const DEFAULT_QUERY_CONDITIONS = "fHCM2__Employment_Status__c='Active' AND fHCM2__User__c!=null AND fHCM2__Department__c!='a0H1U000001NKk4UAG'";
 
     public $authUrl = null;
     public $queryUrl = null;

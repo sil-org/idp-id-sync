@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\interfaces;
 
 use Sil\Idp\IdSync\common\models\User;
@@ -14,21 +15,21 @@ interface IdStoreInterface
      *     such active user was found.
      */
     public function getActiveUser(string $employeeId);
-    
+
     /**
      * Get information about each of the (active) users.
      *
      * @return User[] A list of Users.
      */
     public function getAllActiveUsers();
-    
+
     /**
      * Get a user-friendly name for this ID Store.
      *
      * @return string The name of the ID Store.
      */
     public function getIdStoreName();
-    
+
     /**
      * Get a list of users who have had qualifying changes (name, email, locked,
      * activated, added) since the given Unix timestamp.
@@ -37,7 +38,7 @@ interface IdStoreInterface
      * @return User[] A list of Users.
      */
     public function getUsersChangedSince(int $unixTimestamp);
-    
+
     /**
      * If the ID Store adapter supports updating when specific users' records
      * were last synced, do so. Otherwise, this function call does nothing.

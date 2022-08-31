@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Behat\Behat\Tester\Exception\PendingException;
@@ -25,31 +26,31 @@ class SafetyCutoffContext implements Context
 {
     /** @var Exception */
     private $exceptionThrown = null;
-    
+
     /** @var IdBrokerInterface */
     private $idBroker;
-    
+
     /** @var IdStoreInterface */
     private $idStore;
-    
+
     /** @var LoggerInterface */
     protected $logger;
-    
+
     /** @var NotifierInterface */
     protected $notifier;
-    
+
     /** @var float|null */
     private $safetyCutoff = null;
-    
+
     /** @var int */
     private $tempTimestamp;
-    
+
     public function __construct()
     {
         $this->logger = new Psr3ConsoleLogger();
         $this->notifier = new ConsoleNotifier();
     }
-    
+
     /**
      * @Then an exception SHOULD have been thrown
      */
@@ -60,7 +61,7 @@ class SafetyCutoffContext implements Context
             "An exception should have been thrown, but wasn't"
         );
     }
-    
+
     /**
      * @Then an exception should NOT have been thrown
      */
@@ -73,7 +74,7 @@ class SafetyCutoffContext implements Context
             $possibleException->getMessage()
         ));
     }
-    
+
     protected function createSynchronizer()
     {
         return new Synchronizer(
@@ -84,7 +85,7 @@ class SafetyCutoffContext implements Context
             $this->safetyCutoff
         );
     }
-    
+
     /**
      * @When I sync all the users from the ID Store to the ID Broker
      */
@@ -97,7 +98,7 @@ class SafetyCutoffContext implements Context
             $this->exceptionThrown = $e;
         }
     }
-    
+
     /**
      * @Given :number users are active in the ID Broker
      */
@@ -116,10 +117,10 @@ class SafetyCutoffContext implements Context
                 User::ACTIVE => 'yes',
             ];
         }
-        
+
         $this->idBroker = new FakeIdBroker($idBrokerUsers);
     }
-    
+
     /**
      * @Given running a full sync would deactivate :numToDeactivate users
      */
@@ -129,12 +130,12 @@ class SafetyCutoffContext implements Context
             $this->idBroker,
             'Set up the ID Broker before using this step.'
         );
-        
+
         $usersFromBroker = $this->idBroker->listUsers();
-        
+
         $numInBroker = count($usersFromBroker);
         $numToHaveInStore = $numInBroker - $numToDeactivate;
-        
+
         $activeIdStoreUsers = [];
         for ($i = 0; $i < $numToHaveInStore; $i++) {
             /* @var $user User */
@@ -168,10 +169,10 @@ class SafetyCutoffContext implements Context
             $this->idBroker,
             'Set up the ID Broker before using this step.'
         );
-        
+
         $usersFromBroker = $this->idBroker->listUsers();
         $activeIdStoreUsers = [];
-        
+
         // Add all users from ID Broker to ID Store.
         foreach ($usersFromBroker as $user) {
             $activeIdStoreUsers[$user->getEmployeeId()] = [
@@ -183,7 +184,7 @@ class SafetyCutoffContext implements Context
                 'email' => $user->getEmail(),
             ];
         }
-        
+
         // Add $numToCreate more users to ID Store.
         $numInBroker = count($usersFromBroker);
         $numToHaveInStore = $numInBroker + $numToCreate;
@@ -198,7 +199,7 @@ class SafetyCutoffContext implements Context
                 'email' => 'person_' . $i . '@example.com',
             ];
         }
-        
+
         $this->idStore = new FakeIdStore($activeIdStoreUsers);
     }
 
@@ -227,14 +228,14 @@ class SafetyCutoffContext implements Context
             $this->idBroker,
             'Set up the ID Broker before using this step.'
         );
-        
+
         $usersFromBroker = $this->idBroker->listUsers();
         $numInBroker = count($usersFromBroker);
-        
+
         $activeIdStoreUsers = [];
         $idStoreUserChanges = [];
         $this->tempTimestamp = 1500000000; // Arbitrary time for tests.
-        
+
         // Add $numToAdd new users to ID Store (that aren't in ID Broker),
         // ensuring Employee ID's won't collide.
         for ($i = 0; $i < $numToAdd; $i++) {
@@ -252,14 +253,14 @@ class SafetyCutoffContext implements Context
                 'employeenumber' => (string)$tempEmployeeId,
             ];
         }
-        
+
         // Set up for Store to SOME of the users that are in Broker.
         $numInBrokerToHaveInStore = $numInBroker - $numToDeactivate;
         for ($i = 0; $i < $numInBroker; $i++) {
-            
+
             /* @var $user User */
             $user = $usersFromBroker[$i];
-            
+
             // Make a note that the first $numToUpdate were changed recently
             // enough to be included in our incremental sync.
             if ($i < $numToUpdate) {
@@ -268,7 +269,7 @@ class SafetyCutoffContext implements Context
                     'employeenumber' => (string)$user->getEmployeeId(),
                 ];
             }
-            
+
             // Exclude the last $numToDeactivate from Store, and make a note
             // that those were changed recently enough to be included in our
             // incremental sync.
@@ -288,7 +289,7 @@ class SafetyCutoffContext implements Context
                 ];
             }
         }
-        
+
         $this->idStore = new FakeIdStore($activeIdStoreUsers, $idStoreUserChanges);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\traits;
 
 use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
