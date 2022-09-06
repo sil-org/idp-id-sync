@@ -87,7 +87,6 @@ class FakeIdStore extends IdStoreBase
 
     public function getAllActiveUsers()
     {
-
         AdapterHelpers::addBlankProperty('supervisoremail', $this->activeUsers);
         return self::getAsUsers($this->activeUsers);
     }

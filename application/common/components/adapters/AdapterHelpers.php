@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Sil\Idp\IdSync\common\components\adapters;
-
 
 class AdapterHelpers
 {
@@ -11,7 +9,8 @@ class AdapterHelpers
      * @param string $property the key of the entry to look for
      * @param array $items (nested array)
      */
-    public static function addBlankProperty(string $property, array &$items) {
+    public static function addBlankProperty(string $property, array &$items)
+    {
         foreach ($items as &$next) {
             if (!isset($next[$property])) {
                 $next[$property] = '';
