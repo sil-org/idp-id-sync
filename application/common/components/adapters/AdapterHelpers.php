@@ -12,9 +12,7 @@ class AdapterHelpers
     public static function addBlankProperty(string $property, array &$items)
     {
         foreach ($items as &$next) {
-            if (!isset($next[$property])) {
-                $next[$property] = '';
-            }
+            $next[$property] ??= '';
         }
     }
 }
