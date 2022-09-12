@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Behat\Behat\Context\Context;
@@ -12,10 +13,10 @@ class UserContext implements Context
 {
     /** @var User */
     protected $user;
-    
+
     /** @var array */
     protected $result;
-    
+
     protected function createUserWith($field, $value)
     {
         return new User(array_merge([
@@ -26,7 +27,7 @@ class UserContext implements Context
             $field => $value,
         ]));
     }
-    
+
     /**
      * @Given I create a User with a :field value of ':input'
      */
@@ -34,7 +35,7 @@ class UserContext implements Context
     {
         $this->user = $this->createUserWith($field, $input);
     }
-    
+
     /**
      * @Given I create a User with a :field value of 0
      */
@@ -103,7 +104,7 @@ class UserContext implements Context
     {
         $this->user = $this->createUserWith($field, null);
     }
-    
+
     /**
      * @Given I create a User with a :field value of :value and an Employee ID
      */
@@ -114,7 +115,7 @@ class UserContext implements Context
             User::EMPLOYEE_ID => '12345',
         ]);
     }
-    
+
     /**
      * @Then the result should ONLY contain :field and an Employee ID
      */
@@ -122,10 +123,10 @@ class UserContext implements Context
     {
         Assert::assertArrayHasKey($field, $this->result);
         unset($this->result[$field]);
-        
+
         Assert::assertArrayHasKey(User::EMPLOYEE_ID, $this->result);
         unset($this->result[User::EMPLOYEE_ID]);
-        
+
         Assert::assertCount(0, $this->result, sprintf(
             "The array unexpectedly contained the following entries: \n%s",
             var_export($this->result, true)

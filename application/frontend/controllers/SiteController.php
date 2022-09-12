@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\frontend\controllers;
 
 use Exception;
@@ -11,7 +12,7 @@ use yii\web\NotFoundHttpException;
 
 class SiteController extends BaseRestController
 {
-    const HttpExceptionBadGateway = 502;
+    public const HttpExceptionBadGateway = 502;
 
     public function behaviors()
     {

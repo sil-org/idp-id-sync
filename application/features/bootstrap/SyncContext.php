@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Behat\Behat\Context\Context;

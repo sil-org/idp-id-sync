@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Behat\Behat\Context\Context;
@@ -16,30 +17,30 @@ class IdpIdBrokerIntegrationContext implements Context
      * @var IdpIdBroker
      */
     protected $idBroker;
-    
+
     protected $oldPassword;
     protected $newPassword;
-    
+
     protected $testUserData;
-    
+
     /** @var User */
     protected $testUpdatedUser;
-    
+
     protected $result;
-    
+
     public function __construct()
     {
         require_once __DIR__ . '/../../vendor/yiisoft/yii2/Yii.php';
-        
+
         $this->idBroker = new IdpIdBroker([
             'baseUrl' => 'http://broker', // For tests. Matches docker container name.
             'accessToken' => Env::requireEnv('ID_BROKER_CONFIG_accessToken'),
             'assertValidIp' => false,
         ]);
-        
+
         $this->testUserData = $this->generateDataForNewTestUser();
     }
-    
+
     protected function generateDataForNewTestUser()
     {
         $uniqueId = uniqid();
@@ -52,7 +53,7 @@ class IdpIdBrokerIntegrationContext implements Context
             'email' => 'user' . $uniqueId . '@example.com',
         ];
     }
-    
+
     protected function generateDummyPassword()
     {
         return base64_encode(random_bytes(12));
@@ -76,7 +77,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $this->idBroker->deactivateUser(
             $this->testUserData['employee_id']
         );
-        
+
         // Confirm that it worked.
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
@@ -93,7 +94,7 @@ class IdpIdBrokerIntegrationContext implements Context
         $this->idBroker->activateUser(
             $this->testUserData['employee_id']
         );
-        
+
         // Confirm that it worked.
         $user = $this->idBroker->getUser(
             $this->testUserData['employee_id']
@@ -118,7 +119,7 @@ class IdpIdBrokerIntegrationContext implements Context
     public function thatUserHasAPassword()
     {
         $this->testUserData['password'] = $this->generateDummyPassword();
-        
+
         $this->idBroker->setPassword(
             $this->testUserData['employee_id'],
             $this->testUserData['password']
@@ -274,9 +275,9 @@ class IdpIdBrokerIntegrationContext implements Context
     {
         $this->oldPassword = $this->testUserData['password'];
         $this->newPassword = $this->generateDummyPassword();
-        
+
         $this->testUserData['password'] = $this->newPassword;
-        
+
         $this->idBroker->setPassword(
             $this->testUserData['employee_id'],
             $this->newPassword

@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\sync;
 
 use Exception;
@@ -16,8 +17,8 @@ use yii\helpers\ArrayHelper;
 class Synchronizer
 {
     /** @var float */
-    const MIN_NUM_CHANGES_ALLOWED = 10;
-    const SAFETY_CUTOFF_DEFAULT = 0.15;
+    public const MIN_NUM_CHANGES_ALLOWED = 10;
+    public const SAFETY_CUTOFF_DEFAULT = 0.15;
 
     public $dateTimeFormat = 'n/j/y g:ia T';
 

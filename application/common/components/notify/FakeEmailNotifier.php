@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\components\notify;
 
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;

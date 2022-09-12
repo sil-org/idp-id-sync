@@ -32,7 +32,7 @@ deps:
 	docker-compose run --rm cli composer install --no-scripts
 
 depsupdate:
-	docker-compose run --rm cli bash -c "composer update --no-scripts && composer show -Df json > versions.json"
+	docker-compose run --rm cli bash -c "composer update --no-scripts && composer show -D > versions.txt"
 
 phpmyadmin:
 	docker-compose up -d phpmyadmin

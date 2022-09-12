@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\frontend\components;
 
 use yii\db\ActiveRecord;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\components\adapters;
 
 use Sil\Idp\IdSync\common\components\clients\GoogleSheetsClient;
