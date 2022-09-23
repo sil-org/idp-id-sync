@@ -25,7 +25,7 @@ sleep 15
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 # Run the feature tests (skipping integration tests)
-./vendor/bin/behat --config=features/behat.yml --tags '~@integration'
+./vendor/bin/behat --config=features/behat.yml --tags '~@integration' --stop-on-failure
 
 # If they failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
