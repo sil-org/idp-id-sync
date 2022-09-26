@@ -2,6 +2,7 @@
 
 namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
+use Sil\Idp\IdSync\common\components\adapters\AdapterHelpers;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\ArrayHelper;
@@ -86,6 +87,7 @@ class FakeIdStore extends IdStoreBase
 
     public function getAllActiveUsers()
     {
+        AdapterHelpers::addBlankProperty('supervisoremail', $this->activeUsers);
         return self::getAsUsers($this->activeUsers);
     }
 
