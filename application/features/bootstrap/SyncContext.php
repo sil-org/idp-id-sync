@@ -10,12 +10,11 @@ use Psr\Log\LoggerInterface;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
-use Sil\Idp\IdSync\common\components\notify\FakeEmailNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
 use Sil\Idp\IdSync\common\sync\Synchronizer;
-use Sil\Psr3Adapters\Psr3ConsoleLogger;
+use Sil\Psr3Adapters\Psr3EchoLogger;
 use yii\helpers\Json;
 
 /**
@@ -47,7 +46,7 @@ class SyncContext implements Context
 
     public function __construct()
     {
-        $this->logger = new Psr3ConsoleLogger();
+        $this->logger = new Psr3EchoLogger();
         $this->notifier = new ConsoleNotifier();
     }
 
