@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\models;
 
 use InvalidArgumentException;
@@ -6,20 +7,20 @@ use Exception;
 
 class User
 {
-    const ACTIVE = 'active';
-    const DISPLAY_NAME = 'display_name';
-    const EMAIL = 'email';
-    const EMPLOYEE_ID = 'employee_id';
-    const FIRST_NAME = 'first_name';
-    const GROUPS = 'groups';
-    const HR_CONTACT_NAME = 'hr_contact_name';
-    const HR_CONTACT_EMAIL = 'hr_contact_email';
-    const LAST_NAME = 'last_name';
-    const LOCKED = 'locked';
-    const MANAGER_EMAIL = 'manager_email';
-    const PERSONAL_EMAIL = 'personal_email';
-    const REQUIRE_MFA = 'require_mfa';
-    const USERNAME = 'username';
+    public const ACTIVE = 'active';
+    public const DISPLAY_NAME = 'display_name';
+    public const EMAIL = 'email';
+    public const EMPLOYEE_ID = 'employee_id';
+    public const FIRST_NAME = 'first_name';
+    public const GROUPS = 'groups';
+    public const HR_CONTACT_NAME = 'hr_contact_name';
+    public const HR_CONTACT_EMAIL = 'hr_contact_email';
+    public const LAST_NAME = 'last_name';
+    public const LOCKED = 'locked';
+    public const MANAGER_EMAIL = 'manager_email';
+    public const PERSONAL_EMAIL = 'personal_email';
+    public const REQUIRE_MFA = 'require_mfa';
+    public const USERNAME = 'username';
 
     /**
      * The values (indexed by field name) for the fields which have been set.

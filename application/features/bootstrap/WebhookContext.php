@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Behat\Behat\Context\Context;
@@ -13,10 +14,10 @@ use Sil\PhpEnv\Env;
 class WebhookContext implements Context
 {
     private $urlPath;
-    
+
     /** @var ResponseInterface */
     private $response;
-    
+
     /**
      * @Given the notification URL path will be :urlPath
      */

@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\components\clients;
 
 use InvalidArgumentException;
@@ -8,7 +9,7 @@ use yii\helpers\Json;
 
 class GoogleSheetsClient extends Component
 {
-    const FIRST_ROW_AFTER_HEADERS = 2;
+    public const FIRST_ROW_AFTER_HEADERS = 2;
 
     /**
      * @var null|string The Application Name to use with Google_Client.

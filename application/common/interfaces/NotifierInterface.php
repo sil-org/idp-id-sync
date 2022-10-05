@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\interfaces;
 
 use Sil\Idp\IdSync\common\models\User;

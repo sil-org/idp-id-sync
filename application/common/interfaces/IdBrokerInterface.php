@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\interfaces;
 
 use Exception;
@@ -13,7 +14,7 @@ interface IdBrokerInterface
      * @throws Exception
      */
     public function activateUser(string $employeeId);
-    
+
     /**
      * Attempt to authenticate using the given credentials, getting back
      * information about the authenticated user (if the credentials were
@@ -25,7 +26,7 @@ interface IdBrokerInterface
      * @throws Exception
      */
     public function authenticate(string $username, string $password);
-    
+
     /**
      * Create a user with the given information.
      *
@@ -35,7 +36,7 @@ interface IdBrokerInterface
      * @throws Exception
      */
     public function createUser(array $config = []);
-    
+
     /**
      * Deactivate a user.
      *
@@ -43,7 +44,7 @@ interface IdBrokerInterface
      * @throws Exception
      */
     public function deactivateUser(string $employeeId);
-    
+
     /**
      * Ping the /site/status URL.
      *
@@ -51,7 +52,7 @@ interface IdBrokerInterface
      * @throws Exception
      */
     public function getSiteStatus();
-    
+
     /**
      * Get information about the specified user.
      *
@@ -61,7 +62,7 @@ interface IdBrokerInterface
      * @throws Exception
      */
     public function getUser(string $employeeId);
-    
+
     /**
      * Get a list of all users.
      *
@@ -70,7 +71,7 @@ interface IdBrokerInterface
      * @return User[] A list of Users.
      */
     public function listUsers($fields = null);
-    
+
     /**
      * Set the password for the specified user.
      *
@@ -80,7 +81,7 @@ interface IdBrokerInterface
      * @throws Exception
      */
     public function setPassword(string $employeeId, string $password);
-    
+
     /**
      * Update the specified user with the given information.
      *

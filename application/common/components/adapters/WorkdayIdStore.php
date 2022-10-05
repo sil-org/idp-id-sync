@@ -1,9 +1,11 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\components\adapters;
 
 use Exception;
 use GuzzleHttp\Client;
 use InvalidArgumentException;
+use Sil\Idp\IdSync\common\components\adapters\AdapterHelpers;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\Json;
@@ -18,6 +20,8 @@ class WorkdayIdStore extends IdStoreBase
     public $timeout = 45; // Timeout in seconds (per call to ID Store API).
 
     protected $httpClient = null;
+
+    private const ManagerEmail = 'Manager_Email';
 
     public function init()
     {
@@ -50,7 +54,7 @@ class WorkdayIdStore extends IdStoreBase
             'Username' => User::USERNAME,
             'Account_Locked__Disabled_or_Expired' => User::LOCKED,
             'requireMfa' => User::REQUIRE_MFA,
-            'Manager_Email' => User::MANAGER_EMAIL,
+            self::ManagerEmail => User::MANAGER_EMAIL,
             'Personal_Email' => User::PERSONAL_EMAIL,
             'Groups' => User::GROUPS,
 
@@ -125,6 +129,8 @@ class WorkdayIdStore extends IdStoreBase
                 var_export($allActiveUsers, true)
             ), 1532982679);
         }
+
+        AdapterHelpers::addBlankProperty(self::ManagerEmail, $allActiveUsers);
 
         $this->generateGroupsLists($allActiveUsers);
 

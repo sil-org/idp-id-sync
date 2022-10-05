@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\common\components\adapters\fakes;
 
 use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
@@ -10,13 +11,13 @@ use yii\helpers\ArrayHelper;
 class FakeIdBroker extends IdBrokerBase
 {
     private $usersByEmployeeId;
-    
+
     public function __construct(array $usersByEmployeeId = [], array $config = [])
     {
         $this->usersByEmployeeId = $usersByEmployeeId;
         parent::__construct($config);
     }
-    
+
     public function activateUser(string $employeeId)
     {
         $this->usersByEmployeeId[$employeeId]['active'] = 'yes';
@@ -41,7 +42,7 @@ class FakeIdBroker extends IdBrokerBase
                 1494880621
             );
         }
-        
+
         $this->usersByEmployeeId[$config['employee_id']] = ArrayHelper::merge(
             ['active' => 'yes'], // 'active' should default to 'yes'
             $config

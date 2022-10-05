@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Sil\Idp\IdSync\common\components\adapters\WorkdayIdStore;
@@ -14,7 +15,7 @@ class WorkdayIntegrationContext extends IdStoreIntegrationContextBase
         echo 'Testing integration with Workday.' . PHP_EOL;
         parent::__construct();
     }
-    
+
     /**
      * @Given I can make authenticated calls to the ID Store
      */
@@ -23,14 +24,14 @@ class WorkdayIntegrationContext extends IdStoreIntegrationContextBase
         $workdayApiUrl = Env::requireEnv('TEST_WORKDAY_CONFIG_apiUrl');
         $workdayUsername = Env::requireEnv('TEST_WORKDAY_CONFIG_username');
         $workdayPassword = Env::requireEnv('TEST_WORKDAY_CONFIG_password');
-        
+
         $this->idStore = new WorkdayIdStore([
             'apiUrl' => $workdayApiUrl,
             'username' => $workdayUsername,
             'password' => $workdayPassword,
         ]);
     }
-    
+
     /**
      * @When I ask the ID Store for a specific active user
      */

@@ -48,6 +48,7 @@ Feature: Synchronizing records
     Then the user should exist in the ID Broker
       And the user should not have a manager email address in the ID Broker
 
+
   # Full batch synchronization scenarios:
 
   Scenario: Update a user in the ID Broker
@@ -225,3 +226,17 @@ Feature: Synchronizing records
       And we ONLY tried to update the last-synced date in the ID Store for the following:
         | employeenumber |
         | 10003          |
+
+
+  Scenario: User has a manager email address in ID Broker but ID Store does not provide it
+    Given ONLY the following users are active in the ID Store:
+      | employeenumber | displayname  | username     |
+      | 10001          | Person One   | person_one   |
+    And ONLY the following users exist in the ID Broker:
+      | employee_id    | display_name | username   | manager_email     | active |
+      | 10001          | Person One   | person_one | boss1@example.org | yes    |
+    When I sync all the users from the ID Store to the ID Broker
+    Then an exception should NOT have been thrown
+    And ONLY the following users should exist in the ID Broker:
+      | employee_id    | display_name | username     | manager_email | active |
+      | 10001          | Person One   | person_one   |               | yes    |

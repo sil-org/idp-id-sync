@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Behat\Behat\Context\Context;
@@ -13,16 +14,16 @@ class IdStoreIntegrationContextBase implements Context
 {
     /** @var IdStoreInterface */
     protected $idStore;
-    
+
     protected $activeEmployeeId;
     protected $lastSyncedValues = [];
     protected $result;
-    
+
     public function __construct()
     {
         require_once __DIR__ . '/../../vendor/yiisoft/yii2/Yii.php';
     }
-    
+
     /**
      * @Then I should get back information about that user
      */
@@ -34,7 +35,7 @@ class IdStoreIntegrationContextBase implements Context
         ));
         Assert::assertInstanceOf(User::class, $this->result);
     }
-    
+
     /**
      * @When I ask the ID Store for all active users
      */
@@ -42,7 +43,7 @@ class IdStoreIntegrationContextBase implements Context
     {
         $this->result = $this->idStore->getAllActiveUsers();
     }
-    
+
     /**
      * @Then I should get back a list of information about active users
      */
@@ -55,7 +56,7 @@ class IdStoreIntegrationContextBase implements Context
             Assert::assertInstanceOf(User::class, $user);
         }
     }
-    
+
     /**
      * @When I ask the ID Store for all users changed since a specific point in time
      */
@@ -63,7 +64,7 @@ class IdStoreIntegrationContextBase implements Context
     {
         $this->result = $this->idStore->getUsersChangedSince(strtotime('-2 months'));
     }
-    
+
     /**
      * @Then I should get back a list of information about changed users
      */
@@ -76,7 +77,7 @@ class IdStoreIntegrationContextBase implements Context
             Assert::assertInstanceOf(User::class, $user);
         }
     }
-    
+
     /**
      * @Given I have a record of each user's last-synced value
      */
@@ -85,7 +86,7 @@ class IdStoreIntegrationContextBase implements Context
         $this->lastSyncedValues = $this->getAttributeForEachUser('last_synced');
         Assert::assertNotEmpty($this->lastSyncedValues);
     }
-    
+
     /**
      * @Given those last-synced values are all in the past or empty
      */
@@ -100,7 +101,7 @@ class IdStoreIntegrationContextBase implements Context
             }
         }
     }
-    
+
     /**
      * @Then NONE of the users' last-synced values should have changed
      */
@@ -114,7 +115,7 @@ class IdStoreIntegrationContextBase implements Context
             );
         }
     }
-    
+
     /**
      * Get a specific attribute's value for each user. The keys will be the
      * Employee ID, and the values will be the attribute's value.
@@ -138,7 +139,7 @@ class IdStoreIntegrationContextBase implements Context
         // NOTE: Override this method in the applicable subclasses.
         $this->throwNotYetImplementedException(__FUNCTION__, static::class);
     }
-    
+
     /**
      * Throw an exception that explains which class lacks which function.
      *
@@ -154,8 +155,8 @@ class IdStoreIntegrationContextBase implements Context
             $className
         ));
     }
-    
-    
+
+
     /**
      * Get specific attributes for each user. The keys will be the Employee ID,
      * and the values will be an array attribute name/value pairs.
@@ -184,7 +185,7 @@ class IdStoreIntegrationContextBase implements Context
         // NOTE: Override this method in the applicable subclasses.
         $this->throwNotYetImplementedException(__FUNCTION__, static::class);
     }
-    
+
     /**
      * @Then ONLY that user's last-synced value should have changed
      */
@@ -196,7 +197,7 @@ class IdStoreIntegrationContextBase implements Context
             count($newLastSyncedValues),
             "To prove that other users' last-synced dates did NOT change, this test requires more than 1 user."
         );
-        
+
         foreach ($newLastSyncedValues as $employeeId => $newLastSyncedValue) {
             if ($employeeId == $this->activeEmployeeId) {
                 Assert::assertNotEquals(
@@ -211,7 +212,7 @@ class IdStoreIntegrationContextBase implements Context
             }
         }
     }
-    
+
     /**
      * @When I update the last-synced value for every user
      */
@@ -220,7 +221,7 @@ class IdStoreIntegrationContextBase implements Context
         $allEmployeeIds = array_keys($this->lastSyncedValues);
         $this->idStore->updateSyncDatesIfSupported($allEmployeeIds);
     }
-    
+
     /**
      * @Then every users' last-synced values should have changed
      */
@@ -234,7 +235,7 @@ class IdStoreIntegrationContextBase implements Context
             );
         }
     }
-    
+
     /**
      * @When I update the last-synced values of users with a :field of :value
      */
@@ -247,10 +248,10 @@ class IdStoreIntegrationContextBase implements Context
                 $employeeIdsToUpdate[] = $employeeId;
             }
         }
-        
+
         $this->idStore->updateSyncDatesIfSupported($employeeIdsToUpdate);
     }
-    
+
     /**
      * @Then ONLY last-synced values of users with a :field of :value should have changed
      */
@@ -259,10 +260,10 @@ class IdStoreIntegrationContextBase implements Context
         $numberOfMatchingUsers = 0;
         $numberOfNonMatchingUsers = 0;
         $allUsersDesiredInfo = $this->getAttributesForEachUser(['last_synced', $field]);
-        
+
         foreach ($allUsersDesiredInfo as $employeeId => $thisUsersDesiredInfo) {
             $thisUsersValue = $thisUsersDesiredInfo[$field];
-            
+
             if ($thisUsersValue === $value) {
                 $numberOfMatchingUsers++;
                 Assert::assertNotEquals(
@@ -277,7 +278,7 @@ class IdStoreIntegrationContextBase implements Context
                 );
             }
         }
-        
+
         Assert::assertGreaterThan(0, $numberOfMatchingUsers, sprintf(
             'No users had a(n) %s of %s, so we could not prove that their last_synced values changed.',
             $field,
