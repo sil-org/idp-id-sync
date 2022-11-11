@@ -376,6 +376,28 @@ class Synchronizer
         return is_numeric($value) && ($value >= 0.0);
     }
 
+
+    /**
+     * Do a full synchronization, requesting all users from the ID Store and
+     * updating all records in the ID Broker.
+     *
+     * If there is an exception, send out an email about it.
+     */
+    public function syncAllNotifyException()
+    {
+        try {
+            $this->syncAll();
+        } catch (Exception $e) {
+            $message = sprintf(
+                'There was an error with the sync process. Code: %s, Message: %s',
+                $e->getCode(),
+                $e->getMessage(),
+            );
+            $this->logger->error($message);
+        }
+    }
+
+
     /**
      * Do a full synchronization, requesting all users from the ID Store and
      * updating all records in the ID Broker.
