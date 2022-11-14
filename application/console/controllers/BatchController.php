@@ -12,7 +12,7 @@ class BatchController extends Controller
     public function actionFull()
     {
         $synchronizer = $this->getSynchronizer();
-        $synchronizer->syncAll();
+        $synchronizer->syncAllNotifyException();
     }
 
     /**
