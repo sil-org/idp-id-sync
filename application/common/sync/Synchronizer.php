@@ -411,7 +411,12 @@ class Synchronizer
             $this->idStore->getIdStoreName()
         ));
 
-        $idStoreUsers = $this->idStore->getAllActiveUsers();
+        try {
+            $idStoreUsers = $this->idStore->getAllActiveUsers();
+        } catch (Exception $e) {
+            throw new Exception('Failed to get active users from ID Store: ' . $e->getMessage(), 1669770777);
+        }
+
         $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
             'employee_id',
             'active',
