@@ -67,7 +67,7 @@ services:
             MYSQL_PASSWORD: broker
 
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin:latest
+        image: phpmyadmin/phpmyadmin:5
         ports:
         - "8001:80"
         depends_on:
