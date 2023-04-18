@@ -388,12 +388,18 @@ class Synchronizer
         try {
             $this->syncAll();
         } catch (Exception $e) {
+            $code = $e->getCode();
             $message = sprintf(
                 'There was an error with the sync process. Code: %s, Message: %s',
-                $e->getCode(),
+                $code,
                 $e->getMessage(),
             );
-            $this->logger->error($message);
+
+            if ($code == 503 || $code == 504) {
+                $this->logger->warning($message);
+            } else {
+                $this->logger->error($message);
+            }
         }
     }
 
@@ -623,14 +629,21 @@ class Synchronizer
                     User::EMPLOYEE_ID => $employeeId,
                 ]);
             } catch (Exception $e) {
-                $this->logger->error(sprintf(
+                $code = $e->getCode();
+                $message = sprintf(
                     'Failed to sync one of the specified users (Employee ID: '
                     . '%s). Error (%s): %s. [%s]',
                     var_export($employeeId, true),
-                    $e->getCode(),
+                    $code,
                     $e->getMessage(),
                     1494360265
-                ));
+                );
+
+                if ($code == 503 || $code == 504) {
+                    $this->logger->warning($message);
+                } else {
+                    $this->logger->error($message);
+                }
             }
         }
 
