@@ -116,7 +116,7 @@ class SecureUserIdStore extends IdStoreBase
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
                 $response->getBody()
-            ), 1642083102);
+            ), $response->getStatusCode());
         }
 
         if (! is_array($allUsersInfo)) {
