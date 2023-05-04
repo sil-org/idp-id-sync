@@ -120,7 +120,7 @@ class WorkdayIdStore extends IdStoreBase
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
                 $response->getBody()
-            ), 1533069498);
+            ), $response->getStatusCode());
         }
 
         if (! is_array($allActiveUsers)) {
