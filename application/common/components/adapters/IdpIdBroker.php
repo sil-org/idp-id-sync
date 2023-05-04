@@ -5,6 +5,7 @@ namespace Sil\Idp\IdSync\common\components\adapters;
 use Exception;
 use InvalidArgumentException;
 use Sil\Idp\IdBroker\Client\IdBrokerClient;
+use Sil\Idp\IdBroker\Client\ServiceException;
 use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\models\User;
@@ -136,10 +137,20 @@ class IdpIdBroker extends IdBrokerBase
      * @param array|null $fields (Optional:) The list of fields desired about
      *     each user in the result.
      * @return User[] A list of Users.
+     * @throws Exception
      */
-    public function listUsers($fields = null)
+    public function listUsers($fields = null): array
     {
-        return self::getAsUsers($this->getClient()->listUsers($fields));
+        try {
+            $result = $this->getClient()->listUsers($fields);
+        } catch (ServiceException $e) {
+            $message = 'ID Broker returned non-OK status ' . $e->httpStatusCode;
+            throw new Exception($message, $e->getCode(), $e->getPrevious());
+        } catch (Exception $e) {
+            throw new Exception('error getting users list from ID Broker: ' . $e->getMessage());
+        }
+
+        return self::getAsUsers($result);
     }
 
     /**

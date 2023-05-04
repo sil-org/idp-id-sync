@@ -423,10 +423,14 @@ class Synchronizer
             throw new Exception('Failed to get active users from ID Store: ' . $e->getMessage(), 1669770777);
         }
 
-        $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
-            'employee_id',
-            'active',
-        ]);
+        try {
+            $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
+                'employee_id',
+                'active',
+            ]);
+        } catch (Exception $e) {
+            throw new Exception('Failed to list users in the ID Broker: ' . $e->getMessage(), 1683189100);
+        }
 
         $numActiveUsersInBroker = $this->getNumActiveUsersInBroker(
             $idBrokerUserInfoByEmployeeId
