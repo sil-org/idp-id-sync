@@ -420,13 +420,17 @@ class Synchronizer
         try {
             $idStoreUsers = $this->idStore->getAllActiveUsers();
         } catch (Exception $e) {
-            throw new Exception('Failed to get active users from ID Store: ' . $e->getMessage(), 1669770777);
+            throw new Exception('Failed to get active users from ID Store: ' . $e->getMessage(), $e->getCode(), $e);
         }
 
-        $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
-            'employee_id',
-            'active',
-        ]);
+        try {
+            $idBrokerUserInfoByEmployeeId = $this->getAllIdBrokerUsersByEmployeeId([
+                'employee_id',
+                'active',
+            ]);
+        } catch (Exception $e) {
+            throw new Exception('Failed to list users in the ID Broker: ' . $e->getMessage(), $e->getCode(), $e);
+        }
 
         $numActiveUsersInBroker = $this->getNumActiveUsersInBroker(
             $idBrokerUserInfoByEmployeeId

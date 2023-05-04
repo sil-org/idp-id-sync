@@ -245,7 +245,7 @@ class SagePeopleIdStore extends IdStoreBase
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
                 $response->getBody()
-            ), 1558380644);
+            ), $response->getStatusCode());
         }
 
         if (! is_array($body)) {
