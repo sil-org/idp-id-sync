@@ -429,7 +429,7 @@ class Synchronizer
                 'active',
             ]);
         } catch (Exception $e) {
-            throw new Exception('Failed to list users in the ID Broker: ' . $e->getMessage(), 1683189100);
+            throw new Exception('Failed to list users in the ID Broker: ' . $e->getMessage(), 1683189100, $e);
         }
 
         $numActiveUsersInBroker = $this->getNumActiveUsersInBroker(
