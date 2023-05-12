@@ -137,20 +137,30 @@ class Synchronizer
      */
     protected function activateAndUpdateUsers(array $usersToUpdateAndActivate)
     {
+        $usersWithErrors = [];
+        $lastError = null;
+
         $employeeIdsOfUsersUpdated = [];
-        foreach ($usersToUpdateAndActivate as $userToUpdateAndActivate) {
+        foreach ($usersToUpdateAndActivate as $nextUser) {
             try {
-                $this->activateAndUpdateUser($userToUpdateAndActivate);
-                $employeeIdsOfUsersUpdated[] = $userToUpdateAndActivate->getEmployeeId();
+                $this->activateAndUpdateUser($nextUser);
+                $employeeIdsOfUsersUpdated[] = $nextUser->getEmployeeId();
             } catch (Exception $e) {
-                $this->logger->error(sprintf(
-                    'Failed to update/activate user in the ID Broker (%s). Error %s: %s. [%s]',
-                    $userToUpdateAndActivate->getStringForLogMessage(),
-                    $e->getCode(),
-                    $e->getMessage(),
-                    1494360119
-                ));
+                $usersWithErrors[] = $nextUser->getStringForLogMessage();
+                $lastError = $e;
             }
+        }
+
+        if ($lastError !== null) {
+            $this->logger->error(sprintf(
+                'Failed to update/activate user(s) in the ID Broker. Last error %s: %s. [%s].'
+                . '  Failed for %s users, including: %s',
+                $lastError->getCode(),
+                $lastError->getMessage(),
+                1494360119,
+                count($usersWithErrors),
+                join(', ', array_slice($usersWithErrors, -6)) // last six users
+            ));
         }
 
         $this->logger->notice([
