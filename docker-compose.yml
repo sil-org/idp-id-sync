@@ -34,6 +34,12 @@ services:
             PASSWORD_FORGOT_URL: https://www.example.com/forgot
             PASSWORD_PROFILE_URL: https://www.example.com/profile
             SUPPORT_EMAIL: support@example.com
+            MFA_TOTP_apiBaseUrl: not_needed_here
+            MFA_TOTP_apiKey: not_needed_here
+            MFA_TOTP_apiSecret: not_needed_here
+            MFA_WEBAUTHN_apiBaseUrl: not_needed_here
+            MFA_WEBAUTHN_apiKey: not_needed_here
+            MFA_WEBAUTHN_apiSecret: not_needed_here
         ports:
             - "8081:80"
         command: whenavail brokerdb 3306 60 ./run.sh
@@ -54,6 +60,12 @@ services:
             MYSQL_USER: broker
             MYSQL_PASSWORD: broker
             RUN_TASK: cron/all
+            MFA_TOTP_apiBaseUrl: not_needed_here
+            MFA_TOTP_apiKey: not_needed_here
+            MFA_TOTP_apiSecret: not_needed_here
+            MFA_WEBAUTHN_apiBaseUrl: not_needed_here
+            MFA_WEBAUTHN_apiKey: not_needed_here
+            MFA_WEBAUTHN_apiSecret: not_needed_here
         command: whenavail brokerdb 3306 60 ./run.sh
 
     brokerdb:
