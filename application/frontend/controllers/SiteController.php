@@ -27,33 +27,11 @@ class SiteController extends BaseRestController
     }
 
     /**
-     * @throws HttpException with status 502 (Bad Gateway) if any of the dependent services have a problem
-     * @throws Exception500 if dependent services are misconfigured
+     *
      */
     public function actionSystemStatus()
     {
-        /* @var $webApp \yii\web\Application */
-        $webApp = \Yii::$app;
-
-        try {
-            /* @var $notifier NotifierInterface */
-            $notifier = $webApp->get('notifier');
-        } catch (Exception $e) {
-            \Yii::error($e->getMessage());
-            throw new Exception500("Check notifier component's configuration.");
-        }
-
-        $this->checkNotifierStatus($notifier);
-
-        try {
-            /* @var $idBroker IdBrokerInterface */
-            $idBroker = $webApp->get('idBroker');
-        } catch (Exception $e) {
-            \Yii::error($e->getMessage());
-            throw new Exception500("Check idBroker component's configuration.");
-        }
-
-        $this->checkIdBrokerStatus($idBroker);
+        // report OK (200) as long as this service is running
     }
 
     /**
