@@ -32,7 +32,7 @@
 }
 {
   "name": "firebase/php-jwt",
-  "version": "v6.6.0"
+  "version": "v6.8.0"
 }
 {
   "name": "forevermatt/calc-api-sig",
@@ -44,7 +44,7 @@
 }
 {
   "name": "google/apiclient-services",
-  "version": "v0.304.0"
+  "version": "v0.306.0"
 }
 {
   "name": "google/auth",
@@ -112,15 +112,15 @@
 }
 {
   "name": "roave/security-advisories",
-  "version": "dev-master 601b276"
+  "version": "dev-master 9920192"
 }
 {
   "name": "silinternational/email-service-php-client",
-  "version": "2.4.0"
+  "version": "2.4.1"
 }
 {
   "name": "silinternational/idp-id-broker-php-client",
-  "version": "4.3.0"
+  "version": "4.3.1"
 }
 {
   "name": "silinternational/php-array-dot-notation",
