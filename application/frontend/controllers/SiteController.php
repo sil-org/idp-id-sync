@@ -32,38 +32,6 @@ class SiteController extends BaseRestController
     }
 
     /**
-     * @throws HttpException with status 502 (Bad Gateway) if the Notifier has a problem
-     */
-    private function checkNotifierStatus($notifier)
-    {
-        try {
-            $notifier->getSiteStatus();
-        } catch (Exception $e) {
-            throw new HttpException(
-                self::HttpExceptionBadGateway,
-                'Problem with notifier. Is email service down? : ' . $e->getMessage(),
-                $e->getCode()
-            );
-        }
-    }
-
-    /**
-     * @throws HttpException with status 502 (Bad Gateway) if the ID Broker has a problem
-     */
-    private function checkIdBrokerStatus($idBroker)
-    {
-        try {
-            $idBroker->getSiteStatus();
-        } catch (Exception $e) {
-            throw new HttpException(
-                self::HttpExceptionBadGateway,
-                'Problem with ID Broker service: ' . $e->getMessage(),
-                $e->getCode()
-            );
-        }
-    }
-
-    /**
      * @throws NotFoundHttpException
      */
     public function actionUndefinedRequest()
