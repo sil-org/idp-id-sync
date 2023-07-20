@@ -26,9 +26,6 @@ class SiteController extends BaseRestController
         return $behaviors;
     }
 
-    /**
-     *
-     */
     public function actionSystemStatus()
     {
         // report OK (200) as long as this service is running
