@@ -35,6 +35,12 @@ broker:
         MYSQL_DATABASE: broker
         MYSQL_USER: broker
         MYSQL_PASSWORD: broker
+        MFA_TOTP_apiBaseUrl: not_needed_here
+        MFA_TOTP_apiKey: not_needed_here
+        MFA_TOTP_apiSecret: not_needed_here
+        MFA_WEBAUTHN_apiBaseUrl: not_needed_here
+        MFA_WEBAUTHN_apiKey: not_needed_here
+        MFA_WEBAUTHN_apiSecret: not_needed_here
     depends_on:
         - brokercron
         - brokerdb
@@ -55,6 +61,12 @@ brokercron:
         MYSQL_DATABASE: broker
         MYSQL_USER: broker
         MYSQL_PASSWORD: broker
+        MFA_TOTP_apiBaseUrl: not_needed_here
+        MFA_TOTP_apiKey: not_needed_here
+        MFA_TOTP_apiSecret: not_needed_here
+        MFA_WEBAUTHN_apiBaseUrl: not_needed_here
+        MFA_WEBAUTHN_apiKey: not_needed_here
+        MFA_WEBAUTHN_apiSecret: not_needed_here
     depends_on:
         - brokerdb
     command: whenavail brokerdb 3306 60 ./run-cron.sh
