@@ -132,7 +132,7 @@ return [
                     'clientOptions' => [
                         'attach_stacktrace' => false, // stack trace identifies the logger call stack, not helpful
                         'environment' => $appEnv,
-                        'release' => 'idp-id-sync@4.5.0',
+                        'release' => 'idp-id-sync@4.5.0-pre',
                     ],
                 ],
             ],
