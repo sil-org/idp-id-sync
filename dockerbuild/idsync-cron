@@ -2,5 +2,5 @@
 # See https://crontab.guru/ for help with cron pattern.
 
 # m h dom mon dow user command
-2 0 * * * root /data/run-full-batch.sh > /proc/1/fd/1 2>&1
-*/5 * * * * root /data/run-incremental-batch.sh > /proc/1/fd/1 2>&1
+*/5 * * * * root /data/run-full-batch.sh > /proc/1/fd/1 2>&1
+#*/5 * * * * root /data/run-incremental-batch.sh > /proc/1/fd/1 2>&1
