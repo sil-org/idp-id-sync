@@ -1,5 +1,7 @@
 <?php
 
+use notamedia\sentry\SentryTarget;
+use Sentry\Event;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
@@ -9,7 +11,6 @@ use Sil\JsonLog\target\JsonStreamTarget;
 use Sil\PhpEnv\Env;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
-use notamedia\sentry\SentryTarget;
 
 $alertsEmail = Env::get('ALERTS_EMAIL');
 $appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
@@ -133,6 +134,10 @@ return [
                         'attach_stacktrace' => false, // stack trace identifies the logger call stack, not helpful
                         'environment' => $appEnv,
                         'release' => 'idp-id-sync@4.5.0-pre',
+                        'before_send' => function (Event $event) use ($idpName): ?Event {
+                            $event->setExtra(['idp' => $idpName]);
+                            return $event;
+                        },
                     ],
                 ],
             ],
