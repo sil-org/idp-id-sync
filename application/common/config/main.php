@@ -13,7 +13,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
 $alertsEmail = Env::get('ALERTS_EMAIL');
-$appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
 $idpName = Env::requireEnv('IDP_NAME');
 $idpDisplayName = Env::get('IDP_DISPLAY_NAME', $idpName);
 
@@ -108,15 +107,15 @@ return [
                     'logVars' => [], // Disable logging of _SERVER, _POST, etc.
                     'message' => [
                         'to' => $alertsEmail ?? '(disabled)',
-                        'subject' => 'ERROR - ' . $idpName . ' ID Sync [' . $appEnv .']',
+                        'subject' => 'ERROR - ' . $idpName . ' ID Sync [' . YII_ENV .']',
                     ],
                     'baseUrl' => $emailServiceConfig['baseUrl'],
                     'accessToken' => $emailServiceConfig['accessToken'],
                     'assertValidIp' => $emailServiceConfig['assertValidIp'],
                     'validIpRanges' => $emailServiceConfig['validIpRanges'],
-                    'prefix' => function ($message) use ($appEnv, $idpName) {
+                    'prefix' => function ($message) use ($idpName) {
                         return Json::encode([
-                            'app_env' => $appEnv,
+                            'app_env' => YII_ENV,
                             'idp_name' => $idpName,
                         ]);
                     },
@@ -132,7 +131,7 @@ return [
                     // https://docs.sentry.io/platforms/php/configuration/options
                     'clientOptions' => [
                         'attach_stacktrace' => false, // stack trace identifies the logger call stack, not helpful
-                        'environment' => $appEnv,
+                        'environment' => YII_ENV,
                         'release' => 'idp-id-sync@4.5.0-pre',
                         'before_send' => function (Event $event) use ($idpName): ?Event {
                             $event->setExtra(['idp' => $idpName]);
