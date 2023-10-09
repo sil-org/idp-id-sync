@@ -5,7 +5,6 @@ use Sentry\Event;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
-use Sil\Idp\IdSync\common\components\notify\NullNotifier;
 use Sil\JsonLog\target\EmailServiceTarget;
 use Sil\JsonLog\target\JsonStreamTarget;
 use Sil\PhpEnv\Env;
