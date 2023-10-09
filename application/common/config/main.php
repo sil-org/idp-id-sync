@@ -1,9 +1,10 @@
 <?php
 
+use notamedia\sentry\SentryTarget;
+use Sentry\Event;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
-use Sil\Idp\IdSync\common\components\notify\NullNotifier;
 use Sil\JsonLog\target\EmailServiceTarget;
 use Sil\JsonLog\target\JsonStreamTarget;
 use Sil\PhpEnv\Env;
@@ -11,7 +12,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
 $alertsEmail = Env::get('ALERTS_EMAIL');
-$appEnv = Env::get('APP_ENV', 'prod'); // Have default match "application/frontend/web/index.php".
 $idpName = Env::requireEnv('IDP_NAME');
 $idpDisplayName = Env::get('IDP_DISPLAY_NAME', $idpName);
 
@@ -106,19 +106,37 @@ return [
                     'logVars' => [], // Disable logging of _SERVER, _POST, etc.
                     'message' => [
                         'to' => $alertsEmail ?? '(disabled)',
-                        'subject' => 'ERROR - ' . $idpName . ' ID Sync [' . $appEnv .']',
+                        'subject' => 'ERROR - ' . $idpName . ' ID Sync [' . YII_ENV .']',
                     ],
                     'baseUrl' => $emailServiceConfig['baseUrl'],
                     'accessToken' => $emailServiceConfig['accessToken'],
                     'assertValidIp' => $emailServiceConfig['assertValidIp'],
                     'validIpRanges' => $emailServiceConfig['validIpRanges'],
-                    'prefix' => function ($message) use ($appEnv, $idpName) {
+                    'prefix' => function ($message) use ($idpName) {
                         return Json::encode([
-                            'app_env' => $appEnv,
+                            'app_env' => YII_ENV,
                             'idp_name' => $idpName,
                         ]);
                     },
                     'exportInterval' => 1,
+                ],
+                [
+                    'class' => SentryTarget::class,
+                    'enabled' => !empty(Env::get('SENTRY_DSN')),
+                    'dsn' => Env::get('SENTRY_DSN'),
+                    'levels' => ['error'],
+                    'context' => true,
+                    // Additional options for `Sentry\init`
+                    // https://docs.sentry.io/platforms/php/configuration/options
+                    'clientOptions' => [
+                        'attach_stacktrace' => false, // stack trace identifies the logger call stack, not helpful
+                        'environment' => YII_ENV,
+                        'release' => 'idp-id-sync@4.5.0',
+                        'before_send' => function (Event $event) use ($idpName): ?Event {
+                            $event->setExtra(['idp' => $idpName]);
+                            return $event;
+                        },
+                    ],
                 ],
             ],
         ],
