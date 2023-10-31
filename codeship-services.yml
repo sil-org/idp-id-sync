@@ -17,6 +17,10 @@ app:
         ID_STORE_ADAPTER: fake
         IDP_NAME: Test
 
+psr2:
+    build: .
+    entrypoint: /data/check-psr2.sh
+
 broker:
     image: silintl/idp-id-broker:latest
     environment:

@@ -1,6 +1,6 @@
 - name: check_psr2
-  service: app
-  command: /data/check-psr2.sh
+  service: psr2
+  command: ""
 
 - name: test
   service: app
