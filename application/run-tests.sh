@@ -7,9 +7,6 @@ composer install --no-interaction --no-scripts --no-progress
 # If that failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
-# Start apache
-apachectl start
-
 # If that failed, exit.
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
