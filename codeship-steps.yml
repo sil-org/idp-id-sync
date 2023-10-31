@@ -1,6 +1,6 @@
 - name: check_psr2
   service: psr2
-  command: ""
+  command: .
 
 - name: test
   service: app
