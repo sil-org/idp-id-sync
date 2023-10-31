@@ -1,8 +1,8 @@
 sync_full: broker deps
-	docker-compose run --rm app_full_sync
+	docker-compose run --rm app
 
 sync_incremental: broker deps
-	docker-compose run --rm app_incremental_sync
+	docker-compose run --rm app bash -c "/data/yii batch/incremental"
 
 bash:
 	docker-compose run --rm cli bash
