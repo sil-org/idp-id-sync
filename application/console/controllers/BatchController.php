@@ -36,7 +36,10 @@ class BatchController extends Controller
      */
     public function actionIncremental()
     {
-        $start_time = microtime(true);
+        $checkInId = captureCheckIn(
+            slug: Yii::$app->params['sentryMonitorSlug'],
+            status: CheckInStatus::inProgress()
+        );
 
         $synchronizer = $this->getSynchronizer();
         $synchronizer->syncUsersChangedSince(strtotime('-11 minutes'));
@@ -47,7 +50,7 @@ class BatchController extends Controller
         captureCheckIn(
             slug: Yii::$app->params['sentryMonitorSlug'],
             status: CheckInStatus::ok(),
-            duration: microtime(true) - $start_time,
+            checkInId: $checkInId,
         );
     }
 }
