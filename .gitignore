@@ -19,6 +19,7 @@ google-auth.json
 
 # PHP-CS-Fixer cache file.
 .php_cs.cache
+.php-cs-fixer.cache
 
 dockercfg
 

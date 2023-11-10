@@ -6,6 +6,7 @@ use Sentry\CheckInStatus;
 use Sil\Idp\IdSync\common\traits\SyncProvider;
 use Yii;
 use yii\console\Controller;
+
 use function Sentry\captureCheckIn;
 
 class BatchController extends Controller
