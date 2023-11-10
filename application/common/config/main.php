@@ -147,5 +147,6 @@ return [
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
         'allowEmptyEmail' => Env::get('ALLOW_EMPTY_EMAIL', false),
         'enableNewUserNotification' => Env::get('ENABLE_NEW_USER_NOTIFICATION', false),
+        'sentryMonitorSlug' => Env::get('SENTRY_MONITOR_SLUG', 'idp-id-sync'),
     ],
 ];
