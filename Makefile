@@ -1,7 +1,8 @@
-start: broker app
+sync_full: broker deps
+	docker-compose run --rm app
 
-app: deps
-	docker-compose up -d app
+sync_incremental: broker deps
+	docker-compose run --rm app bash -c "/data/yii batch/incremental"
 
 bash:
 	docker-compose run --rm cli bash
@@ -46,10 +47,10 @@ psr2:
 
 # NOTE: When running tests locally, make sure you don't exclude the integration
 #       tests (which we do when testing on Codeship).
-test: deps unittest app broker
+test: deps unittest broker
 	sleep 15 && make behat
 
-testci: deps app broker
+testci: deps broker
 	docker-compose run --rm cli bash -c "./run-tests.sh"
 
 unittest:

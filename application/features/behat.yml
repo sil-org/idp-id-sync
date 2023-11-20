@@ -15,9 +15,6 @@ default:
         user_features:
             paths:    [ "%paths.base%/../features/user.feature" ]
             contexts: [ Sil\Idp\IdSync\Behat\Context\UserContext ]
-        webhook_features:
-            paths:    [ "%paths.base%/../features/webhook.feature" ]
-            contexts: [ Sil\Idp\IdSync\Behat\Context\WebhookContext ]
         workday_integration_features:
             filters:
                 # removing whitespace to silence faulty deprecation warning
