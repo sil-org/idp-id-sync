@@ -1,7 +1,7 @@
 FROM silintl/php8:8.1
 LABEL maintainer="matt_henderson@sil.org"
 
-ENV REFRESHED_AT 2020-06-10
+ENV REFRESHED_AT 2023-11-09
 
 RUN mkdir -p /data
 
