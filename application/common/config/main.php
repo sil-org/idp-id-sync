@@ -131,7 +131,7 @@ return [
                     'clientOptions' => [
                         'attach_stacktrace' => false, // stack trace identifies the logger call stack, not helpful
                         'environment' => YII_ENV,
-                        'release' => 'idp-id-sync@5.0.0',
+                        'release' => 'idp-id-sync@5.1.0',
                         'before_send' => function (Event $event) use ($idpName): ?Event {
                             $event->setExtra(['idp' => $idpName]);
                             return $event;
@@ -147,5 +147,6 @@ return [
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
         'allowEmptyEmail' => Env::get('ALLOW_EMPTY_EMAIL', false),
         'enableNewUserNotification' => Env::get('ENABLE_NEW_USER_NOTIFICATION', false),
+        'sentryMonitorSlug' => Env::get('SENTRY_MONITOR_SLUG', 'idp-id-sync'),
     ],
 ];
