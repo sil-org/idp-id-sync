@@ -19,4 +19,4 @@ COPY application/ /data/
 RUN chown -R www-data:www-data \
     console/runtime/
 
-CMD ["/data/run.sh"]
+CMD ["/data/yii", "batch/full"]
