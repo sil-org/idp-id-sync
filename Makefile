@@ -48,8 +48,7 @@ psr2:
 
 # NOTE: When running tests locally, make sure you don't exclude the integration
 #       tests (which we do when testing on Codeship).
-test: deps unittest broker
-	sleep 15 && make behat
+test: deps unittest broker behat
 
 testci: deps broker
 	docker-compose run --rm cli bash -c "./run-tests.sh"
