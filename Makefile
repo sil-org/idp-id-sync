@@ -24,6 +24,7 @@ behatappend:
 
 broker:
 	docker-compose up -d brokerdb brokercron broker
+	make wait_for_broker
 
 clean:
 	docker-compose kill
@@ -55,3 +56,6 @@ testci: deps broker
 
 unittest:
 	docker-compose run --rm cli vendor/bin/phpunit
+
+wait_for_broker:
+	docker-compose run --rm cli whenavail broker 80 20 echo "Broker is ready"
