@@ -33,7 +33,7 @@ deps:
 	docker-compose run --rm cli composer install --no-scripts
 
 composershow:
-	docker-compose run --rm cli bash -c 'composer show --format=json --no-dev --no-ansi --locked | jq ".locked[] | { \"name\": .name, \"version\": .version }" > dependencies.json'
+	docker-compose run --rm cli bash -c 'composer show --format=json --no-dev --no-ansi --locked | jq "[.locked[] | { \"name\": .name, \"version\": .version }]" > dependencies.json'
 
 depsupdate:
 	docker-compose run --rm cli bash -c "composer update --no-scripts"
