@@ -24,6 +24,7 @@ behatappend:
 
 broker:
 	docker-compose up -d brokerdb brokercron broker
+	make wait_for_broker
 
 clean:
 	docker-compose kill
@@ -47,11 +48,13 @@ psr2:
 
 # NOTE: When running tests locally, make sure you don't exclude the integration
 #       tests (which we do when testing on Codeship).
-test: deps unittest broker
-	sleep 15 && make behat
+test: deps unittest broker behat
 
 testci: deps broker
 	docker-compose run --rm cli bash -c "./run-tests.sh"
 
 unittest:
 	docker-compose run --rm cli vendor/bin/phpunit
+
+wait_for_broker:
+	docker-compose run --rm cli whenavail broker 80 20 echo "Broker is ready"
