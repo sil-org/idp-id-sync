@@ -70,7 +70,7 @@ brokercron:
     command: whenavail brokerdb 3306 60 ./run-cron.sh
 
 brokerdb:
-    image: silintl/mariadb:latest
+    image: mariadb:10
     environment:
         MYSQL_ROOT_PASSWORD: rootpass
         MYSQL_DATABASE: broker
