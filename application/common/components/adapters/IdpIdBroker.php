@@ -147,7 +147,8 @@ class IdpIdBroker extends IdBrokerBase
             $message = 'ID Broker returned non-OK status ' . $e->httpStatusCode;
             throw new Exception($message, $e->getCode(), $e);
         } catch (Exception $e) {
-            throw new Exception('error getting users list from ID Broker: ' . $e->getMessage(), $e);
+            $message = 'error getting users list from ID Broker: ' . $e->getMessage();
+            throw new Exception($message, $e->getCode(), $e);
         }
 
         return self::getAsUsers($result);

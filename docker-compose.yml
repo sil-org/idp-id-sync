@@ -1,20 +1,15 @@
-version: '2'
+version: '2.4'
 services:
-    data:
-        image: silintl/data-volume:latest
-        volumes:
-            - ./application:/data
-        user: "${DOCKER_UIDGID}"
-
     app:
         build: ./
-        volumes_from:
-            - data
+        volumes:
+            - ./application:/data
         env_file:
             - ./local.env
 
     broker:
         image: silintl/idp-id-broker:develop
+        platform: linux/amd64
         environment:
             API_ACCESS_KEYS: local-sync-123
             EMAIL_SERVICE_accessToken: dummy
@@ -44,6 +39,7 @@ services:
 
     brokercron:
         image: silintl/idp-id-broker:develop
+        platform: linux/amd64
         environment:
             API_ACCESS_KEYS: local-sync-123
             EMAIL_SERVICE_accessToken: dummy
@@ -77,7 +73,7 @@ services:
             MYSQL_PASSWORD: broker
 
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin:5
+        image: phpmyadmin:5
         ports:
         - "8001:80"
         depends_on:
@@ -89,8 +85,7 @@ services:
         build: ./
         volumes:
             - ${COMPOSER_CACHE_DIR}:/composer
-        volumes_from:
-            - data
+            - ./application:/data
         working_dir: /data
         env_file:
             - ./local.env

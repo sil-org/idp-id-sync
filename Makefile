@@ -24,6 +24,7 @@ behatappend:
 
 broker:
 	docker-compose up -d brokerdb brokercron broker
+	make wait_for_broker
 
 clean:
 	docker-compose kill
@@ -33,7 +34,7 @@ deps:
 	docker-compose run --rm cli composer install --no-scripts
 
 composershow:
-	docker-compose run --rm cli bash -c 'composer show --format=json --no-dev --no-ansi --locked | jq ".locked[] | { \"name\": .name, \"version\": .version }" > dependencies.json'
+	docker-compose run --rm cli bash -c 'composer show --format=json --no-dev --no-ansi --locked | jq "[.locked[] | { \"name\": .name, \"version\": .version }]" > dependencies.json'
 
 depsupdate:
 	docker-compose run --rm cli bash -c "composer update --no-scripts"
@@ -47,11 +48,13 @@ psr2:
 
 # NOTE: When running tests locally, make sure you don't exclude the integration
 #       tests (which we do when testing on Codeship).
-test: deps unittest broker
-	sleep 15 && make behat
+test: deps unittest broker behat
 
 testci: deps broker
 	docker-compose run --rm cli bash -c "./run-tests.sh"
 
 unittest:
 	docker-compose run --rm cli vendor/bin/phpunit
+
+wait_for_broker:
+	docker-compose run --rm cli whenavail broker 80 20 echo "Broker is ready"

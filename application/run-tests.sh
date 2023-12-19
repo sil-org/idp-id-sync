@@ -13,7 +13,7 @@ composer install --no-interaction --no-scripts --no-progress
 # Make sure the database is ready, then wait a little bit longer so that apache
 # (in "broker") has time to come up.
 whenavail brokerdb 3306 60 echo Waited for brokerdb
-sleep 15
+whenavail broker 80 60 echo Waited for broker
 
 # Run the unit tests
 ./vendor/bin/phpunit
