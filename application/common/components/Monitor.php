@@ -26,13 +26,14 @@ class Monitor extends Component
         $client = new Client();
 
         $method = 'POST';
-        if ($this->heartbeatMethod !== '') {
+        if (!empty($this->heartbeatMethod)) {
             $method = $this->heartbeatMethod;
         }
 
         try {
             $client->request($method, $this->heartbeatUrl);
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            \Yii::error('heartbeat error: ' . $e->getMessage());
         }
     }
 }

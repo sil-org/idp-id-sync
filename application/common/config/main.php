@@ -143,6 +143,7 @@ return [
         ],
 
         'notifier' => $notifierConfig,
+
         'monitor' => [
             'class' => Monitor::class,
             'heartbeatUrl' => Env::get('HEARTBEAT_URL'),
