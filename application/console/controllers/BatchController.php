@@ -3,6 +3,7 @@
 namespace Sil\Idp\IdSync\console\controllers;
 
 use Sentry\CheckInStatus;
+use Sil\Idp\IdSync\common\components\Monitor;
 use Sil\Idp\IdSync\common\traits\SyncProvider;
 use Yii;
 use yii\console\Controller;
@@ -15,19 +16,28 @@ class BatchController extends Controller
 
     public function actionFull()
     {
-        $checkInId = captureCheckIn(
-            slug: Yii::$app->params['sentryMonitorSlug'],
-            status: CheckInStatus::inProgress()
-        );
+        $sentryMonitorSlug = Yii::$app->params['sentryMonitorSlug'];
+        if ($sentryMonitorSlug !== "") {
+            $checkInId = captureCheckIn(
+                slug: $sentryMonitorSlug,
+                status: CheckInStatus::inProgress()
+            );
+        }
 
         $synchronizer = $this->getSynchronizer();
         $synchronizer->syncAllNotifyException();
 
-        captureCheckIn(
-            slug: Yii::$app->params['sentryMonitorSlug'],
-            status: CheckInStatus::ok(),
-            checkInId: $checkInId,
-        );
+        if ($sentryMonitorSlug != "") {
+            captureCheckIn(
+                slug: $sentryMonitorSlug,
+                status: CheckInStatus::ok(),
+                checkInId: $checkInId,
+            );
+        }
+
+        /* @var $monitor Monitor */
+        $monitor = Yii::$app->monitor;
+        $monitor->Heartbeat();
     }
 
     /**
@@ -36,10 +46,13 @@ class BatchController extends Controller
      */
     public function actionIncremental()
     {
-        $checkInId = captureCheckIn(
-            slug: Yii::$app->params['sentryMonitorSlug'],
-            status: CheckInStatus::inProgress()
-        );
+        $sentryMonitorSlug = Yii::$app->params['sentryMonitorSlug'];
+        if ($sentryMonitorSlug !== "") {
+            $checkInId = captureCheckIn(
+                slug: $sentryMonitorSlug,
+                status: CheckInStatus::inProgress()
+            );
+        }
 
         $synchronizer = $this->getSynchronizer();
         $synchronizer->syncUsersChangedSince(strtotime('-11 minutes'));
@@ -47,10 +60,16 @@ class BatchController extends Controller
         $synchronizer = $this->getSynchronizer();
         $synchronizer->syncAllNotifyException();
 
-        captureCheckIn(
-            slug: Yii::$app->params['sentryMonitorSlug'],
-            status: CheckInStatus::ok(),
-            checkInId: $checkInId,
-        );
+        if ($sentryMonitorSlug != "") {
+            captureCheckIn(
+                slug: $sentryMonitorSlug,
+                status: CheckInStatus::ok(),
+                checkInId: $checkInId,
+            );
+        }
+
+        /* @var $monitor Monitor */
+        $monitor = Yii::$app->monitor;
+        $monitor->Heartbeat();
     }
 }

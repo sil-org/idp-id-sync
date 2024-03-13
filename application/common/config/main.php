@@ -4,6 +4,7 @@ use notamedia\sentry\SentryTarget;
 use Sentry\Event;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
+use Sil\Idp\IdSync\common\components\Monitor;
 use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
 use Sil\JsonLog\target\EmailServiceTarget;
 use Sil\JsonLog\target\JsonStreamTarget;
@@ -131,7 +132,7 @@ return [
                     'clientOptions' => [
                         'attach_stacktrace' => false, // stack trace identifies the logger call stack, not helpful
                         'environment' => YII_ENV,
-                        'release' => 'idp-id-sync@5.1.2',
+                        'release' => 'idp-id-sync@5.2.0',
                         'before_send' => function (Event $event) use ($idpName): ?Event {
                             $event->setExtra(['idp' => $idpName]);
                             return $event;
@@ -142,6 +143,12 @@ return [
         ],
 
         'notifier' => $notifierConfig,
+
+        'monitor' => [
+            'class' => Monitor::class,
+            'heartbeatUrl' => Env::get('HEARTBEAT_URL'),
+            'heartbeatMethod' => Env::get('HEARTBEAT_METHOD'),
+        ]
     ],
     'params' => [
         'syncSafetyCutoff' => Env::get('SYNC_SAFETY_CUTOFF'),
