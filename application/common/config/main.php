@@ -132,7 +132,7 @@ return [
                     'clientOptions' => [
                         'attach_stacktrace' => false, // stack trace identifies the logger call stack, not helpful
                         'environment' => YII_ENV,
-                        'release' => 'idp-id-sync@5.2.0',
+                        'release' => 'idp-id-sync@develop',
                         'before_send' => function (Event $event) use ($idpName): ?Event {
                             $event->setExtra(['idp' => $idpName]);
                             return $event;
