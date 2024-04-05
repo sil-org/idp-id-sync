@@ -1,6 +1,9 @@
 FROM silintl/php8:8.1
 LABEL maintainer="matt_henderson@sil.org"
 
+ARG GITHUB_REF_NAME
+ENV GITHUB_REF_NAME=$GITHUB_REF_NAME
+
 ENV REFRESHED_AT 2023-11-09
 
 RUN mkdir -p /data
