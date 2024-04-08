@@ -1,8 +1,26 @@
 # IdP ID Sync
 Tool to synchronize user records between the ID Broker and an ID Store
 
-## Configuration files
-Copy ```local.env.dist``` to ```local.env``` and supply any necessary values.
+## Configuration
+By default, configuration is read from environment variables documented in the `local.env.dist`
+file. Copy this file to `local.env` and supply any necessary values.
+
+Optionally, you can define configuration in AWS AppConfig. To do this, set the following
+environment variables to point to the configuration in AWS:
+
+* `AWS_REGION` - the AWS region in use
+* `APP_ID` - the application ID or name
+* `CONFIG_ID` - the configuration profile ID or name
+* `ENV_ID` - the environment ID or name
+
+In addition, the AWS API requires authentication. It is best to use an access role
+such as an [ECS Task Role](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html).
+If that is not an option, you can specify an access token using the `AWS_ACCESS_KEY_ID` and
+`AWS_SECRET_ACCESS_KEY` variables.
+
+The content of the configuration profile takes the form of a typical .env file, using
+`#` for comments and `=` for variable assignment. Any variables read from AppConfig
+will overwrite variables set in the execution environment.
 
 ## Testing
 

@@ -3,9 +3,6 @@ name: Test and Publish
 on:
   push:
 
-env:
-  IMAGE_NAME: ${{ vars.DOCKER_ORG }}/idp-id-sync
-
 jobs:
   tests:
     name: Tests
@@ -34,7 +31,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: ${{ vars.DOCKER_ORG }}/${{ github.event.repository.name }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -42,3 +39,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            GITHUB_REF_NAME=${{ github.ref_name }}

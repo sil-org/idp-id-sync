@@ -1,6 +1,9 @@
 FROM silintl/php8:8.1
 LABEL maintainer="matt_henderson@sil.org"
 
+ARG GITHUB_REF_NAME
+ENV GITHUB_REF_NAME=$GITHUB_REF_NAME
+
 ENV REFRESHED_AT 2023-11-09
 
 RUN mkdir -p /data
@@ -19,4 +22,7 @@ COPY application/ /data/
 RUN chown -R www-data:www-data \
     console/runtime/
 
-CMD ["/data/yii", "batch/full"]
+ADD https://github.com/silinternational/config-shim/releases/latest/download/config-shim.gz config-shim.gz
+RUN gzip -d config-shim.gz && chmod 755 config-shim && mv config-shim /usr/local/bin
+
+CMD ["/data/run.sh"]
