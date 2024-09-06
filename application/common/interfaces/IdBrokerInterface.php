@@ -8,26 +8,6 @@ use Sil\Idp\IdSync\common\models\User;
 interface IdBrokerInterface
 {
     /**
-     * Activate a user.
-     *
-     * @param string $employeeId The Employee ID of the user to activate.
-     * @throws Exception
-     */
-    public function activateUser(string $employeeId);
-
-    /**
-     * Attempt to authenticate using the given credentials, getting back
-     * information about the authenticated user (if the credentials were
-     * acceptable) or null (if unacceptable).
-     *
-     * @param string $username The username.
-     * @param string $password The password (in plaintext).
-     * @return User|null User information (if valid), or null.
-     * @throws Exception
-     */
-    public function authenticate(string $username, string $password);
-
-    /**
      * Create a user with the given information.
      *
      * @param array $config An array key/value pairs of attributes for the new
@@ -71,16 +51,6 @@ interface IdBrokerInterface
      * @return User[] A list of Users.
      */
     public function listUsers($fields = null);
-
-    /**
-     * Set the password for the specified user.
-     *
-     * @param string $employeeId The Employee ID of the user whose password we
-     *     are trying to set.
-     * @param string $password The desired (new) password, in plaintext.
-     * @throws Exception
-     */
-    public function setPassword(string $employeeId, string $password);
 
     /**
      * Update the specified user with the given information.

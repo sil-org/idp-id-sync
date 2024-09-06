@@ -18,16 +18,6 @@ class FakeIdBroker extends IdBrokerBase
         parent::__construct($config);
     }
 
-    public function activateUser(string $employeeId)
-    {
-        $this->usersByEmployeeId[$employeeId]['active'] = 'yes';
-    }
-
-    public function authenticate(string $username, string $password)
-    {
-        throw new NotSupportedException();
-    }
-
     public function createUser(array $config = [])
     {
         /*
@@ -84,11 +74,6 @@ class FakeIdBroker extends IdBrokerBase
             $results[] = new User($tempUserInfo);
         }
         return $results;
-    }
-
-    public function setPassword(string $employeeId, string $password)
-    {
-        throw new NotSupportedException();
     }
 
     public function updateUser(array $config = [])

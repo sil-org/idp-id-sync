@@ -60,9 +60,9 @@ class IdpIdBrokerIntegrationContext implements Context
     }
 
     /**
-     * @Given a user exists
+     * @Given an active user exists
      */
-    public function aUserExists()
+    public function anActiveUserExists()
     {
         $newUser = $this->idBroker->createUser($this->testUserData);
         Assert::assertNotNull($newUser);
@@ -86,23 +86,6 @@ class IdpIdBrokerIntegrationContext implements Context
     }
 
     /**
-     * @When I activate that user
-     */
-    public function iActivateThatUser()
-    {
-        // Activate the user.
-        $this->idBroker->activateUser(
-            $this->testUserData['employee_id']
-        );
-
-        // Confirm that it worked.
-        $user = $this->idBroker->getUser(
-            $this->testUserData['employee_id']
-        );
-        Assert::assertEquals('yes', $user->getActive());
-    }
-
-    /**
      * @Then that user should now be active
      */
     public function thatUserShouldNowBeActive()
@@ -111,30 +94,6 @@ class IdpIdBrokerIntegrationContext implements Context
             $this->testUserData['employee_id']
         );
         Assert::assertEquals('yes', $user->getActive());
-    }
-
-    /**
-     * @Given that user has a password
-     */
-    public function thatUserHasAPassword()
-    {
-        $this->testUserData['password'] = $this->generateDummyPassword();
-
-        $this->idBroker->setPassword(
-            $this->testUserData['employee_id'],
-            $this->testUserData['password']
-        );
-    }
-
-    /**
-     * @When I try to authenticate as that user
-     */
-    public function iTryToAuthenticateAsThatUser()
-    {
-        $this->result = $this->idBroker->authenticate(
-            $this->testUserData['username'],
-            $this->testUserData['password']
-        );
     }
 
     /**
@@ -178,16 +137,6 @@ class IdpIdBrokerIntegrationContext implements Context
         $user = $this->idBroker->getUser($this->testUserData['employee_id']);
         Assert::assertNotNull($user);
         Assert::assertSame($this->testUserData['email'], $user->getEmail());
-    }
-
-    /**
-     * @Given that user is active
-     */
-    public function thatUserIsActive()
-    {
-        $this->idBroker->activateUser(
-            $this->testUserData['employee_id']
-        );
     }
 
     /**
@@ -266,46 +215,6 @@ class IdpIdBrokerIntegrationContext implements Context
             /* @var $user User */
             Assert::assertNotEmpty($user->getEmployeeId());
         }
-    }
-
-    /**
-     * @When I set that user's password to something else
-     */
-    public function iSetThatUsersPasswordToSomethingElse()
-    {
-        $this->oldPassword = $this->testUserData['password'];
-        $this->newPassword = $this->generateDummyPassword();
-
-        $this->testUserData['password'] = $this->newPassword;
-
-        $this->idBroker->setPassword(
-            $this->testUserData['employee_id'],
-            $this->newPassword
-        );
-    }
-
-    /**
-     * @Then I should NOT be able to authenticate with the old password
-     */
-    public function iShouldNotBeAbleToAuthenticateWithTheOldPassword()
-    {
-        $authenticatedUser = $this->idBroker->authenticate(
-            $this->testUserData['username'],
-            $this->oldPassword
-        );
-        Assert::assertNull($authenticatedUser);
-    }
-
-    /**
-     * @Then I SHOULD be able to authenticate with the new password
-     */
-    public function iShouldBeAbleToAuthenticateWithTheNewPassword()
-    {
-        $authenticatedUser = $this->idBroker->authenticate(
-            $this->testUserData['username'],
-            $this->newPassword
-        );
-        Assert::assertNotNull($authenticatedUser);
     }
 
     /**
