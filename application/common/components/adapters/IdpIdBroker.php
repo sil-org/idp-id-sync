@@ -31,42 +31,6 @@ class IdpIdBroker extends IdBrokerBase
     }
 
     /**
-     * Activate a user.
-     *
-     * @param string $employeeId The Employee ID of the user to activate.
-     * @throws Exception
-     */
-    public function activateUser(string $employeeId)
-    {
-        $this->getClient()->updateUser([
-            'employee_id' => $employeeId,
-            'active' => 'yes',
-        ]);
-    }
-
-    /**
-     * Attempt to authenticate using the given credentials, getting back
-     * information about the authenticated user (if the credentials were
-     * acceptable) or null (if unacceptable).
-     *
-     * @param string $username The username.
-     * @param string $password The password (in plaintext).
-     * @return User|null User information (if valid), or null.
-     * @throws Exception
-     */
-    public function authenticate(string $username, string $password)
-    {
-        $authenticatedUserInfo = $this->getClient()->authenticate(
-            $username,
-            $password
-        );
-        if ($authenticatedUserInfo === null) {
-            return null;
-        }
-        return new User($authenticatedUserInfo);
-    }
-
-    /**
      * Create a user with the given information.
      *
      * @param array $config An array key/value pairs of attributes for the new
@@ -152,19 +116,6 @@ class IdpIdBroker extends IdBrokerBase
         }
 
         return self::getAsUsers($result);
-    }
-
-    /**
-     * Set the password for the specified user.
-     *
-     * @param string $employeeId The Employee ID of the user whose password we
-     *     are trying to set.
-     * @param string $password The desired (new) password, in plaintext.
-     * @throws Exception
-     */
-    public function setPassword(string $employeeId, string $password)
-    {
-        $this->getClient()->setPassword($employeeId, $password);
     }
 
     /**
