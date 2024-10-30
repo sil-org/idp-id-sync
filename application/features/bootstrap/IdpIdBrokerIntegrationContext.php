@@ -65,6 +65,7 @@ class IdpIdBrokerIntegrationContext implements Context
     public function anActiveUserExists()
     {
         $newUser = $this->idBroker->createUser($this->testUserData);
+        Assert::assertTrue($newUser->getActive() === 'yes');
         Assert::assertNotNull($newUser);
     }
 
