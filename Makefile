@@ -47,7 +47,7 @@ psr2:
 	docker compose run --rm cli bash -c "vendor/bin/php-cs-fixer fix ."
 
 # NOTE: When running tests locally, make sure you don't exclude the integration
-#       tests (which we do when testing on Codeship).
+#       tests (which we do when testing on CI).
 test: deps unittest broker behat
 
 testci: deps broker

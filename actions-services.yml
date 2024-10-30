@@ -12,7 +12,7 @@ services:
             EMAIL_SERVICE_baseUrl: http://email
             EMAIL_SERVICE_validIpRanges: 192.168.0.0/16
             ID_BROKER_ADAPTER: fake
-            ID_BROKER_CONFIG_accessToken: codeship-sync-to-broker-11111111
+            ID_BROKER_CONFIG_accessToken: ci-sync-to-broker-11111111
             ID_STORE_ADAPTER: fake
             IDP_NAME: Test
 
@@ -20,7 +20,7 @@ services:
         image: silintl/idp-id-broker:latest
         environment:
             APP_ENV: test
-            API_ACCESS_KEYS: codeship-sync-to-broker-11111111
+            API_ACCESS_KEYS: ci-sync-to-broker-11111111
             EMAIL_SERVICE_accessToken: dummy
             EMAIL_SERVICE_assertValidIp: "false"
             EMAIL_SERVICE_baseUrl: http://email
