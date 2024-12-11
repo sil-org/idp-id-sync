@@ -126,6 +126,15 @@ return [
                     'enabled' => !empty(Env::get('SENTRY_DSN')),
                     'dsn' => Env::get('SENTRY_DSN'),
                     'levels' => ['error'],
+                    'except' => [
+                        'yii\web\HttpException:400',
+                        'yii\web\HttpException:401',
+                        'yii\web\HttpException:404',
+                        'yii\web\HttpException:409',
+                        'yii\web\HttpException:422',
+                        'yii\web\HttpException:502',
+                        'Sil\EmailService\Client\EmailServiceClientException',
+                    ],
                     'context' => true,
                     // Additional options for `Sentry\init`
                     // https://docs.sentry.io/platforms/php/configuration/options
