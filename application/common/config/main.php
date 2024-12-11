@@ -136,6 +136,10 @@ return [
                         'Sil\EmailService\Client\EmailServiceClientException',
                     ],
                     'context' => true,
+                    'tagCallback' => function ($tags) use ($idpName): array {
+                        $tags['idp'] = $idpName;
+                        return $tags;
+                    },
                     // Additional options for `Sentry\init`
                     // https://docs.sentry.io/platforms/php/configuration/options
                     'clientOptions' => [
