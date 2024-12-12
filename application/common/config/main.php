@@ -1,6 +1,5 @@
 <?php
 
-use notamedia\sentry\SentryTarget;
 use Sentry\Event;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
@@ -9,6 +8,7 @@ use Sil\Idp\IdSync\common\components\notify\EmailServiceNotifier;
 use Sil\JsonLog\target\EmailServiceTarget;
 use Sil\JsonLog\target\JsonStreamTarget;
 use Sil\PhpEnv\Env;
+use Sil\Sentry\SentryTarget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
@@ -126,7 +126,20 @@ return [
                     'enabled' => !empty(Env::get('SENTRY_DSN')),
                     'dsn' => Env::get('SENTRY_DSN'),
                     'levels' => ['error'],
+                    'except' => [
+                        'yii\web\HttpException:400',
+                        'yii\web\HttpException:401',
+                        'yii\web\HttpException:404',
+                        'yii\web\HttpException:409',
+                        'yii\web\HttpException:422',
+                        'yii\web\HttpException:502',
+                        'Sil\EmailService\Client\EmailServiceClientException',
+                    ],
                     'context' => true,
+                    'tagCallback' => function ($tags) use ($idpName): array {
+                        $tags['idp'] = $idpName;
+                        return $tags;
+                    },
                     // Additional options for `Sentry\init`
                     // https://docs.sentry.io/platforms/php/configuration/options
                     'clientOptions' => [
