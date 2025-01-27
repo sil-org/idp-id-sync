@@ -26,7 +26,7 @@ class NotificationContext extends SyncContext
      */
     public function atLeastOneUserHasNoEmailAddress()
     {
-        $this->users[] = new User(['employee_id'=>1]);
+        $this->users[] = new User(['employee_id' => 1]);
     }
 
     /**
