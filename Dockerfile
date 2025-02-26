@@ -22,7 +22,4 @@ COPY application/ /data/
 RUN chown -R www-data:www-data \
     console/runtime/
 
-ADD https://github.com/silinternational/config-shim/releases/download/v1.2.0/config-shim.gz config-shim.gz
-RUN gzip -d config-shim.gz && chmod 755 config-shim && mv config-shim /usr/local/bin
-
 CMD ["/data/run.sh"]
