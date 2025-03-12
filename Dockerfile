@@ -1,5 +1,5 @@
 FROM silintl/php8:8.3
-LABEL maintainer="gtis_itse_support@sil.org"
+LABEL maintainer="gtis_itse_support+idp@sil.org"
 
 ARG GITHUB_REF_NAME
 ENV GITHUB_REF_NAME=$GITHUB_REF_NAME
