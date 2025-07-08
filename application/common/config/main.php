@@ -79,7 +79,7 @@ return [
                 [
                     'class' => JsonStreamTarget::class,
                     'url' => 'php://stdout',
-                    'levels' => ['notice'],
+                    'levels' => ['warning'],
                     'logVars' => [],
                     'categories' => ['application'],
                     'prefix' => $logPrefix,

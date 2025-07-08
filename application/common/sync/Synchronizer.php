@@ -127,7 +127,7 @@ class Synchronizer
         $this->idBroker->updateUser(
             ArrayHelper::merge($user->toArray(), ['active' => 'yes'])
         );
-        $this->logger->debug('Updated/activated user: ' . $user->getEmployeeId());
+        $this->logger->info('Updated/activated user: ' . $user->getEmployeeId());
     }
 
     /**
@@ -196,7 +196,7 @@ class Synchronizer
     protected function createUser(User $user)
     {
         $this->idBroker->createUser($user->toArray());
-        $this->logger->notice('Created user: ' . $user->getEmployeeId());
+        $this->logger->info('Created user: ' . $user->getEmployeeId());
 
         if ($this->enableNewUserNotification) {
             $this->logger->info('Sending new user notification to HR Contact for user: ' . $user->getEmployeeId());
@@ -228,7 +228,7 @@ class Synchronizer
                 $this->createUser($userToAdd);
                 $employeeIdsOfUsersAdded[] = $userToAdd->getEmployeeId();
             } catch (MissingEmailException $e) {
-                $this->logger->notice(sprintf(
+                $this->logger->info(sprintf(
                     'A User (%s) lacked an email address.',
                     $userToAdd->getStringForLogMessage()
                 ));
@@ -276,7 +276,7 @@ class Synchronizer
     protected function deactivateUser($employeeId)
     {
         $this->idBroker->deactivateUser($employeeId);
-        $this->logger->notice('Deactivated user: ' . $employeeId);
+        $this->logger->info('Deactivated user: ' . $employeeId);
     }
 
     /**
@@ -547,7 +547,7 @@ class Synchronizer
             $this->syncUserInternal($employeeId);
             $this->idStore->updateSyncDatesIfSupported([$employeeId]);
         } catch (MissingEmailException $e) {
-            $this->logger->notice(sprintf(
+            $this->logger->info(sprintf(
                 'That User (Employee ID: %s) lacked an email address.',
                 $employeeId
             ));
@@ -635,7 +635,7 @@ class Synchronizer
                 $this->syncUserInternal($employeeId);
                 $employeeIdsSynced[] = $employeeId;
             } catch (MissingEmailException $e) {
-                $this->logger->notice(sprintf(
+                $this->logger->info(sprintf(
                     'A User (Employee ID: %s) lacked an email address.',
                     $employeeId
                 ));
