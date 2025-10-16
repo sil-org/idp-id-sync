@@ -3,7 +3,7 @@
 namespace Sil\Idp\IdSync\common\components\notify;
 
 use InvalidArgumentException;
-use Sil\EmailService\Client\EmailServiceClient;
+use Sil\Idp\IdBroker\Client\IdBrokerClient;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
 use yii\base\Component;
@@ -44,7 +44,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             'accessToken',
             'assertValidIp',
             'baseUrl',
-            'validIpRanges',
+            'trustedIpRanges',
         ];
 
         foreach ($requiredParams as $param) {
@@ -58,17 +58,17 @@ class EmailServiceNotifier extends Component implements NotifierInterface
     }
 
     /**
-     * @return EmailServiceClient
+     * @return IdBrokerClient
      */
-    protected function getEmailServiceClient()
+    protected function getIdBrokerClient()
     {
         $config = $this->emailServiceConfig;
-        return new EmailServiceClient(
+        return new IdBrokerClient(
             $config['baseUrl'],
             $config['accessToken'],
             [
-                EmailServiceClient::ASSERT_VALID_IP_CONFIG => $config['assertValidIp'],
-                EmailServiceClient::TRUSTED_IPS_CONFIG => $config['validIpRanges'],
+                IdBrokerClient::ASSERT_VALID_BROKER_IP_CONFIG => $config['assertValidIp'],
+                IdBrokerClient::TRUSTED_IPS_CONFIG => $config['trustedIpRanges'],
             ]
         );
     }
@@ -78,7 +78,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
      */
     public function getSiteStatus(): string
     {
-        return $this->getEmailServiceClient()->getSiteStatus();
+        return $this->getIdBrokerClient()->getSiteStatus();
     }
 
     /**
@@ -106,7 +106,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
         );
 
         $numUsers = count($users);
-        $this->getEmailServiceClient()->email([
+        $this->getIdBrokerClient()->email([
             'to_address' => $this->emailTo,
             'subject' => sprintf(
                 'Email address missing for %s %s user%s',
@@ -141,7 +141,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
         $name = empty($user->getDisplayName())
             ? $user->getFirstName() . ' ' . $user->getLastName()
             : $user->getDisplayName();
-        $this->getEmailServiceClient()->email([
+        $this->getIdBrokerClient()->email([
             'to_address' => $this->getEmailTo($user),
             'subject' => sprintf(
                 'Created %s IDP user for %s [do not reply]',
