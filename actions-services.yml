@@ -7,6 +7,10 @@ services:
         working_dir: /data
         environment:
             APP_ENV: test
+            EMAIL_SERVICE_accessToken: dummy
+            EMAIL_SERVICE_assertValidIp: "false"
+            EMAIL_SERVICE_baseUrl: http://email
+            EMAIL_SERVICE_validIpRanges: 192.168.0.0/16
             ID_BROKER_ADAPTER: fake
             ID_BROKER_CONFIG_accessToken: ci-sync-to-broker-11111111
             ID_STORE_ADAPTER: fake
@@ -17,6 +21,10 @@ services:
         environment:
             APP_ENV: test
             API_ACCESS_KEYS: ci-sync-to-broker-11111111
+            EMAIL_SERVICE_accessToken: dummy
+            EMAIL_SERVICE_assertValidIp: "false"
+            EMAIL_SERVICE_baseUrl: http://email
+            EMAIL_SERVICE_validIpRanges: 192.168.0.0/16
             EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
             IDP_NAME: local
             MYSQL_ROOT_PASSWORD: rootpass
@@ -39,6 +47,10 @@ services:
         image: silintl/idp-id-broker:latest
         environment:
             API_ACCESS_KEYS: local-sync-123
+            EMAIL_SERVICE_accessToken: dummy
+            EMAIL_SERVICE_assertValidIp: "false"
+            EMAIL_SERVICE_baseUrl: http://email
+            EMAIL_SERVICE_validIpRanges: 10.20.40.0/24
             EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
             IDP_NAME: local
             MYSQL_ROOT_PASSWORD: rootpass
