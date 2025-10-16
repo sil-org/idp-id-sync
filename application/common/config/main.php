@@ -22,16 +22,11 @@ $idStoreOptionalConfig = Env::getArrayFromPrefix('ID_STORE_CONFIG_');
 
 $hrNotifierEmailTo = Env::get('NOTIFIER_EMAIL_TO');
 
-$emailServiceConfig = Env::getArrayFromPrefix('EMAIL_SERVICE_');
-
-// Re-retrieve the validIpRanges as an array.
-$emailServiceConfig['validIpRanges'] = Env::getArray('EMAIL_SERVICE_validIpRanges');
-
 /* Configure the notifier, used to send notifications to HR (such as
  * when users lack an email address):  */
 $notifierConfig = [
     'class' => EmailServiceNotifier::class,
-    'emailServiceConfig' => $emailServiceConfig,
+    'emailServiceConfig' => $idBrokerOptionalConfig,
     'emailTo' => $hrNotifierEmailTo,
     'organizationName' => $idpDisplayName,
 ];
@@ -112,10 +107,10 @@ return [
                         'to' => $alertsEmail ?? '(disabled)',
                         'subject' => 'ERROR - ' . $idpName . ' ID Sync [' . YII_ENV .']',
                     ],
-                    'baseUrl' => $emailServiceConfig['baseUrl'],
-                    'accessToken' => $emailServiceConfig['accessToken'],
-                    'assertValidIp' => $emailServiceConfig['assertValidIp'],
-                    'validIpRanges' => $emailServiceConfig['validIpRanges'],
+                    'baseUrl' => $idBrokerOptionalConfig['baseUrl'],
+                    'accessToken' => $idBrokerOptionalConfig['accessToken'],
+                    'assertValidIp' => $idBrokerOptionalConfig['assertValidIp'],
+                    'validIpRanges' => $idBrokerOptionalConfig['validIpRanges'],
                     'prefix' => function ($message) use ($idpName) {
                         return Json::encode([
                             'app_env' => YII_ENV,
