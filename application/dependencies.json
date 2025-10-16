@@ -1,11 +1,11 @@
 [
   {
     "name": "bower-asset/inputmask",
-    "version": "5.0.9"
+    "version": "5.0.8"
   },
   {
     "name": "bower-asset/jquery",
-    "version": "3.7.1"
+    "version": "3.6.4"
   },
   {
     "name": "bower-asset/punycode",
@@ -53,7 +53,7 @@
   },
   {
     "name": "google/apiclient-services",
-    "version": "v0.396.0"
+    "version": "v0.416.0"
   },
   {
     "name": "google/auth",
@@ -89,7 +89,7 @@
   },
   {
     "name": "mlocati/ip-lib",
-    "version": "1.20.0"
+    "version": "1.21.0"
   },
   {
     "name": "monolog/monolog",
@@ -97,7 +97,7 @@
   },
   {
     "name": "paragonie/constant_time_encoding",
-    "version": "v3.0.0"
+    "version": "v3.1.3"
   },
   {
     "name": "paragonie/random_compat",
@@ -129,7 +129,7 @@
   },
   {
     "name": "phpseclib/phpseclib",
-    "version": "3.0.43"
+    "version": "3.0.47"
   },
   {
     "name": "phpspec/php-diff",
@@ -165,7 +165,7 @@
   },
   {
     "name": "roave/security-advisories",
-    "version": "dev-master 5326c90"
+    "version": "dev-master f34f054"
   },
   {
     "name": "sentry/sdk",
@@ -176,32 +176,28 @@
     "version": "3.22.1"
   },
   {
-    "name": "silinternational/email-service-php-client",
-    "version": "2.5.0"
+    "name": "sil-org/idp-id-broker-php-client",
+    "version": "4.9.0"
   },
   {
-    "name": "silinternational/idp-id-broker-php-client",
-    "version": "4.6.0"
-  },
-  {
-    "name": "silinternational/php-array-dot-notation",
+    "name": "sil-org/php-array-dot-notation",
     "version": "0.1.0"
   },
   {
-    "name": "silinternational/php-env",
+    "name": "sil-org/php-env",
     "version": "2.1.1"
   },
   {
-    "name": "silinternational/psr3-adapters",
+    "name": "sil-org/psr3-adapters",
     "version": "3.1.0"
   },
   {
-    "name": "silinternational/yii2-json-log-targets",
-    "version": "2.2.0"
+    "name": "sil-org/yii2-json-log-targets",
+    "version": "2.2.1"
   },
   {
-    "name": "silinternational/yii2-sentry",
-    "version": "2.1.1"
+    "name": "sil-org/yii2-sentry",
+    "version": "2.1.2"
   },
   {
     "name": "swiftmailer/swiftmailer",
@@ -209,47 +205,51 @@
   },
   {
     "name": "symfony/deprecation-contracts",
-    "version": "v3.5.1"
+    "version": "v3.6.0"
   },
   {
     "name": "symfony/http-client",
-    "version": "v7.2.4"
+    "version": "v7.3.4"
   },
   {
     "name": "symfony/http-client-contracts",
-    "version": "v3.5.2"
+    "version": "v3.6.0"
   },
   {
     "name": "symfony/options-resolver",
-    "version": "v7.2.0"
+    "version": "v7.3.3"
   },
   {
     "name": "symfony/polyfill-iconv",
-    "version": "v1.32.0"
+    "version": "v1.33.0"
   },
   {
     "name": "symfony/polyfill-intl-idn",
-    "version": "v1.32.0"
+    "version": "v1.33.0"
   },
   {
     "name": "symfony/polyfill-intl-normalizer",
-    "version": "v1.32.0"
+    "version": "v1.33.0"
   },
   {
     "name": "symfony/polyfill-mbstring",
-    "version": "v1.32.0"
+    "version": "v1.33.0"
   },
   {
     "name": "symfony/polyfill-php80",
-    "version": "v1.32.0"
+    "version": "v1.33.0"
+  },
+  {
+    "name": "symfony/polyfill-php83",
+    "version": "v1.33.0"
   },
   {
     "name": "symfony/service-contracts",
-    "version": "v3.5.1"
+    "version": "v3.6.0"
   },
   {
     "name": "yiisoft/yii2",
-    "version": "2.0.52"
+    "version": "2.0.53"
   },
   {
     "name": "yiisoft/yii2-composer",
