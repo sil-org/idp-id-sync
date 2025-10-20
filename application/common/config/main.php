@@ -1,6 +1,7 @@
 <?php
 
 use Sentry\Event;
+use Sil\Idp\IdBroker\Client\EmailServiceClientException;
 use Sil\Idp\IdSync\common\components\IdBrokerBase;
 use Sil\Idp\IdSync\common\components\IdStoreBase;
 use Sil\Idp\IdSync\common\components\Monitor;
@@ -100,7 +101,7 @@ return [
                         'yii\web\HttpException:409',
                         'yii\web\HttpException:422',
                         'yii\web\HttpException:502',
-                        'Sil\Idp\IdBroker\Client\EmailServiceClientException',
+                        EmailServiceClientException::class,
                     ],
                     'levels' => ['error'],
                     'logVars' => [], // Disable logging of _SERVER, _POST, etc.
@@ -132,7 +133,7 @@ return [
                         'yii\web\HttpException:409',
                         'yii\web\HttpException:422',
                         'yii\web\HttpException:502',
-                        'Sil\EmailService\Client\EmailServiceClientException',
+                        EmailServiceClientException::class,
                     ],
                     'context' => true,
                     'tagCallback' => function ($tags) use ($idpName): array {
