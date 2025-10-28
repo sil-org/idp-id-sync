@@ -13,7 +13,7 @@ services:
             IDP_NAME: Test
 
     broker:
-        image: silintl/idp-id-broker:latest
+        image: ghcr.io/sil-org/idp-id-broker:latest
         environment:
             APP_ENV: test
             API_ACCESS_KEYS: ci-sync-to-broker-11111111
@@ -36,7 +36,7 @@ services:
         command: whenavail brokerdb 3306 60 ./run.sh
 
     brokercron:
-        image: silintl/idp-id-broker:latest
+        image: ghcr.io/sil-org/idp-id-broker:latest
         environment:
             API_ACCESS_KEYS: local-sync-123
             EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer

@@ -1,4 +1,4 @@
-FROM silintl/php8:8.3
+FROM ghcr.io/sil-org/php8:8.3
 LABEL maintainer="gtis_itse_support+idp@sil.org"
 
 ARG GITHUB_REF_NAME

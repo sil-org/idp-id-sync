@@ -7,7 +7,7 @@ services:
       - ./local.env
 
   broker:
-    image: silintl/idp-id-broker:8
+    image: ghcr.io/sil-org/idp-id-broker:8
     platform: linux/amd64
     environment:
       API_ACCESS_KEYS: local-sync-123
@@ -33,7 +33,7 @@ services:
     command: whenavail brokerdb 3306 60 ./run.sh
 
   brokercron:
-    image: silintl/idp-id-broker:8
+    image: ghcr.io/sil-org/idp-id-broker:8
     platform: linux/amd64
     environment:
       API_ACCESS_KEYS: local-sync-123
