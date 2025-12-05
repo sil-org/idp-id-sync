@@ -8,23 +8,22 @@ bash:
 	docker compose run --rm cli bash
 
 behat:
-	docker compose run --rm cli bash -c "whenavail brokerdb 3306 20 vendor/bin/behat --config=features/behat.yml --strict --stop-on-failure"
+	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --strict --stop-on-failure"
 
 behatlocal:
-	docker compose run --rm cli bash -c "whenavail brokerdb 3306 20 vendor/bin/behat --config=features/behat.yml --strict --stop-on-failure --tags '~@integration'"
+	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --strict --stop-on-failure --tags '~@integration'"
 
 behatlocalappend:
-	docker compose run --rm cli bash -c "whenavail brokerdb 3306 20 vendor/bin/behat --config=features/behat.yml --tags '~@integration' --append-snippets"
+	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --tags '~@integration' --append-snippets"
 
 behatv:
-	docker compose run --rm cli bash -c "whenavail brokerdb 3306 20 vendor/bin/behat -v --config=features/behat.yml --strict --stop-on-failure"
+	docker compose run --rm cli bash -c "vendor/bin/behat -v --config=features/behat.yml --strict --stop-on-failure"
 
 behatappend:
-	docker compose run --rm cli bash -c "whenavail brokerdb 3306 20 vendor/bin/behat --config=features/behat.yml --append-snippets"
+	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --append-snippets"
 
 broker:
 	docker compose up -d brokerdb brokercron broker
-	make wait_for_broker
 
 clean:
 	docker compose kill
@@ -55,6 +54,3 @@ testci: deps broker
 
 unittest:
 	docker compose run --rm cli vendor/bin/phpunit
-
-wait_for_broker:
-	docker compose run --rm cli whenavail broker 80 20 echo "Broker is ready"

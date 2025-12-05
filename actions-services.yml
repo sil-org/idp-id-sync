@@ -31,9 +31,11 @@ services:
             MFA_WEBAUTHN_apiKey: not_needed_here
             MFA_WEBAUTHN_apiSecret: not_needed_here
         depends_on:
-            - brokercron
-            - brokerdb
-        command: whenavail brokerdb 3306 60 ./run.sh
+            brokercron:
+                condition: service_started
+            brokerdb:
+                condition: service_healthy
+        command: ./run.sh
 
     brokercron:
         image: ghcr.io/sil-org/idp-id-broker:latest
@@ -54,7 +56,7 @@ services:
             MFA_WEBAUTHN_apiSecret: not_needed_here
         depends_on:
             - brokerdb
-        command: whenavail brokerdb 3306 60 ./run-cron.sh
+        command: ./run-cron.sh
 
     brokerdb:
         image: mariadb:10
@@ -63,3 +65,9 @@ services:
             MYSQL_DATABASE: broker
             MYSQL_USER: broker
             MYSQL_PASSWORD: broker
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            start_period: 10s
+            interval: 10s
+            timeout: 5s
+            retries: 3
