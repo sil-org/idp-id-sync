@@ -92,6 +92,7 @@ class IdStoreIntegrationContextBase implements Context
      */
     public function thoseLastSyncedValuesAreAllInThePastOrEmpty()
     {
+        sleep(1);
         $nowTimestamp = time();
         foreach ($this->lastSyncedValues as $lastSyncedValue) {
             if (! empty($lastSyncedValue)) {
