@@ -43,7 +43,7 @@ phpmyadmin:
 	docker compose up -d phpmyadmin
 
 psr2:
-	docker compose run --rm cli bash -c "vendor/bin/php-cs-fixer fix ."
+	docker compose run --rm cli ./check-psr2.sh
 
 # NOTE: When running tests locally, make sure you don't exclude the integration
 #       tests (which we do when testing on CI).
