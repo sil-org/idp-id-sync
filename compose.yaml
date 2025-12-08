@@ -1,3 +1,9 @@
+x-db_credentials: &db_credentials
+    MYSQL_ROOT_PASSWORD: rootpass
+    MYSQL_DATABASE: broker
+    MYSQL_USER: broker
+    MYSQL_PASSWORD: broker
+
 services:
   app:
     build: ./
@@ -17,11 +23,6 @@ services:
       EMAIL_SIGNATURE: Dummy Signature for Local Development
       EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
       IDP_NAME: local
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_HOST: brokerdb
-      MYSQL_DATABASE: broker
-      MYSQL_USER: broker
-      MYSQL_PASSWORD: broker
       PASSWORD_FORGOT_URL: https://www.example.com/forgot
       PASSWORD_PROFILE_URL: https://www.example.com/profile
       SUPPORT_EMAIL: support@example.com
@@ -30,6 +31,8 @@ services:
       MFA_API_SECRET: 11345678-1234-1234-1234-12345678
       MFA_WEBAUTHN_apiBaseUrl: "dummy/"
       MFA_WEBAUTHN_rpId: http://app99
+      MYSQL_HOST: brokerdb
+      <<: *db_credentials
     ports:
       - "8081:80"
     healthcheck:
@@ -45,10 +48,7 @@ services:
     ports:
       - "3306"
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: broker
-      MYSQL_USER: broker
-      MYSQL_PASSWORD: broker
+      <<: *db_credentials
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
