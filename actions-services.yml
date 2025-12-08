@@ -24,37 +24,15 @@ services:
             MYSQL_DATABASE: broker
             MYSQL_USER: broker
             MYSQL_PASSWORD: broker
-            MFA_TOTP_apiBaseUrl: not_needed_here
-            MFA_TOTP_apiKey: not_needed_here
-            MFA_TOTP_apiSecret: not_needed_here
-            MFA_WEBAUTHN_apiBaseUrl: not_needed_here
-            MFA_WEBAUTHN_apiKey: not_needed_here
-            MFA_WEBAUTHN_apiSecret: not_needed_here
+            MFA_TOTP_apiBaseUrl: "dummy/"
+            MFA_API_KEY: 10345678-1234-1234-1234-123456789012
+            MFA_API_SECRET: 11345678-1234-1234-1234-12345678
+            MFA_WEBAUTHN_apiBaseUrl: "dummy/"
+            MFA_WEBAUTHN_rpId: http://app99
         depends_on:
-            - brokercron
-            - brokerdb
-        command: whenavail brokerdb 3306 60 ./run.sh
-
-    brokercron:
-        image: ghcr.io/sil-org/idp-id-broker:latest
-        environment:
-            API_ACCESS_KEYS: local-sync-123
-            EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
-            IDP_NAME: local
-            MYSQL_ROOT_PASSWORD: rootpass
-            MYSQL_HOST: brokerdb
-            MYSQL_DATABASE: broker
-            MYSQL_USER: broker
-            MYSQL_PASSWORD: broker
-            MFA_TOTP_apiBaseUrl: not_needed_here
-            MFA_TOTP_apiKey: not_needed_here
-            MFA_TOTP_apiSecret: not_needed_here
-            MFA_WEBAUTHN_apiBaseUrl: not_needed_here
-            MFA_WEBAUTHN_apiKey: not_needed_here
-            MFA_WEBAUTHN_apiSecret: not_needed_here
-        depends_on:
-            - brokerdb
-        command: whenavail brokerdb 3306 60 ./run-cron.sh
+            brokerdb:
+                condition: service_healthy
+        command: ./run.sh
 
     brokerdb:
         image: mariadb:10
@@ -63,3 +41,9 @@ services:
             MYSQL_DATABASE: broker
             MYSQL_USER: broker
             MYSQL_PASSWORD: broker
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            start_period: 10s
+            interval: 10s
+            timeout: 5s
+            retries: 3
