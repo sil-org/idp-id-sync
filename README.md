@@ -71,6 +71,8 @@ Set the `TEST_WORKDAY_CONFIG_*****` variables in `local.env` using `local.env.di
 
 #### Sage People config
 
+Note: this option is deprecated and will be removed in the next major version.
+
 Unless you have access to a test-only Sage account, you will need a valid employee ID and valid Sage credentials. 
 Set the `TEST_SAGE_PEOPLE_CONFIG_*****` variables in `local.env` using `local.env.dist` as an example.
 
