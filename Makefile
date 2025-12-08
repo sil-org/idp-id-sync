@@ -23,7 +23,7 @@ behatappend:
 	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --append-snippets"
 
 broker:
-	docker compose up -d brokerdb brokercron broker
+	docker compose up -d brokerdb broker
 
 clean:
 	docker compose kill
