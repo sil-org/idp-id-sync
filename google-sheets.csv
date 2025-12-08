@@ -1,0 +1,7 @@
+employee_id,first_name,last_name,display_name,username,email,active,locked,last_synced,require_mfa,manager_email,personal_email,groups,hr_contact_name,hr_contact_email
+1234567,Testy,McTester,Testy McTester,testy_mctester,test@example.com,yes,no,2025-12-05T15:22:18+00:00,no,manager@example.com,personal@example.com,,HR,hr@example.com
+123,test,user,test user,test_user,test_user@example.com,yes,no,2025-12-05T15:22:18+00:00,,,spouse@example.com,,,
+1234,another,user,,another,another_user@example.com,no,yes,2025-12-05T15:22:19+00:00,no,manager@example.com,,,,
+1235,Lacking,Email,Lacking Email,lacking_email,,yes,no,2025-12-05T15:22:18+00:00,no,,,,,
+1236,Not,Active,Not Active,not_active,not_active@example.com,no,no,2025-12-05T15:22:19+00:00,no,,,,,
+1237,Is,Locked,Is Locked,is_locked,is_locked@example.com,yes,yes,2025-12-05T15:22:18+00:00,no,,,,,
