@@ -13,9 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Check PSR2
-        run: |
-          mv local.env.dist local.env
-          make psr2
+        run: make psr2
       - name: Run unit tests
         run: make testci
 
