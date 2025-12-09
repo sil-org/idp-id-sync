@@ -12,6 +12,7 @@ services:
     env_file:
       - path: ./local.env
         required: false
+
   broker:
     image: ghcr.io/sil-org/idp-id-broker:8
     platform: linux/amd64
@@ -77,7 +78,8 @@ services:
       brokerdb:
         condition: service_healthy
     env_file:
-      - ./local.env
+      - path: ./local.env
+        required: false
     environment:
       ID_BROKER_CONFIG_accessToken: local-sync-123
       ID_BROKER_CONFIG_assertValidIp: "false"
