@@ -10,8 +10,8 @@ services:
     volumes:
       - ./application:/data
     env_file:
-      - ./local.env
-
+      - path: ./local.env
+        required: false
   broker:
     image: ghcr.io/sil-org/idp-id-broker:8
     platform: linux/amd64
