@@ -11,6 +11,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Check PSR2
+        env:
+          COMPOSER_CACHE_DIR: /composer
         run: make psr2
       - name: Run unit tests
         run: make testci
