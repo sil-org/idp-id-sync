@@ -1,67 +1,61 @@
+x-db_credentials: &db_credentials
+    MYSQL_ROOT_PASSWORD: rootpass
+    MYSQL_DATABASE: broker
+    MYSQL_USER: broker
+    MYSQL_PASSWORD: broker
+
 services:
   app:
     build: ./
     volumes:
       - ./application:/data
     env_file:
-      - ./local.env
+      - path: ./local.env
+        required: false
 
   broker:
     image: ghcr.io/sil-org/idp-id-broker:8
     platform: linux/amd64
+    depends_on:
+      brokerdb:
+        condition: service_healthy
     environment:
       API_ACCESS_KEYS: local-sync-123
       EMAIL_SIGNATURE: Dummy Signature for Local Development
       EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
       IDP_NAME: local
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_HOST: brokerdb
-      MYSQL_DATABASE: broker
-      MYSQL_USER: broker
-      MYSQL_PASSWORD: broker
       PASSWORD_FORGOT_URL: https://www.example.com/forgot
       PASSWORD_PROFILE_URL: https://www.example.com/profile
       SUPPORT_EMAIL: support@example.com
-      MFA_TOTP_apiBaseUrl: not_needed_here
-      MFA_TOTP_apiKey: not_needed_here
-      MFA_TOTP_apiSecret: not_needed_here
-      MFA_WEBAUTHN_apiBaseUrl: not_needed_here
-      MFA_WEBAUTHN_apiKey: not_needed_here
-      MFA_WEBAUTHN_apiSecret: not_needed_here
+      MFA_TOTP_apiBaseUrl: "dummy/"
+      MFA_API_KEY: 10345678-1234-1234-1234-123456789012
+      MFA_API_SECRET: 11345678-1234-1234-1234-12345678
+      MFA_WEBAUTHN_apiBaseUrl: "dummy/"
+      MFA_WEBAUTHN_rpId: http://app99
+      MYSQL_HOST: brokerdb
+      <<: *db_credentials
     ports:
       - "8081:80"
-    command: whenavail brokerdb 3306 60 ./run.sh
-
-  brokercron:
-    image: ghcr.io/sil-org/idp-id-broker:8
-    platform: linux/amd64
-    environment:
-      API_ACCESS_KEYS: local-sync-123
-      EMAILER_CLASS: \Sil\SilIdBroker\Behat\Context\fakes\FakeEmailer
-      IDP_NAME: local
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_HOST: brokerdb
-      MYSQL_DATABASE: broker
-      MYSQL_USER: broker
-      MYSQL_PASSWORD: broker
-      RUN_TASK: cron/all
-      MFA_TOTP_apiBaseUrl: not_needed_here
-      MFA_TOTP_apiKey: not_needed_here
-      MFA_TOTP_apiSecret: not_needed_here
-      MFA_WEBAUTHN_apiBaseUrl: not_needed_here
-      MFA_WEBAUTHN_apiKey: not_needed_here
-      MFA_WEBAUTHN_apiSecret: not_needed_here
-    command: whenavail brokerdb 3306 60 ./run.sh
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "localhost/site/status"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: ./run.sh
 
   brokerdb:
     image: mariadb:10
     ports:
       - "3306"
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: broker
-      MYSQL_USER: broker
-      MYSQL_PASSWORD: broker
+      <<: *db_credentials
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   phpmyadmin:
     image: phpmyadmin:5
@@ -78,8 +72,14 @@ services:
       - ${COMPOSER_CACHE_DIR}:/composer
       - ./application:/data
     working_dir: /data
+    depends_on:
+      broker:
+        condition: service_healthy
+      brokerdb:
+        condition: service_healthy
     env_file:
-      - ./local.env
+      - path: ./local.env
+        required: false
     environment:
       ID_BROKER_CONFIG_accessToken: local-sync-123
       ID_BROKER_CONFIG_assertValidIp: "false"
