@@ -69,13 +69,6 @@ Some additional setup is required to run integration tests:
 Unless you have access to a test-only Workday account, you will need a valid employee ID and valid Workday credentials.
 Set the `TEST_WORKDAY_CONFIG_*****` variables in `local.env` using `local.env.dist` as an example.
 
-#### Sage People config
-
-Note: this option is deprecated and will be removed in the next major version.
-
-Unless you have access to a test-only Sage account, you will need a valid employee ID and valid Sage credentials. 
-Set the `TEST_SAGE_PEOPLE_CONFIG_*****` variables in `local.env` using `local.env.dist` as an example.
-
 ## User properties
 
 ### Employee Number (`employee_number`)

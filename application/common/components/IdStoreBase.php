@@ -2,11 +2,10 @@
 
 namespace Sil\Idp\IdSync\common\components;
 
-use Sil\Idp\IdSync\common\components\adapters\GoogleSheetsIdStore;
-use Sil\Idp\IdSync\common\components\adapters\SagePeopleIdStore;
-use Sil\Idp\IdSync\common\components\adapters\WorkdayIdStore;
-use Sil\Idp\IdSync\common\components\adapters\SecureUserIdStore;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
+use Sil\Idp\IdSync\common\components\adapters\GoogleSheetsIdStore;
+use Sil\Idp\IdSync\common\components\adapters\SecureUserIdStore;
+use Sil\Idp\IdSync\common\components\adapters\WorkdayIdStore;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\models\User;
 use yii\base\Component;
@@ -16,14 +15,12 @@ abstract class IdStoreBase extends Component implements IdStoreInterface
     public const ADAPTER_FAKE = 'fake';
     public const ADAPTER_GOOGLE_SHEETS = 'googlesheets';
     public const ADAPTER_WORKDAY = 'workday';
-    public const ADAPTER_SAGE_PEOPLE = 'sagepeople';
     public const ADAPTER_SECURE_USER = 'secureuser';
 
     protected static $adapters = [
         self::ADAPTER_FAKE => FakeIdStore::class,
         self::ADAPTER_GOOGLE_SHEETS => GoogleSheetsIdStore::class,
         self::ADAPTER_WORKDAY => WorkdayIdStore::class,
-        self::ADAPTER_SAGE_PEOPLE => SagePeopleIdStore::class,
         self::ADAPTER_SECURE_USER => SecureUserIdStore::class,
     ];
 
