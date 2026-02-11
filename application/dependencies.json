@@ -1,19 +1,19 @@
 [
   {
     "name": "bower-asset/inputmask",
-    "version": "5.0.8"
+    "version": "5.0.9"
   },
   {
     "name": "bower-asset/jquery",
-    "version": "3.6.4"
+    "version": "3.7.1"
   },
   {
     "name": "bower-asset/punycode",
-    "version": "v1.4.1"
+    "version": "v2.3.1"
   },
   {
     "name": "bower-asset/yii2-pjax",
-    "version": "2.0.8"
+    "version": "2.0.9"
   },
   {
     "name": "cebe/markdown",
@@ -29,7 +29,7 @@
   },
   {
     "name": "doctrine/deprecations",
-    "version": "1.1.5"
+    "version": "1.1.6"
   },
   {
     "name": "doctrine/lexer",
@@ -41,7 +41,7 @@
   },
   {
     "name": "ezyang/htmlpurifier",
-    "version": "v4.18.0"
+    "version": "v4.19.0"
   },
   {
     "name": "firebase/php-jwt",
@@ -53,7 +53,7 @@
   },
   {
     "name": "google/apiclient-services",
-    "version": "v0.416.0"
+    "version": "v0.432.0"
   },
   {
     "name": "google/auth",
@@ -81,7 +81,7 @@
   },
   {
     "name": "http-interop/http-factory-guzzle",
-    "version": "1.2.0"
+    "version": "1.2.1"
   },
   {
     "name": "jean85/pretty-package-versions",
@@ -89,11 +89,11 @@
   },
   {
     "name": "mlocati/ip-lib",
-    "version": "1.21.0"
+    "version": "1.22.0"
   },
   {
     "name": "monolog/monolog",
-    "version": "2.10.0"
+    "version": "2.11.0"
   },
   {
     "name": "paragonie/constant_time_encoding",
@@ -105,7 +105,7 @@
   },
   {
     "name": "php-http/client-common",
-    "version": "2.7.2"
+    "version": "2.7.3"
   },
   {
     "name": "php-http/discovery",
@@ -129,7 +129,7 @@
   },
   {
     "name": "phpseclib/phpseclib",
-    "version": "3.0.47"
+    "version": "3.0.49"
   },
   {
     "name": "phpspec/php-diff",
@@ -165,7 +165,7 @@
   },
   {
     "name": "roave/security-advisories",
-    "version": "dev-master f34f054"
+    "version": "dev-master 0c751a6"
   },
   {
     "name": "sentry/sdk",
@@ -193,7 +193,7 @@
   },
   {
     "name": "sil-org/yii2-json-log-targets",
-    "version": "2.3.0"
+    "version": "2.3.1"
   },
   {
     "name": "sil-org/yii2-sentry",
@@ -209,7 +209,7 @@
   },
   {
     "name": "symfony/http-client",
-    "version": "v7.3.4"
+    "version": "v7.4.5"
   },
   {
     "name": "symfony/http-client-contracts",
@@ -217,7 +217,7 @@
   },
   {
     "name": "symfony/options-resolver",
-    "version": "v7.3.3"
+    "version": "v7.4.0"
   },
   {
     "name": "symfony/polyfill-iconv",
@@ -245,11 +245,11 @@
   },
   {
     "name": "symfony/service-contracts",
-    "version": "v3.6.0"
+    "version": "v3.6.1"
   },
   {
     "name": "yiisoft/yii2",
-    "version": "2.0.53"
+    "version": "2.0.54"
   },
   {
     "name": "yiisoft/yii2-composer",
