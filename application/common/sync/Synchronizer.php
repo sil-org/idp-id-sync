@@ -127,7 +127,7 @@ class Synchronizer
         $this->idBroker->updateUser(
             ArrayHelper::merge($user->toArray(), ['active' => 'yes'])
         );
-        $this->logger->info('Updated/activated user: ' . $user->getEmployeeId());
+        $this->logger->debug('Updated/activated user: ' . $user->getEmployeeId());
     }
 
     /**
