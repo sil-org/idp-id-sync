@@ -16,7 +16,7 @@ use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
-use Sil\Psr3Adapters\Psr3ConsoleLogger;
+use Sil\Psr3Adapters\Psr3StdOutLogger;
 use yii\helpers\Json;
 
 /**
@@ -47,7 +47,7 @@ class SafetyCutoffContext implements Context
 
     public function __construct()
     {
-        $this->logger = new Psr3ConsoleLogger();
+        $this->logger = new Psr3StdOutLogger();
         $this->notifier = new ConsoleNotifier();
     }
 

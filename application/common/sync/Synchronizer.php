@@ -163,11 +163,11 @@ class Synchronizer
             ));
         }
 
-        $this->logger->notice([
+        $this->logger->notice(json_encode([
             'action' => 'update',
             'attempted' => count($usersToUpdateAndActivate),
             'succeeded' => count($employeeIdsOfUsersUpdated),
-        ]);
+        ]));
 
         $this->idStore->updateSyncDatesIfSupported($employeeIdsOfUsersUpdated);
     }
@@ -245,11 +245,11 @@ class Synchronizer
             }
         }
 
-        $this->logger->notice([
+        $this->logger->notice(json_encode([
             'action' => 'create',
             'attempted' => count($usersToAdd),
             'succeeded' => count($employeeIdsOfUsersAdded),
-        ]);
+        ]));
 
         $this->idStore->updateSyncDatesIfSupported($employeeIdsOfUsersAdded);
 
@@ -304,11 +304,11 @@ class Synchronizer
             }
         }
 
-        $this->logger->notice([
+        $this->logger->notice(json_encode([
             'action' => 'deactivate',
             'attempted' => count($employeeIdsToDeactivate),
             'succeeded' => count($employeeIdsDeactivated),
-        ]);
+        ]));
 
         $this->idStore->updateSyncDatesIfSupported($employeeIdsDeactivated);
     }
@@ -526,10 +526,10 @@ class Synchronizer
         $this->activateAndUpdateUsers($usersToUpdateAndActivate);
         $this->deactivateUsers($employeeIdsToDeactivate);
 
-        $this->logger->notice([
+        $this->logger->notice(json_encode([
             'action' => 'none (already inactive)',
             'count' => count($employeeIdsAlreadyInactive),
-        ]);
+        ]));
         $this->idStore->updateSyncDatesIfSupported($employeeIdsAlreadyInactive);
 
         $this->logger->info('Done attempting to sync all users.');
