@@ -17,10 +17,12 @@ use Sil\Idp\IdSync\common\models\User;
   has been created. Their username is <?= $user->getUsername() ?>.
 
   An invite message will be sent to <?= $user->getFirstName() ?> at
-  the following address: <?php if (empty($user->getEmail())) {
+  <?php if (empty($user->getEmail())) {
       echo $user->getPersonalEmail();
-  } else {
+    } elseif (empty($user->getPersonalEmail())) {
       echo $user->getEmail();
+    } else {
+      echo $user->getEmail() . ' and ' . $user->getPersonalEmail();
   }?>
 
 --
