@@ -1,4 +1,5 @@
 <?php
+
 use Sil\Idp\IdSync\common\models\User;
 use yii\helpers\Html;
 
@@ -23,12 +24,13 @@ use yii\helpers\Html;
 
 <p>
   An invite message will be sent to <?= Html::encode($user->getFirstName()) ?> at
-  the following address:
 
     <?php if (empty($user->getEmail())) {
         echo Html::encode($user->getPersonalEmail());
-    } else {
+    } elseif (empty($user->getPersonalEmail())) {
         echo Html::encode($user->getEmail());
+    } else {
+        echo Html::encode($user->getEmail()) . ' and ' . Html::encode($user->getPersonalEmail());
     }?>
 </p>
 
