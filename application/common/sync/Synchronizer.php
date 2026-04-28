@@ -392,6 +392,7 @@ class Synchronizer
      * updating all records in the ID Broker.
      *
      * If there is an exception, send out an email about it.
+     * @throws Exception
      */
     public function syncAllNotifyException()
     {
@@ -400,9 +401,10 @@ class Synchronizer
         } catch (Exception $e) {
             $code = $e->getCode();
             $message = sprintf(
-                'There was an error with the sync process. Code: %s, Message: %s',
+                'There was an error with the sync process. Code: %s, Message: %s, Trace: %s',
                 $code,
                 $e->getMessage(),
+                $e->getTraceAsString()
             );
 
             if ($code == 503 || $code == 504) {
@@ -410,6 +412,7 @@ class Synchronizer
             } else {
                 $this->logger->error($message);
             }
+            throw new Exception('syncAll error', $e->getCode(), $e);
         }
     }
 
