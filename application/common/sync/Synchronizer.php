@@ -401,10 +401,9 @@ class Synchronizer
         } catch (Exception $e) {
             $code = $e->getCode();
             $message = sprintf(
-                'There was an error with the sync process. Code: %s, Message: %s, Trace: %s',
+                'There was an error with the sync process. Code: %s, Message: %s',
                 $code,
-                $e->getMessage(),
-                $e->getTraceAsString()
+                $e->__toString(),
             );
 
             if ($code == 503 || $code == 504) {
