@@ -217,15 +217,15 @@
   },
   {
     "name": "symfony/polyfill-intl-idn",
-    "version": "v1.37.0"
+    "version": "v1.38.1"
   },
   {
     "name": "symfony/polyfill-intl-normalizer",
-    "version": "v1.37.0"
+    "version": "v1.38.0"
   },
   {
     "name": "symfony/polyfill-mbstring",
-    "version": "v1.37.0"
+    "version": "v1.38.2"
   },
   {
     "name": "symfony/polyfill-php80",
