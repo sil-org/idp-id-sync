@@ -1,6 +1,6 @@
 <?php
 
-namespace Sil\Idp\IdSync\Behat\Context;
+namespace Sil\Idp\IdSync\_tests\bootstrap;
 
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;

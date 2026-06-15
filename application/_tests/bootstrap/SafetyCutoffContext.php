@@ -1,14 +1,11 @@
 <?php
 
-namespace Sil\Idp\IdSync\Behat\Context;
+namespace Sil\Idp\IdSync\_tests\bootstrap;
 
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Context\Context;
 use Exception;
 use PHPUnit\Framework\Assert;
 use Psr\Log\LoggerInterface;
-use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdBroker;
 use Sil\Idp\IdSync\common\components\adapters\fakes\FakeIdStore;
 use Sil\Idp\IdSync\common\components\notify\ConsoleNotifier;
@@ -16,8 +13,8 @@ use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
+use Sil\Idp\IdSync\common\sync\Synchronizer;
 use Sil\Psr3Adapters\Psr3StdOutLogger;
-use yii\helpers\Json;
 
 /**
  * Defines application features from the specific context.

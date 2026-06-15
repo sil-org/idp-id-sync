@@ -42,11 +42,11 @@ needed (like "broker"), depending on which test you will run. An easy way to do 
 run `make testci` first, then use one of the following to run just a specific test.
 
 - `make bash`
-- `vendor/bin/behat --config=features/behat.yml --suite=notification_features`
+- `vendor/bin/behat --suite=notification_features`
 
 OR
 
-- `docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --suite=notification_features"`
+- `docker compose run --rm cli bash -c "vendor/bin/behat --suite=notification_features"`
 
 Substitute `notification_features` with any of the suites defined in `behat.yml`
 

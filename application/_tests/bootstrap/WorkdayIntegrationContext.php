@@ -1,6 +1,6 @@
 <?php
 
-namespace Sil\Idp\IdSync\Behat\Context;
+namespace Sil\Idp\IdSync\_tests\bootstrap;
 
 use Sil\Idp\IdSync\common\components\adapters\WorkdayIdStore;
 use Sil\PhpEnv\Env;
