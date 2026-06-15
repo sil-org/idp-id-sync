@@ -17,7 +17,7 @@ behatlocalappend:
 	docker compose run --rm cli bash -c "vendor/bin/behat --tags '~@integration' --append-snippets"
 
 behatv:
-	docker compose run --rm cli bash -c "vendor/bin/behat -v --config=_tests/behat.yml --strict --stop-on-failure"
+	docker compose run --rm cli bash -c "vendor/bin/behat -v --strict --stop-on-failure"
 
 behatappend:
 	docker compose run --rm cli bash -c "vendor/bin/behat --append-snippets"
