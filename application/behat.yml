@@ -2,33 +2,33 @@ default:
     suites:
         google_sheets_integration_features:
             paths:    [ "%paths.base%/_tests/_features/id-store-integration.feature" ]
-            contexts: [ Sil\Idp\IdSync\_tests\bootstrap\GoogleSheetsIntegrationContext ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\GoogleSheetsIntegrationContext ]
         idp_id_broker_integration_features:
             paths:    [ "%paths.base%/_tests/_features/idp-id-broker-integration.feature" ]
-            contexts: [ Sil\Idp\IdSync\_tests\bootstrap\IdpIdBrokerIntegrationContext ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\IdpIdBrokerIntegrationContext ]
         safety_cutoff_features:
             paths:    [ "%paths.base%/_tests/_features/safetyCutoff.feature" ]
-            contexts: [ Sil\Idp\IdSync\_tests\bootstrap\SafetyCutoffContext ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\SafetyCutoffContext ]
         sync_features:
             paths:    [ "%paths.base%/_tests/_features/sync.feature" ]
-            contexts: [ Sil\Idp\IdSync\_tests\bootstrap\SyncContext ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\SyncContext ]
         user_features:
             paths:    [ "%paths.base%/_tests/_features/user.feature" ]
-            contexts: [ Sil\Idp\IdSync\_tests\bootstrap\UserContext ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\UserContext ]
         workday_integration_features:
             filters:
                 # removing whitespace to silence faulty deprecation warning
                 # see https://github.com/Behat/Gherkin/pull/215#issuecomment-944115733
                 tags: '~@specificUser&&~@usersChangedSince&&~@canUpdateLastSynced'
             paths:    [ "%paths.base%/_tests/_features/id-store-integration.feature" ]
-            contexts: [ Sil\Idp\IdSync\_tests\bootstrap\WorkdayIntegrationContext ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\WorkdayIntegrationContext ]
         secure_user_integration_features:
             filters:
                 # removing whitespace to silence faulty deprecation warning
                 # see https://github.com/Behat/Gherkin/pull/215#issuecomment-944115733
                 tags: '~@usersChangedSince&&~@canUpdateLastSynced'
             paths:    [ "%paths.base%/_tests/_features/id-store-integration.feature" ]
-            contexts: [ Sil\Idp\IdSync\_tests\bootstrap\SecureUserIntegrationContext ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\SecureUserIntegrationContext ]
         notification_features:
             paths:    [ "%paths.base%/_tests/_features/notification.feature" ]
-            contexts: [ Sil\Idp\IdSync\_tests\bootstrap\NotificationContext ]
+            contexts: [ Sil\Idp\IdSync\Behat\Context\NotificationContext ]

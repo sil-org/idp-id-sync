@@ -1,6 +1,6 @@
 <?php
 
-namespace Sil\Idp\IdSync\_tests\bootstrap;
+namespace Sil\Idp\IdSync\Behat\Context;
 
 use Exception;
 use PHPUnit\Framework\Assert;
