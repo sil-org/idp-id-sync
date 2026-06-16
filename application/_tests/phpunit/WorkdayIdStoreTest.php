@@ -1,6 +1,6 @@
 <?php
 
-namespace Sil\Idp\IdSync\tests;
+namespace Sil\Idp\IdSync\_tests\phpunit;
 
 use Sil\Idp\IdSync\common\components\adapters\WorkdayIdStore;
 use PHPUnit\Framework\TestCase;
@@ -10,7 +10,7 @@ class WorkdayIdStoreTest extends TestCase
     public function __construct()
     {
         parent::__construct();
-        require_once __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
+        require_once __DIR__ . '/../../vendor/yiisoft/yii2/Yii.php';
     }
 
     public function testGetIdStoreName()

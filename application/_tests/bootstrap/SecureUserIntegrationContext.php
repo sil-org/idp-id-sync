@@ -3,9 +3,7 @@
 namespace Sil\Idp\IdSync\Behat\Context;
 
 use Sil\Idp\IdSync\common\components\adapters\SecureUserIdStore;
-use Sil\Idp\IdSync\common\models\User;
 use Sil\PhpEnv\Env;
-use yii\base\BaseObject;
 
 /**
  * Defines application features from the specific context.

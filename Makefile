@@ -8,19 +8,19 @@ bash:
 	docker compose run --rm cli bash
 
 behat:
-	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --strict --stop-on-failure"
+	docker compose run --rm cli bash -c "vendor/bin/behat --strict --stop-on-failure"
 
 behatlocal:
-	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --strict --stop-on-failure --tags '~@integration'"
+	docker compose run --rm cli bash -c "vendor/bin/behat --strict --stop-on-failure --tags '~@integration'"
 
 behatlocalappend:
-	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --tags '~@integration' --append-snippets"
+	docker compose run --rm cli bash -c "vendor/bin/behat --tags '~@integration' --append-snippets"
 
 behatv:
-	docker compose run --rm cli bash -c "vendor/bin/behat -v --config=features/behat.yml --strict --stop-on-failure"
+	docker compose run --rm cli bash -c "vendor/bin/behat -v --strict --stop-on-failure"
 
 behatappend:
-	docker compose run --rm cli bash -c "vendor/bin/behat --config=features/behat.yml --append-snippets"
+	docker compose run --rm cli bash -c "vendor/bin/behat --append-snippets"
 
 broker:
 	docker compose up -d brokerdb broker
@@ -53,4 +53,4 @@ testci: deps broker
 	docker compose run --rm cli bash -c "./run-tests.sh"
 
 unittest:
-	docker compose run --rm cli vendor/bin/phpunit
+	docker compose run --rm cli vendor/bin/phpunit _tests

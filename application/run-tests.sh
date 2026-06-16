@@ -11,7 +11,7 @@ cd /data
 composer install --no-interaction --no-scripts --no-progress
 
 # Run the unit tests
-./vendor/bin/phpunit
+./vendor/bin/phpunit _tests
 
 # Run the feature tests (skipping integration tests)
-./vendor/bin/behat --config=features/behat.yml --tags '~@integration' --stop-on-failure
+./vendor/bin/behat --tags '~@integration' --stop-on-failure
