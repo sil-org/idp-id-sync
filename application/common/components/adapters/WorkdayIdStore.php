@@ -21,6 +21,7 @@ class WorkdayIdStore extends IdStoreBase
 
     protected $httpClient = null;
 
+    public const MAX_GROUPS_LENGTH = 255;
     private const ManagerEmail = 'Manager_Email';
 
     public function init()
@@ -174,6 +175,10 @@ class WorkdayIdStore extends IdStoreBase
                     $groupsSubList = explode(' ', $value);
                     $groups = array_merge($groups, $groupsSubList);
                 }
+            }
+            $groups = array_unique($groups);
+            while (strlen(implode(',', $groups)) > self::MAX_GROUPS_LENGTH) {
+                array_pop($groups);
             }
             $users[$key]['Groups'] = implode(',', $groups);
         }
