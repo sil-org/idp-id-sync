@@ -19,9 +19,9 @@ use Sil\Idp\IdSync\common\models\User;
   An invite message will be sent to <?= $user->getFirstName() ?> at
   <?php if (empty($user->getEmail())) {
       echo $user->getPersonalEmail();
-    } elseif (empty($user->getPersonalEmail())) {
+  } elseif (empty($user->getPersonalEmail())) {
       echo $user->getEmail();
-    } else {
+  } else {
       echo $user->getEmail() . ' and ' . $user->getPersonalEmail();
   }?>
 

@@ -5,7 +5,7 @@ cd /data
 composer install --no-interaction --no-scripts --no-progress
 
 # Check the code against PSR-2.
-vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no .
+vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no
 
 # If it didn't match PSR-2, then exit.
 rc=$?;
