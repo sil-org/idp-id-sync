@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Sil\Idp\IdBroker\Client\ServiceException;
 use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
 use Sil\Idp\IdSync\common\components\notify\NullNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
@@ -139,6 +140,7 @@ class Synchronizer
     {
         $usersWithErrors = [];
         $lastError = null;
+        $allErrorsAreDataErrors = true;
 
         $employeeIdsOfUsersUpdated = [];
         foreach ($usersToUpdateAndActivate as $nextUser) {
@@ -148,11 +150,12 @@ class Synchronizer
             } catch (Exception $e) {
                 $usersWithErrors[] = $nextUser->getStringForLogMessage();
                 $lastError = $e;
+                $allErrorsAreDataErrors = $allErrorsAreDataErrors && self::isBrokerDataError($e);
             }
         }
 
         if ($lastError !== null) {
-            $this->logger->error(sprintf(
+            $message = sprintf(
                 'Failed to update/activate user(s) in the ID Broker. Last error %s: %s. [%s].'
                 . '  Failed for %s users, including: %s',
                 $lastError->getCode(),
@@ -160,7 +163,12 @@ class Synchronizer
                 1494360119,
                 count($usersWithErrors),
                 join(', ', array_slice($usersWithErrors, -6)) // last six users
-            ));
+            );
+            if ($allErrorsAreDataErrors) {
+                $this->logger->warning($message);
+            } else {
+                $this->logger->error($message);
+            }
         }
 
         $this->logger->notice(json_encode([
@@ -234,14 +242,14 @@ class Synchronizer
                 ));
                 $usersWithoutEmail[] = $userToAdd;
             } catch (Exception $e) {
-                $this->logger->error(sprintf(
+                $this->logFailure(sprintf(
                     'Failed to add user to ID Broker (%s). '
                     . 'Error %s: %s. [%s]',
                     $userToAdd->getStringForLogMessage(),
                     $e->getCode(),
                     $e->getMessage(),
                     1494360152
-                ));
+                ), $e);
             }
         }
 
@@ -255,6 +263,30 @@ class Synchronizer
 
         if (! empty($usersWithoutEmail)) {
             $this->notifier->sendMissingEmailNotice($usersWithoutEmail);
+        }
+    }
+
+    /**
+     * Whether the given exception is the ID Broker rejecting the data it was
+     * sent (HTTP 422, e.g. "Username ... has already been taken"). Those are
+     * problems with the ID Store's data, not with this app, so they are logged
+     * as warnings (which are not sent to Sentry) rather than errors.
+     */
+    public static function isBrokerDataError(Exception $e): bool
+    {
+        return $e instanceof ServiceException && $e->httpStatusCode === 422;
+    }
+
+    /**
+     * Log a failure as a warning if it was caused by bad data (see
+     * isBrokerDataError), otherwise as an error.
+     */
+    protected function logFailure(string $message, Exception $e): void
+    {
+        if (self::isBrokerDataError($e)) {
+            $this->logger->warning($message);
+        } else {
+            $this->logger->error($message);
         }
     }
 
@@ -659,7 +691,7 @@ class Synchronizer
                 if ($code == 503 || $code == 504) {
                     $this->logger->warning($message);
                 } else {
-                    $this->logger->error($message);
+                    $this->logFailure($message, $e);
                 }
             }
         }
