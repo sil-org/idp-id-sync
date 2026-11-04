@@ -39,6 +39,10 @@ Everything runs through Docker Compose. Run commands from the repo root. The PHP
 - `id-store-integration.feature` is shared by several suites (Google Sheets, Workday, SecureUser). Each suite uses tag filters in `behat.yml` to skip the scenarios its store doesn't support.
 - `idp-id-broker-integration` runs against the real broker container started by Compose. The other non-integration suites use the fakes.
 
+## Code style
+
+- One class per file, named after the class (PSR-4), including in tests.
+
 ## Configuration
 
 Env vars are documented in `local.env.dist`. Copy it to `local.env` (gitignored, and Claude is denied read access to it). Google integration tests also expect `application/google-auth.json`, which is gitignored and also denied to Claude.
