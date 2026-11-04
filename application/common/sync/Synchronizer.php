@@ -278,6 +278,17 @@ class Synchronizer
     }
 
     /**
+     * Whether the given exception code is an HTTP status that indicates a
+     * transient server-side problem (e.g. the ID Store or ID Broker briefly
+     * returning a 500, 502, 503, or 504). Those are logged as warnings rather
+     * than errors so they don't trigger alerts.
+     */
+    public static function isTransientHttpError($code): bool
+    {
+        return in_array((int)$code, [500, 502, 503, 504], true);
+    }
+
+    /**
      * Log a failure as a warning if it was caused by bad data (see
      * isBrokerDataError), otherwise as an error.
      */
@@ -439,7 +450,7 @@ class Synchronizer
                 $e->getTraceAsString()
             );
 
-            if ($code == 503 || $code == 504) {
+            if (self::isTransientHttpError($code)) {
                 $this->logger->warning($message);
             } else {
                 $this->logger->error($message);
@@ -688,7 +699,7 @@ class Synchronizer
                     1494360265
                 );
 
-                if ($code == 503 || $code == 504) {
+                if (self::isTransientHttpError($code)) {
                     $this->logger->warning($message);
                 } else {
                     $this->logFailure($message, $e);
