@@ -1,0 +1,15 @@
+{
+  "sandbox": {
+    "filesystem": {
+      "allowRead": ["."],
+      "denyRead": ["./.env", "./local.env", "./application/google-auth.json"]
+    }
+  },
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./local.env)",
+      "Read(./application/google-auth.json)"
+    ]
+  }
+}
