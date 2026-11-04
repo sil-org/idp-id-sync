@@ -4,7 +4,6 @@ namespace Sil\Idp\IdSync\_tests\phpunit;
 
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -147,23 +146,5 @@ class IdpIdBrokerTest extends TestCase
     private function userResponse(): Response
     {
         return new Response(200, [], json_encode(['employee_id' => '123']));
-    }
-}
-
-class TestIdpIdBroker extends IdpIdBroker
-{
-    /** @var MockHandler */
-    public $mockHandler;
-
-    protected function getHandlerStack(): HandlerStack
-    {
-        $stack = parent::getHandlerStack();
-        $stack->setHandler($this->mockHandler);
-        return $stack;
-    }
-
-    public function getRetryDelay(int $retries): int
-    {
-        return 0;
     }
 }
