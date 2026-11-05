@@ -84,7 +84,7 @@ A user’s last name.
 A user’s full name. If blank, the display name will be the first name and last name concatenated with a space in between.
 
 ### Email (`email`)
-A user’s primary email address. The user must have a primary email address. The `ALLOW_EMPTY_EMAIL` configuration option can be set to `true` to temporarily allow a user to only have a personal email address (see below). This can be useful if the onboarding process does not allow for an organizational email address to be created before the IdP user is added.
+A user’s primary email address. The user must have a primary email address. The `ALLOW_EMPTY_EMAIL` configuration option can be set to `true` to temporarily allow a user to only have a personal email address (see below). This can be useful if the onboarding process does not allow for an organizational email address to be created before the IdP user is added. Note: `ALLOW_EMPTY_EMAIL` is deprecated and will be removed in the next major version.
 
 ### Username (`username`)
 A user’s username. The user can use either their username or their email address on login. Required.
@@ -99,7 +99,7 @@ Flag to enforce the use of multi-factor authentication. Must be one of: ‘yes�
 Email address of the user’s manager. This can be used in a situation where a user loses access to their multi-factor authentication and needs assistance. In such a situation, they can request assistance from their manager, who will receive a temporary code that can be given to the user once they have positively identified the person.
 
 ### Personal Email (`personal_email`)
-Alternate email address of the user. Upon creation of a new user, if specified, this address will be added as a password recovery option. May also be used temporarily as a new user's primary email address if configuration option `ALLOW_EMPTY_EMAIL` is `true`.
+Alternate email address of the user. Upon creation of a new user, if specified, this address will be added as a password recovery option. May also be used temporarily as a new user's primary email address if configuration option `ALLOW_EMPTY_EMAIL` (deprecated) is `true`.
 
 ### Groups (`groups`)
 A comma-separated list of groups that can be used to limit access to certain applications (SAML Service Providers) based on SAML configuration elsewhere in the IdP system.
