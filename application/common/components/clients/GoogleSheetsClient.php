@@ -2,6 +2,7 @@
 
 namespace Sil\Idp\IdSync\common\components\clients;
 
+use Google\Task\Runner;
 use InvalidArgumentException;
 use Sil\Idp\IdSync\common\models\User;
 use yii\base\Component;
@@ -10,6 +11,9 @@ use yii\helpers\Json;
 class GoogleSheetsClient extends Component
 {
     public const FIRST_ROW_AFTER_HEADERS = 2;
+
+    /** @var int How many times to retry a Google API call that failed with a transient error. */
+    public const MAX_RETRIES = 3;
 
     /**
      * @var null|string The Application Name to use with Google_Client.
@@ -76,13 +80,45 @@ class GoogleSheetsClient extends Component
 
     protected function initGoogleClient()
     {
+        $this->sheets = new \Google_Service_Sheets($this->createGoogleClient());
+    }
+
+    protected function createGoogleClient(): \Google_Client
+    {
         $jsonCreds = Json::decode($this->jsonAuthString);
-        $googleClient = new \Google_Client();
+        $googleClient = new \Google_Client($this->getGoogleClientConfig());
         $googleClient->setApplicationName($this->applicationName);
         $googleClient->setScopes($this->scopes);
         $googleClient->setAuthConfig($jsonCreds);
         $googleClient->setAccessType('offline');
-        $this->sheets = new \Google_Service_Sheets($googleClient);
+        return $googleClient;
+    }
+
+    /**
+     * Config for the Google_Client. Turns on its retry support (off by
+     * default) and adds 502 and 504 to its default list of retryable errors.
+     * Every call this class makes is a read or an idempotent write, so
+     * retrying is safe.
+     */
+    protected function getGoogleClientConfig(): array
+    {
+        return [
+            'retry' => ['retries' => self::MAX_RETRIES],
+            'retry_map' => [
+                500 => Runner::TASK_RETRY_ALWAYS,
+                502 => Runner::TASK_RETRY_ALWAYS,
+                503 => Runner::TASK_RETRY_ALWAYS,
+                504 => Runner::TASK_RETRY_ALWAYS,
+                'rateLimitExceeded' => Runner::TASK_RETRY_ALWAYS,
+                'userRateLimitExceeded' => Runner::TASK_RETRY_ALWAYS,
+                6 => Runner::TASK_RETRY_ALWAYS,  // CURLE_COULDNT_RESOLVE_HOST
+                7 => Runner::TASK_RETRY_ALWAYS,  // CURLE_COULDNT_CONNECT
+                28 => Runner::TASK_RETRY_ALWAYS, // CURLE_OPERATION_TIMEOUTED
+                35 => Runner::TASK_RETRY_ALWAYS, // CURLE_SSL_CONNECT_ERROR
+                52 => Runner::TASK_RETRY_ALWAYS, // CURLE_GOT_NOTHING
+                'lighthouseError' => Runner::TASK_RETRY_NEVER,
+            ],
+        ];
     }
 
     /**
