@@ -2,7 +2,12 @@
 
 namespace Sil\Idp\IdSync\common\components\clients;
 
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use InvalidArgumentException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Sil\Idp\IdSync\common\models\User;
 use yii\base\Component;
 use yii\helpers\Json;
@@ -10,6 +15,9 @@ use yii\helpers\Json;
 class GoogleSheetsClient extends Component
 {
     public const FIRST_ROW_AFTER_HEADERS = 2;
+
+    /** @var int How many times to retry a Google API call that got a 500/502/503/504. */
+    public const MAX_RETRIES = 3;
 
     /**
      * @var null|string The Application Name to use with Google_Client.
@@ -76,13 +84,69 @@ class GoogleSheetsClient extends Component
 
     protected function initGoogleClient()
     {
+        $this->sheets = new \Google_Service_Sheets($this->createGoogleClient());
+    }
+
+    protected function createGoogleClient(): \Google_Client
+    {
         $jsonCreds = Json::decode($this->jsonAuthString);
         $googleClient = new \Google_Client();
         $googleClient->setApplicationName($this->applicationName);
         $googleClient->setScopes($this->scopes);
         $googleClient->setAuthConfig($jsonCreds);
         $googleClient->setAccessType('offline');
-        $this->sheets = new \Google_Service_Sheets($googleClient);
+
+        // Same options as Google_Client's default HTTP client, plus our retries.
+        $googleClient->setHttpClient(new GuzzleClient([
+            'base_uri' => $googleClient->getConfig('base_path'),
+            'http_errors' => false,
+            'handler' => $this->getHandlerStack(),
+        ]));
+        return $googleClient;
+    }
+
+    protected function getHandlerStack(): HandlerStack
+    {
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::retry(
+            [$this, 'shouldRetry'],
+            [$this, 'getRetryDelay']
+        ), 'retry');
+        return $stack;
+    }
+
+    /**
+     * Decide whether to retry a request. Every call this class makes is a read
+     * or an idempotent write, so retrying is safe.
+     */
+    public function shouldRetry(
+        int $retries,
+        RequestInterface $request,
+        ?ResponseInterface $response = null
+    ): bool {
+        if ($retries >= self::MAX_RETRIES
+            || $response === null
+            || ! in_array($response->getStatusCode(), [500, 502, 503, 504], true)
+        ) {
+            return false;
+        }
+        \Yii::warning(sprintf(
+            'Retrying Google Sheets request %s %s (retry %d of %d) after: HTTP status %s',
+            $request->getMethod(),
+            $request->getUri()->getPath(),
+            $retries + 1,
+            self::MAX_RETRIES,
+            $response->getStatusCode()
+        ));
+        return true;
+    }
+
+    /**
+     * @return int The number of milliseconds to wait before the given retry (1s, 2s, 4s, ...).
+     */
+    public function getRetryDelay(int $retries): int
+    {
+        return 1000 * (2 ** ($retries - 1));
     }
 
     /**
