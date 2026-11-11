@@ -16,6 +16,9 @@ class GoogleSheetsClientTest extends TestCase
     /** @var MockHandler */
     private $mockHandler;
 
+    /** @var TestGoogleSheetsClient */
+    private $client;
+
     public function __construct()
     {
         parent::__construct();
@@ -35,6 +38,29 @@ class GoogleSheetsClientTest extends TestCase
         $this->assertCount(1, $users);
         $this->assertSame('123', $users[0]['employee_id']);
         $this->assertSame(0, $this->mockHandler->count(), 'Not all queued responses were used');
+    }
+
+    public function testUpdateSyncDatesForRetriesWrite()
+    {
+        $client = $this->getClient([
+            $this->usersResponse(),
+            $this->htmlErrorResponse(502),
+            new Response(200, ['Content-Type' => 'application/json'], '{}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{}'), // next batch: no more users
+        ]);
+
+        $client->updateSyncDatesFor(['123']);
+
+        $this->assertSame(0, $this->mockHandler->count(), 'Not all queued responses were used');
+        $puts = array_values(array_filter(
+            $this->client->history,
+            fn ($transaction) => $transaction['request']->getMethod() === 'PUT'
+        ));
+        $this->assertCount(2, $puts, 'Expected the write to be sent twice');
+        $this->assertSame((string)$puts[0]['request']->getBody(), (string)$puts[1]['request']->getBody());
+        $body = json_decode((string)$puts[1]['request']->getBody(), true);
+        $this->assertSame('Users!I2:I2', $body['range']);
+        $this->assertCount(1, $body['values'][0]);
     }
 
     public function testGiveUpAfterMaxRetries()
@@ -74,12 +100,14 @@ class GoogleSheetsClientTest extends TestCase
     private function getClient(array $queue): GoogleSheetsClient
     {
         $this->mockHandler = new MockHandler($queue);
-        return new TestGoogleSheetsClient([
+        $this->client = new TestGoogleSheetsClient([
             'applicationName' => 'id-sync test',
-            'jsonAuthString' => '{}',
+            // OAuth client config with no token, so no auth is attached to requests.
+            'jsonAuthString' => '{"client_id": "test", "client_secret": "test"}',
             'spreadsheetId' => 'abc123',
             'mockHandler' => $this->mockHandler,
         ]);
+        return $this->client;
     }
 
     private function htmlErrorResponse(int $status): Response
