@@ -4,7 +4,7 @@ This file provides guidance to coding agents like Claude Code (claude.ai/code) w
 
 ## What this is
 
-A PHP 8.3 / Yii2 console app that reads users from an "ID Store" (an HR system: Workday, Google Sheets, SecureUser) and syncs them into the IdP "ID Broker" (`sil-org/idp-id-broker`) over its API. It runs as a batch job in Docker. There is no web UI.
+A PHP / Yii2 console app that reads users from an "ID Store" (an HR system: Workday, Google Sheets, SecureUser) and syncs them into the IdP "ID Broker" (`sil-org/idp-id-broker`) over its API. It runs as a batch job in Docker. There is no web UI.
 
 ## Commands
 
