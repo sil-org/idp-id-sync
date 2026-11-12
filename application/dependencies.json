@@ -29,7 +29,7 @@
   },
   {
     "name": "doctrine/deprecations",
-    "version": "1.1.6"
+    "version": "1.2.0"
   },
   {
     "name": "doctrine/lexer",
@@ -41,47 +41,47 @@
   },
   {
     "name": "ezyang/htmlpurifier",
-    "version": "v4.19.0"
+    "version": "v4.19.1"
   },
   {
     "name": "firebase/php-jwt",
-    "version": "v7.1.0"
+    "version": "v7.2.1"
   },
   {
     "name": "google/apiclient",
-    "version": "v2.19.4"
+    "version": "v2.20.1"
   },
   {
     "name": "google/apiclient-services",
-    "version": "v0.454.0"
+    "version": "v0.466.0"
   },
   {
     "name": "google/auth",
-    "version": "v1.53.0"
+    "version": "v1.55.3"
   },
   {
     "name": "guzzlehttp/command",
-    "version": "1.5.3"
+    "version": "1.5.4"
   },
   {
     "name": "guzzlehttp/guzzle",
-    "version": "7.15.3"
+    "version": "7.16.1"
   },
   {
     "name": "guzzlehttp/guzzle-services",
-    "version": "1.7.3"
+    "version": "1.7.4"
   },
   {
     "name": "guzzlehttp/promises",
-    "version": "2.5.2"
+    "version": "2.6.0"
   },
   {
     "name": "guzzlehttp/psr7",
-    "version": "2.13.0"
+    "version": "2.13.2"
   },
   {
     "name": "guzzlehttp/uri-template",
-    "version": "v1.0.10"
+    "version": "v1.0.11"
   },
   {
     "name": "http-interop/http-factory-guzzle",
@@ -93,11 +93,11 @@
   },
   {
     "name": "mlocati/ip-lib",
-    "version": "1.22.0"
+    "version": "1.22.1"
   },
   {
     "name": "monolog/monolog",
-    "version": "3.10.0"
+    "version": "3.12.1"
   },
   {
     "name": "php-http/client-common",
@@ -157,7 +157,7 @@
   },
   {
     "name": "roave/security-advisories",
-    "version": "dev-master f1cc60a"
+    "version": "dev-master ab5f23b"
   },
   {
     "name": "sentry/sdk",
@@ -169,7 +169,7 @@
   },
   {
     "name": "sil-org/idp-id-broker-php-client",
-    "version": "4.12.0"
+    "version": "4.15.0"
   },
   {
     "name": "sil-org/php-array-dot-notation",
@@ -197,47 +197,47 @@
   },
   {
     "name": "symfony/deprecation-contracts",
-    "version": "v3.7.1"
+    "version": "v3.8.1"
   },
   {
     "name": "symfony/http-client",
-    "version": "v7.4.16"
+    "version": "v7.4.23"
   },
   {
     "name": "symfony/http-client-contracts",
-    "version": "v3.7.1"
+    "version": "v3.8.1"
   },
   {
     "name": "symfony/options-resolver",
-    "version": "v7.4.8"
+    "version": "v7.4.22"
   },
   {
     "name": "symfony/polyfill-iconv",
-    "version": "v1.37.0"
+    "version": "v1.43.0"
   },
   {
     "name": "symfony/polyfill-intl-idn",
-    "version": "v1.38.1"
+    "version": "v1.43.0"
   },
   {
     "name": "symfony/polyfill-intl-normalizer",
-    "version": "v1.38.0"
+    "version": "v1.43.0"
   },
   {
     "name": "symfony/polyfill-mbstring",
-    "version": "v1.38.2"
+    "version": "v1.43.3"
   },
   {
     "name": "symfony/polyfill-php80",
-    "version": "v1.37.0"
+    "version": "v1.43.0"
   },
   {
     "name": "symfony/polyfill-php83",
-    "version": "v1.41.0"
+    "version": "v1.43.0"
   },
   {
     "name": "symfony/service-contracts",
-    "version": "v3.7.1"
+    "version": "v3.8.1"
   },
   {
     "name": "yiisoft/yii2",
