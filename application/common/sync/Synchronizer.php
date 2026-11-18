@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Sil\Idp\IdBroker\Client\ServiceException;
 use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
+use Sil\Idp\IdSync\common\components\exceptions\MissingNotifierEmailException;
 use Sil\Idp\IdSync\common\components\notify\NullNotifier;
 use Sil\Idp\IdSync\common\interfaces\IdBrokerInterface;
 use Sil\Idp\IdSync\common\interfaces\IdStoreInterface;
@@ -211,13 +212,18 @@ class Synchronizer
             try {
                 $this->notifier->sendNewUserNotice($user);
             } catch (Exception $e) {
-                $this->logger->error(sprintf(
+                $message = sprintf(
                     'Could not send New User notification for user (%s) Error %s: %s. [%s]',
                     $user->getStringForLogMessage(),
                     $e->getCode(),
                     $e->getMessage(),
                     1641936120
-                ));
+                );
+                if ($e instanceof MissingNotifierEmailException) {
+                    $this->logger->notice($message);
+                } else {
+                    $this->logger->error($message);
+                }
             }
         }
     }

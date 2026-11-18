@@ -4,6 +4,7 @@ namespace Sil\Idp\IdSync\common\components\notify;
 
 use InvalidArgumentException;
 use Sil\Idp\IdBroker\Client\IdBrokerClient;
+use Sil\Idp\IdSync\common\components\exceptions\MissingNotifierEmailException;
 use Sil\Idp\IdSync\common\interfaces\NotifierInterface;
 use Sil\Idp\IdSync\common\models\User;
 use yii\base\Component;
@@ -121,7 +122,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
 
     /**
      * {@inheritdoc}
-     * @throws \Exception if no email address is available
+     * @throws MissingNotifierEmailException if no email address is available
      */
     public function sendNewUserNotice(User $user)
     {
@@ -154,7 +155,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
     }
 
     /**
-     * @throws \Exception if no email address is available
+     * @throws MissingNotifierEmailException if no email address is available
      */
     protected function getEmailTo(User $user): string
     {
@@ -164,7 +165,7 @@ class EmailServiceNotifier extends Component implements NotifierInterface
             if (! empty($this->emailTo)) {
                 return $this->emailTo;
             }
-            throw new \Exception('no notifier email found for user ' . $user->getEmployeeId());
+            throw new MissingNotifierEmailException('no notifier email found for user ' . $user->getEmployeeId());
         }
     }
 }
