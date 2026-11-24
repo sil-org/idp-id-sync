@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Sil\Idp\IdBroker\Client\ServiceException;
+use Sil\Idp\IdBroker\Client\ValidationException;
 use Sil\Idp\IdSync\common\components\exceptions\MissingEmailException;
 use Sil\Idp\IdSync\common\components\exceptions\MissingNotifierEmailException;
 use Sil\Idp\IdSync\common\components\notify\NullNotifier;
@@ -274,13 +275,20 @@ class Synchronizer
 
     /**
      * Whether the given exception is the ID Broker rejecting the data it was
-     * sent (HTTP 422, e.g. "Username ... has already been taken"). Those are
-     * problems with the ID Store's data, not with this app, so they are logged
-     * as warnings (which are not sent to Sentry) rather than errors.
+     * sent. That is either an HTTP 422 from the broker (e.g. "Username ... has
+     * already been taken") or the broker client's own schema validation
+     * failing before the request is sent (e.g. "Validation errors: [username]
+     * is a required string"). Those are problems with the ID Store's data, not
+     * with this app, so they are logged as warnings (which are not sent to
+     * Sentry) rather than errors.
      */
     public static function isBrokerDataError(Exception $e): bool
     {
-        return $e instanceof ServiceException && $e->httpStatusCode === 422;
+        if ($e instanceof ServiceException) {
+            return $e->httpStatusCode === 422;
+        }
+
+        return $e instanceof ValidationException;
     }
 
     /**
