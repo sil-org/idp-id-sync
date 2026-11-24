@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d13367f093dc1ffa33994d775dffcf9",
+    "content-hash": "6f9ccc271f9cf04172ddcd7c1dbf9d47",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -3801,16 +3801,16 @@
         },
         {
             "name": "sil-org/idp-id-broker-php-client",
-            "version": "4.15.0",
+            "version": "4.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sil-org/idp-id-broker-php-client.git",
-                "reference": "93f7cb24a0cfff45f78068fdb00f17dd764bd120"
+                "reference": "6d1755d446ea4cb0fe0b0c073a7749bf144c60a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sil-org/idp-id-broker-php-client/zipball/93f7cb24a0cfff45f78068fdb00f17dd764bd120",
-                "reference": "93f7cb24a0cfff45f78068fdb00f17dd764bd120",
+                "url": "https://api.github.com/repos/sil-org/idp-id-broker-php-client/zipball/6d1755d446ea4cb0fe0b0c073a7749bf144c60a9",
+                "reference": "6d1755d446ea4cb0fe0b0c073a7749bf144c60a9",
                 "shasum": ""
             },
             "require": {
@@ -3850,10 +3850,10 @@
             ],
             "support": {
                 "issues": "https://github.com/sil-org/idp-id-broker-php-client/issues",
-                "source": "https://github.com/sil-org/idp-id-broker-php-client/tree/4.15.0"
+                "source": "https://github.com/sil-org/idp-id-broker-php-client/tree/4.15.1"
             },
-            "time": "2026-11-12T05:42:58+00:00",
-            "published-time": "2026-11-12T05:45:43+00:00"
+            "time": "2026-11-24T06:06:39+00:00",
+            "published-time": "2026-11-24T06:07:18+00:00"
         },
         {
             "name": "sil-org/php-array-dot-notation",
